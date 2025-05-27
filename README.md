@@ -460,3 +460,5 @@ O agente usa palavras-chave para determinar qual ferramenta utilizar:
 - Perguntas factuais ativam busca na web
 - Perguntas sobre capacidades mostram informações de ajuda
 
+#   0 4 _ I A  
+ 
