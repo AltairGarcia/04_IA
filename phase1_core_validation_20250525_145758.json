@@ -1,0 +1,54 @@
+{
+  "timestamp": "2025-05-25T14:57:43.406641",
+  "phase": "Phase 1 - Core Integration Validation",
+  "tests": [
+    {
+      "name": "Configuration System",
+      "status": "PASS",
+      "message": "Configuration loads and validates successfully",
+      "timestamp": "2025-05-25T14:57:43.495278"
+    },
+    {
+      "name": "Enhanced Applications",
+      "status": "PASS",
+      "message": "Both enhanced applications available",
+      "timestamp": "2025-05-25T14:57:43.495898"
+    },
+    {
+      "name": "Integration Components",
+      "status": "PASS",
+      "message": "All integration components present",
+      "timestamp": "2025-05-25T14:57:43.496719"
+    },
+    {
+      "name": "Infrastructure Components",
+      "status": "PASS",
+      "message": "6/6 components available (100.0%)",
+      "timestamp": "2025-05-25T14:57:43.497226"
+    },
+    {
+      "name": "Cache System",
+      "status": "PASS",
+      "message": "Cache system working (memory fallback)",
+      "timestamp": "2025-05-25T14:57:47.982011"
+    },
+    {
+      "name": "Startup System",
+      "status": "FAIL",
+      "message": "Startup script failed: 2025-05-25 14:57:49,495 - __main__ - INFO - Performing pre-startup checks...\n2025-05-25 14:57:49,496 - __main__ - INFO - Checking dependencies...\n2025-05-25 14:57:49,496 - __main__ - INFO - Python version 3.13.3 - OK\n2025-05-25 14:57:55,372 - __main__ - WARNING - Redis server not available: Error 10061 connecting to localhost:6379. Nenhuma conex\u00e3o p\u00f4de ser feita porque a m\u00e1quina de destino as recusou ativamente.\n2025-05-25 14:57:55,373 - __main__ - INFO - Attempting to install Redis server...\n2025-05-25 14:57:55,373 - __main__ - INFO - On Windows, please install Redis manually or use Docker\n2025-05-25 14:57:55,373 - __main__ - INFO - Docker command: docker run -d -p 6379:6379 redis:alpine\n2025-05-25 14:57:55,373 - __main__ - WARNING - Redis not available - some features will be limited\n2025-05-25 14:57:55,373 - __main__ - INFO - Dependency check complete\n2025-05-25 14:57:55,382 - __main__ - WARNING - High memory usage: 93.7%\n2025-05-25 14:57:55,382 - __main__ - INFO - Pre-startup checks complete\nTraceback (most recent call last):\n  File \"C:\\ALTAIR GARCIA\\04__ia\\langgraph_startup.py\", line 672, in <module>\n    main()\n    ~~~~^^\n  File \"C:\\ALTAIR GARCIA\\04__ia\\langgraph_startup.py\", line 662, in main\n    print(\"\\u2705 All checks passed - system ready to start\")\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Python313\\Lib\\encodings\\cp1252.py\", line 19, in encode\n    return codecs.charmap_encode(input,self.errors,encoding_table)[0]\n           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'charmap' codec can't encode character '\\u2705' in position 0: character maps to <undefined>\n",
+      "timestamp": "2025-05-25T14:57:55.595968"
+    },
+    {
+      "name": "Enhanced Streamlit Import",
+      "status": "FAIL",
+      "message": "Import failed: 2025-05-25 14:57:57.066 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import langgraph_enhanced_streamlit; print('SUCCESS')\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\ALTAIR GARCIA\\04__ia\\langgraph_enhanced_streamlit.py\", line 73, in <module>\n    from streamlit_integration_patch import patch_streamlit_app\n  File \"C:\\ALTAIR GARCIA\\04__ia\\streamlit_integration_patch.py\", line 30, in <module>\n    from app_integration_wrapper import streamlit_wrapper, get_enhanced_app, get_integration_status\n  File \"C:\\ALTAIR GARCIA\\04__ia\\app_integration_wrapper.py\", line 98, in <module>\n    integration_state = IntegrationState()\n  File \"C:\\ALTAIR GARCIA\\04__ia\\app_integration_wrapper.py\", line 57, in __init__\n    self._check_infrastructure_availability()\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n  File \"C:\\ALTAIR GARCIA\\04__ia\\app_integration_wrapper.py\", line 63, in _check_infrastructure_availability\n    from infrastructure_integration_hub import InfrastructureHub\n  File \"C:\\ALTAIR GARCIA\\04__ia\\infrastructure_integration_hub.py\", line 50, in <module>\n    from api_gateway import APIGateway, APIGatewayConfig, ServiceEndpoint, RouteConfig\n  File \"C:\\ALTAIR GARCIA\\04__ia\\api_gateway.py\", line 45, in <module>\n    import aioredis\n  File \"C:\\ALTAIR GARCIA\\04__ia\\venv\\Lib\\site-packages\\aioredis\\__init__.py\", line 1, in <module>\n    from aioredis.client import Redis, StrictRedis\n  File \"C:\\ALTAIR GARCIA\\04__ia\\venv\\Lib\\site-packages\\aioredis\\client.py\", line 32, in <module>\n    from aioredis.connection import (\n    ...<5 lines>...\n    )\n  File \"C:\\ALTAIR GARCIA\\04__ia\\venv\\Lib\\site-packages\\aioredis\\connection.py\", line 33, in <module>\n    from .exceptions import (\n    ...<15 lines>...\n    )\n  File \"C:\\ALTAIR GARCIA\\04__ia\\venv\\Lib\\site-packages\\aioredis\\exceptions.py\", line 14, in <module>\n    class TimeoutError(asyncio.TimeoutError, builtins.TimeoutError, RedisError):\n        pass\nTypeError: duplicate base class TimeoutError\n",
+      "timestamp": "2025-05-25T14:57:58.332018"
+    }
+  ],
+  "summary": {
+    "total": 7,
+    "passed": 5,
+    "failed": 2,
+    "completion_rate": 71.42857142857143
+  }
+}

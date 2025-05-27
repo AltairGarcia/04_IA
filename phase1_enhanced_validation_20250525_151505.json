@@ -1,0 +1,119 @@
+{
+  "summary": {
+    "total_tests": 14,
+    "passed": 8,
+    "failed": 6,
+    "warnings": 0,
+    "success_rate": 57.14285714285714,
+    "status": "\u26a0\ufe0f  ACCEPTABLE",
+    "recommendation": "Some issues remain but core functionality works"
+  },
+  "detailed_results": {
+    "tests": [
+      {
+        "category": "startup",
+        "test": "configuration_loading",
+        "success": false,
+        "message": "cannot import name 'IntegratedConfig' from 'integrated_config' (C:\\ALTAIR GARCIA\\04__ia\\integrated_config.py)",
+        "timestamp": "2025-05-25T15:14:27.888415"
+      },
+      {
+        "category": "startup",
+        "test": "integration_adapter",
+        "success": true,
+        "message": "Adapter handles compatibility issues gracefully",
+        "timestamp": "2025-05-25T15:14:29.575057"
+      },
+      {
+        "category": "integration",
+        "test": "cli_integration",
+        "success": false,
+        "message": "duplicate base class TimeoutError",
+        "timestamp": "2025-05-25T15:14:29.590024"
+      },
+      {
+        "category": "integration",
+        "test": "streamlit_integration",
+        "success": false,
+        "message": "duplicate base class TimeoutError",
+        "timestamp": "2025-05-25T15:14:30.415986"
+      },
+      {
+        "category": "integration",
+        "test": "app_wrapper",
+        "success": false,
+        "message": "duplicate base class TimeoutError",
+        "timestamp": "2025-05-25T15:14:30.427126"
+      },
+      {
+        "category": "error_handling",
+        "test": "fallback_mechanisms",
+        "success": true,
+        "message": "Redis fallback system working",
+        "timestamp": "2025-05-25T15:15:00.889968"
+      },
+      {
+        "category": "error_handling",
+        "test": "graceful_degradation",
+        "success": true,
+        "message": "Handles missing modules correctly",
+        "timestamp": "2025-05-25T15:15:00.893186"
+      },
+      {
+        "category": "security",
+        "test": "rate_limiting",
+        "success": true,
+        "message": "Rate limiting system available",
+        "timestamp": "2025-05-25T15:15:00.919324"
+      },
+      {
+        "category": "security",
+        "test": "input_validation",
+        "success": true,
+        "message": "Input validation detecting threats",
+        "timestamp": "2025-05-25T15:15:01.506192"
+      },
+      {
+        "category": "performance",
+        "test": "cache_performance",
+        "success": true,
+        "message": "Set: 0.0000s, Get: 0.0000s",
+        "timestamp": "2025-05-25T15:15:05.621359"
+      },
+      {
+        "category": "performance",
+        "test": "database_performance",
+        "success": false,
+        "message": "DatabaseConnectionPool.__init__() got an unexpected keyword argument 'database'",
+        "timestamp": "2025-05-25T15:15:05.630662"
+      },
+      {
+        "category": "production",
+        "test": "logging_system",
+        "success": true,
+        "message": "Logging system functional",
+        "timestamp": "2025-05-25T15:15:05.631146"
+      },
+      {
+        "category": "production",
+        "test": "config_validation",
+        "success": false,
+        "message": "cannot import name 'IntegratedConfig' from 'integrated_config' (C:\\ALTAIR GARCIA\\04__ia\\integrated_config.py)",
+        "timestamp": "2025-05-25T15:15:05.631237"
+      },
+      {
+        "category": "production",
+        "test": "file_structure",
+        "success": true,
+        "message": "All required files present",
+        "timestamp": "2025-05-25T15:15:05.631861"
+      }
+    ],
+    "warnings": [],
+    "errors": [],
+    "timestamp": "2025-05-25T15:14:27.808971",
+    "compatibility_fixes_applied": true
+  },
+  "compatibility_fixes_applied": true,
+  "timestamp": "2025-05-25T15:15:05.632776"
+}

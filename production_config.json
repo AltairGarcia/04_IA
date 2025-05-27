@@ -1,0 +1,34 @@
+{
+  "system": {
+    "name": "LangGraph 101 Optimized",
+    "version": "2.0.0",
+    "deployment_date": "2025-05-27T10:03:06.857161",
+    "environment": "production"
+  },
+  "database": {
+    "connection_manager": "ThreadSafeConnectionManager",
+    "max_connections": 50,
+    "enable_health_checks": true,
+    "enable_metrics": true
+  },
+  "monitoring": {
+    "system": "EnhancedUnifiedMonitoringSystem",
+    "enable_alerts": true,
+    "enable_memory_profiling": true,
+    "profiling_interval": 300
+  },
+  "memory": {
+    "profiler": "AdvancedMemoryProfiler",
+    "enable_leak_detection": true,
+    "snapshot_interval": 600,
+    "enable_tracemalloc": true
+  },
+  "backup": {
+    "directory": "backup_deployment_20250527_100243",
+    "legacy_files_backed_up": [
+      "unified_monitoring_system.py",
+      "database_manager.py",
+      "performance_monitor.py"
+    ]
+  }
+}

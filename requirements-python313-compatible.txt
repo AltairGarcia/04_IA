@@ -1,0 +1,97 @@
+# LangGraph 101 - Python 3.13 Compatible Requirements
+# Core dependencies that work with Python 3.13
+
+# ====== CORE FRAMEWORK ======
+streamlit>=1.45.0
+fastapi>=0.115.0
+uvicorn>=0.34.0
+python-dotenv>=1.1.0
+
+# ====== DATA & ANALYTICS ======
+pandas>=2.2.0
+numpy>=2.0.0
+plotly>=6.1.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# ====== AI/ML CORE ======
+# LangGraph and LangChain (latest versions support Python 3.13)
+langgraph>=0.2.0
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-community>=0.3.0
+langchain-openai>=0.2.0
+langchain-google-genai>=2.0.0
+
+# AI Providers
+openai>=1.40.0
+google-generativeai>=0.8.0
+anthropic>=0.34.0
+
+# ====== WEB & API ======
+requests>=2.32.0
+aiohttp>=3.10.0
+websockets>=13.0
+httpx>=0.27.0
+
+# ====== DATABASE ======
+sqlalchemy>=2.0.0
+sqlite3-python>=0.5.0
+redis>=5.1.0
+
+# ====== MONITORING & LOGGING ======
+psutil>=7.0.0
+structlog>=25.0.0
+rich>=13.8.0
+
+# ====== SECURITY ======
+cryptography>=43.0.0
+pyjwt>=2.9.0
+bcrypt>=4.2.0
+
+# ====== FILE PROCESSING ======
+pillow>=10.4.0
+pypdf>=5.0.0
+python-multipart>=0.0.12
+
+# ====== AUDIO (Python 3.13 compatible alternatives) ======
+# Note: SpeechRecognition has issues with Python 3.13 due to missing aifc module
+# Using alternative packages or disabling voice features
+pydub>=0.25.0
+# sounddevice>=0.4.6  # May have issues with Python 3.13
+# soundfile>=0.12.1   # May have issues with Python 3.13
+
+# Text-to-Speech (gTTS should work)
+gTTS>=2.5.0
+
+# ====== UTILITY ======
+click>=8.1.0
+tqdm>=4.66.0
+python-slugify>=8.0.0
+humanize>=4.10.0
+schedule>=1.2.0
+
+# ====== DEVELOPMENT ======
+pytest>=8.0.0
+black>=24.0.0
+flake8>=7.0.0
+mypy>=1.11.0
+
+# ====== CACHING ======
+cachetools>=5.5.0
+diskcache>=5.6.0
+
+# ====== VALIDATION ======
+pydantic>=2.9.0
+marshmallow>=3.22.0
+
+# ====== CONCURRENCY ======
+asyncio-throttle>=1.0.2
+aiofiles>=24.0.0
+
+# ====== OPTIONAL PACKAGES ======
+# These can be uncommented if needed:
+# scikit-learn>=1.5.0
+# networkx>=3.3.0
+# celery>=5.4.0
+# flask>=3.0.0

@@ -1,0 +1,79 @@
+{
+  "timestamp": "2025-05-25T13:42:22.752899",
+  "summary": {
+    "total_tests": 7,
+    "passed_tests": 7,
+    "failed_tests": 0,
+    "execution_time": 1.3611681461334229,
+    "security_score": 100.0,
+    "status": "PASS"
+  },
+  "test_results": [
+    {
+      "test_name": "Security Module Imports",
+      "category": "TestCategory.BASIC_SECURITY",
+      "passed": true,
+      "execution_time": 1.3584156036376953,
+      "message": "All security modules imported successfully",
+      "severity": "high",
+      "details": null
+    },
+    {
+      "test_name": "Password Strength Validation",
+      "category": "TestCategory.AUTHENTICATION",
+      "passed": true,
+      "execution_time": 2.5272369384765625e-05,
+      "message": "Password validation working correctly",
+      "severity": "high",
+      "details": null
+    },
+    {
+      "test_name": "Session Security",
+      "category": "TestCategory.SESSION_MANAGEMENT",
+      "passed": true,
+      "execution_time": 6.246566772460938e-05,
+      "message": "Session security tests passed",
+      "severity": "high",
+      "details": null
+    },
+    {
+      "test_name": "Input Sanitization",
+      "category": "TestCategory.INPUT_VALIDATION",
+      "passed": true,
+      "execution_time": 1.4066696166992188e-05,
+      "message": "Input sanitization working",
+      "severity": "high",
+      "details": null
+    },
+    {
+      "test_name": "Encryption Basics",
+      "category": "TestCategory.ENCRYPTION",
+      "passed": true,
+      "execution_time": 0.0019268989562988281,
+      "message": "Encryption tests passed",
+      "severity": "medium",
+      "details": null
+    },
+    {
+      "test_name": "Security Headers",
+      "category": "TestCategory.SECURITY_HEADERS",
+      "passed": true,
+      "execution_time": 5.245208740234375e-06,
+      "message": "Security headers validation passed",
+      "severity": "medium",
+      "details": null
+    },
+    {
+      "test_name": "Rate Limiting Logic",
+      "category": "TestCategory.RATE_LIMITING",
+      "passed": true,
+      "execution_time": 2.3365020751953125e-05,
+      "message": "Rate limiting logic working",
+      "severity": "medium",
+      "details": null
+    }
+  ],
+  "recommendations": [
+    "All tests passed - maintain current security practices"
+  ]
+}

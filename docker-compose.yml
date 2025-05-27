@@ -1,0 +1,309 @@
+version: '3.8'
+
+services:
+  # ====== MAIN APPLICATION ======
+  langgraph-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: langgraph-101-app
+    ports:
+      - "8000:8000"
+    environment:
+      # Application settings
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - HOST=0.0.0.0
+      - PORT=8000
+      - WORKERS=4
+      
+      # Database settings
+      - DATABASE_PATH=/app/data/langgraph_101.db
+      - BACKUP_PATH=/app/data/backups
+      
+      # API Keys (set these in your .env file)
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - SERPER_API_KEY=${SERPER_API_KEY}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - LANGSMITH_API_KEY=${LANGSMITH_API_KEY}
+      
+      # Security settings
+      - SECRET_KEY=${SECRET_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=3600
+      
+      # Logging settings
+      - LOG_LEVEL=INFO
+      - LOG_FILE=/app/logs/langgraph_101.log
+      
+      # Redis connection
+      - REDIS_URL=redis://redis:6379/0
+      
+      # LangGraph settings
+      - LANGGRAPH_MAX_ITERATIONS=20
+      - LANGGRAPH_THREAD_TIMEOUT=300
+    volumes:
+      - app-data:/app/data
+      - app-logs:/app/logs
+      - app-exports:/app/exports
+      - app-uploads:/app/uploads
+    depends_on:
+      - redis
+      - monitoring
+    networks:
+      - langgraph-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ====== REDIS CACHE ======
+  redis:
+    image: redis:7-alpine
+    container_name: langgraph-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - langgraph-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ====== NGINX REVERSE PROXY ======
+  nginx:
+    image: nginx:alpine
+    container_name: langgraph-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - app-static:/var/www/static:ro
+    depends_on:
+      - langgraph-app
+    networks:
+      - langgraph-network
+    restart: unless-stopped
+
+  # ====== MONITORING STACK ======
+  # Prometheus for metrics collection
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: langgraph-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    networks:
+      - langgraph-network
+    restart: unless-stopped
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: langgraph-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+    networks:
+      - langgraph-network
+    restart: unless-stopped
+
+  # Node Exporter for system metrics
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: langgraph-node-exporter
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - langgraph-network
+    restart: unless-stopped
+
+  # cAdvisor for container metrics
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: langgraph-cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /dev/disk:/dev/disk:ro
+    privileged: true
+    devices:
+      - /dev/kmsg
+    networks:
+      - langgraph-network
+    restart: unless-stopped
+
+  # ====== LOG AGGREGATION ======
+  # Elasticsearch for log storage
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: langgraph-elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=langgraph-logs
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - langgraph-network
+    restart: unless-stopped
+
+  # Logstash for log processing
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    container_name: langgraph-logstash
+    volumes:
+      - ./logging/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    ports:
+      - "5044:5044"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+    networks:
+      - langgraph-network
+    restart: unless-stopped
+
+  # Kibana for log visualization
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: langgraph-kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - langgraph-network
+    restart: unless-stopped
+
+  # ====== BACKUP SERVICE ======
+  backup:
+    build:
+      context: .
+      dockerfile: Dockerfile.backup
+    container_name: langgraph-backup
+    environment:
+      - BACKUP_SCHEDULE=0 2 * * *  # Daily at 2 AM
+      - S3_BUCKET=${BACKUP_S3_BUCKET}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    volumes:
+      - app-data:/backup/data:ro
+      - app-logs:/backup/logs:ro
+    depends_on:
+      - langgraph-app
+    networks:
+      - langgraph-network
+    restart: unless-stopped
+
+  # ====== DEVELOPMENT SERVICES ======
+  # Jupyter for development and analysis
+  jupyter:
+    image: jupyter/datascience-notebook:latest
+    container_name: langgraph-jupyter
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-langgraph123}
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      - app-data:/home/jovyan/data:ro
+    networks:
+      - langgraph-network
+    restart: unless-stopped
+    profiles:
+      - development
+
+  # Database admin interface
+  adminer:
+    image: adminer:latest
+    container_name: langgraph-adminer
+    ports:
+      - "8081:8080"
+    networks:
+      - langgraph-network
+    restart: unless-stopped
+    profiles:
+      - development
+
+# ====== NETWORKS ======
+networks:
+  langgraph-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# ====== VOLUMES ======
+volumes:
+  app-data:
+    driver: local
+  app-logs:
+    driver: local
+  app-exports:
+    driver: local
+  app-uploads:
+    driver: local
+  app-static:
+    driver: local
+  redis-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+  elasticsearch-data:
+    driver: local

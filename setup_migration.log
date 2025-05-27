@@ -1,0 +1,53 @@
+2025-05-25 10:51:24,229 [INFO] __main__: ============================================================
+2025-05-25 10:51:24,229 [INFO] __main__: STARTING LANGGRAPH 101 UNIFIED SYSTEM SETUP
+2025-05-25 10:51:24,229 [INFO] __main__: ============================================================
+2025-05-25 10:51:24,229 [INFO] __main__: Step 1: Validating environment...
+2025-05-25 10:51:24,245 [INFO] core.config: Loaded environment from .env
+2025-05-25 10:51:24,247 [WARNING] core.config: Generated new secret key. Set SECRET_KEY environment variable for production.
+2025-05-25 10:51:24,248 [WARNING] core.config: Generated new JWT secret. Set JWT_SECRET environment variable for production.
+2025-05-25 10:51:24,401 [INFO] core.database: Initializing unified database...
+2025-05-25 10:51:24,452 [INFO] core.database: Database initialization completed
+2025-05-25 10:51:24,464 [INFO] __main__: Step 2: Backing up legacy files...
+2025-05-25 10:51:24,470 [INFO] __main__: - Skipped (not found): content_calendar.db
+2025-05-25 10:51:24,470 [INFO] __main__: - Skipped (not found): content_templates.db
+2025-05-25 10:51:24,470 [INFO] __main__: - Skipped (not found): analytics.db
+2025-05-25 10:51:24,471 [INFO] __main__: - Skipped (not found): social_media.db
+2025-05-25 10:51:24,473 [INFO] __main__: Step 3: Initializing unified systems...
+2025-05-25 10:51:24,477 [ERROR] __main__: Unified system initialization failed: 'UnifiedDatabaseManager' object has no attribute 'test_connection'
+2025-05-25 10:53:20,413 [INFO] __main__: ============================================================
+2025-05-25 10:53:20,414 [INFO] __main__: STARTING LANGGRAPH 101 UNIFIED SYSTEM SETUP
+2025-05-25 10:53:20,414 [INFO] __main__: ============================================================
+2025-05-25 10:53:20,415 [INFO] __main__: Step 1: Validating environment...
+2025-05-25 10:53:20,431 [INFO] core.config: Loaded environment from .env
+2025-05-25 10:53:20,433 [WARNING] core.config: Generated new secret key. Set SECRET_KEY environment variable for production.
+2025-05-25 10:53:20,433 [WARNING] core.config: Generated new JWT secret. Set JWT_SECRET environment variable for production.
+2025-05-25 10:53:20,579 [INFO] core.database: Initializing unified database...
+2025-05-25 10:53:20,583 [INFO] core.database: Database initialization completed
+2025-05-25 10:53:20,593 [INFO] __main__: Step 2: Backing up legacy files...
+2025-05-25 10:53:20,597 [INFO] __main__: - Skipped (not found): content_calendar.db
+2025-05-25 10:53:20,598 [INFO] __main__: - Skipped (not found): content_templates.db
+2025-05-25 10:53:20,598 [INFO] __main__: - Skipped (not found): analytics.db
+2025-05-25 10:53:20,598 [INFO] __main__: - Skipped (not found): social_media.db
+2025-05-25 10:53:20,601 [INFO] __main__: Step 3: Initializing unified systems...
+2025-05-25 10:53:20,606 [ERROR] __main__: Unified system initialization failed: 'UnifiedDatabaseManager' object has no attribute 'test_connection'
+2025-05-25 10:56:29,367 [INFO] __main__: ============================================================
+2025-05-25 10:56:29,367 [INFO] __main__: STARTING LANGGRAPH 101 UNIFIED SYSTEM SETUP
+2025-05-25 10:56:29,367 [INFO] __main__: ============================================================
+2025-05-25 10:56:29,367 [INFO] __main__: Step 1: Validating environment...
+2025-05-25 10:56:29,381 [INFO] core.config: Loaded environment from .env
+2025-05-25 10:56:29,382 [WARNING] core.config: Generated new secret key. Set SECRET_KEY environment variable for production.
+2025-05-25 10:56:29,382 [WARNING] core.config: Generated new JWT secret. Set JWT_SECRET environment variable for production.
+2025-05-25 10:56:29,542 [INFO] __main__: OK - Unified configuration system loaded successfully
+2025-05-25 10:56:29,544 [INFO] core.database: Initializing unified database...
+2025-05-25 10:56:29,550 [INFO] core.database: Database initialization completed
+2025-05-25 10:56:29,557 [INFO] __main__: OK - Unified database system initialized successfully
+2025-05-25 10:56:29,557 [INFO] __main__: OK - Environment validation completed
+2025-05-25 10:56:29,557 [INFO] __main__: Step 2: Backing up legacy files...
+2025-05-25 10:56:29,561 [INFO] __main__: OK - Backed up: content_creation.db
+2025-05-25 10:56:29,562 [INFO] __main__: - Skipped (not found): content_calendar.db
+2025-05-25 10:56:29,563 [INFO] __main__: - Skipped (not found): content_templates.db
+2025-05-25 10:56:29,564 [INFO] __main__: - Skipped (not found): analytics.db
+2025-05-25 10:56:29,565 [INFO] __main__: - Skipped (not found): social_media.db
+2025-05-25 10:56:29,575 [INFO] __main__: Step 3: Initializing unified systems...
+2025-05-25 10:56:29,590 [INFO] __main__: Step 4: Migrating legacy data...
+2025-05-25 10:56:29,590 [ERROR] __main__: Data migration failed: 'LegacyDatabaseMigrator' object has no attribute 'migrate_all_databases'

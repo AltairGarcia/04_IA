@@ -1,0 +1,15 @@
+{
+  "github.com/Operative-Sh/web-eval-agent": {
+    "command": "uvx",
+    "args": [
+      "--refresh-package",
+      "webEvalAgent",
+      "--from",
+      "git+https://github.com/Operative-Sh/web-eval-agent.git",
+      "webEvalAgent"
+    ],
+    "env": {
+      "OPERATIVE_API_KEY": "op-1LlBCBSCbNZkIIYod5f2mhEEnG6xmS9mV6TnGxaZt4Q"
+    }
+  }
+}

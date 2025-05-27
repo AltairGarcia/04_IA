@@ -1,0 +1,206 @@
+{
+  "timestamp": "2025-05-26T19:03:34.863784",
+  "duration_seconds": 5.413687,
+  "summary": {
+    "total_tests": 12,
+    "passed_tests": 11,
+    "failed_tests": 1,
+    "success_rate": 91.66666666666666
+  },
+  "category_breakdown": {
+    "Security Validation": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    },
+    "Component Testing": {
+      "total": 3,
+      "passed": 2,
+      "failed": 1
+    },
+    "Integration Testing": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    },
+    "Performance Testing": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    }
+  },
+  "failed_tests": [
+    {
+      "name": "test_streaming_agent",
+      "category": "Component Testing",
+      "errors": [
+        "Streaming agent test failed: No module named 'nltk'"
+      ],
+      "duration": 3.909031391143799
+    }
+  ],
+  "detailed_results": [
+    {
+      "test_name": "run_security_validation",
+      "category": "Security Validation",
+      "passed": true,
+      "duration": 1.2146968841552734,
+      "details": {
+        "output": ""
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:03:30.665848"
+    },
+    {
+      "test_name": "test_authentication",
+      "category": "Security Validation",
+      "passed": true,
+      "duration": 0.0003376007080078125,
+      "details": {
+        "auth_files": [
+          "advanced_auth.py",
+          "auth_middleware.py"
+        ]
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:03:30.666621"
+    },
+    {
+      "test_name": "test_encryption",
+      "category": "Security Validation",
+      "passed": true,
+      "duration": 0.04376673698425293,
+      "details": {
+        "encryption_test": "success"
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:03:30.710819"
+    },
+    {
+      "test_name": "test_streaming_agent",
+      "category": "Component Testing",
+      "passed": false,
+      "duration": 3.909031391143799,
+      "details": {},
+      "errors": [
+        "Streaming agent test failed: No module named 'nltk'"
+      ],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:03:34.620662"
+    },
+    {
+      "test_name": "test_fastapi_bridge",
+      "category": "Component Testing",
+      "passed": true,
+      "duration": 0.00020956993103027344,
+      "details": {
+        "file_size": 24809
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:03:34.621521"
+    },
+    {
+      "test_name": "test_streamlit_app",
+      "category": "Component Testing",
+      "passed": true,
+      "duration": 0.014640331268310547,
+      "details": {
+        "streamlit_found": true
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:03:34.636399"
+    },
+    {
+      "test_name": "test_api_integration",
+      "category": "Integration Testing",
+      "passed": true,
+      "duration": 0.00029778480529785156,
+      "details": {
+        "integration_files": [
+          "fastapi_streaming_bridge.py",
+          "api_gateway.py",
+          "api_gateway_integration.py"
+        ]
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:03:34.637415"
+    },
+    {
+      "test_name": "test_websocket_integration",
+      "category": "Integration Testing",
+      "passed": true,
+      "duration": 0.0003604888916015625,
+      "details": {
+        "websocket_indicators": [
+          "WebSocket",
+          "ws"
+        ]
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:03:34.637967"
+    },
+    {
+      "test_name": "test_streaming_integration",
+      "category": "Integration Testing",
+      "passed": true,
+      "duration": 0.00018477439880371094,
+      "details": {
+        "streaming_files": [
+          "langgraph_streaming_agent_enhanced.py",
+          "fastapi_streaming_bridge.py"
+        ]
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:03:34.638352"
+    },
+    {
+      "test_name": "test_response_times",
+      "category": "Performance Testing",
+      "passed": true,
+      "duration": 0.11416506767272949,
+      "details": {
+        "response_time": 0.11414241790771484
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:03:34.753164"
+    },
+    {
+      "test_name": "test_concurrent_users",
+      "category": "Performance Testing",
+      "passed": true,
+      "duration": 0.10873293876647949,
+      "details": {
+        "successful_requests": 5,
+        "total_requests": 5
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:03:34.862371"
+    },
+    {
+      "test_name": "test_memory_usage",
+      "category": "Performance Testing",
+      "passed": true,
+      "duration": 0.0005998611450195312,
+      "details": {
+        "memory_usage_mb": 205.97265625
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:03:34.863528"
+    }
+  ],
+  "recommendations": [
+    "✅ Great! System is mostly ready with minor issues to address.",
+    "🔧 Fix component issues to ensure system stability."
+  ]
+}

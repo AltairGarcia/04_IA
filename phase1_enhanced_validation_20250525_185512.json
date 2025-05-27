@@ -1,0 +1,119 @@
+{
+  "summary": {
+    "total_tests": 14,
+    "passed": 8,
+    "failed": 6,
+    "warnings": 0,
+    "success_rate": 57.14285714285714,
+    "status": "\u26a0\ufe0f  ACCEPTABLE",
+    "recommendation": "Some issues remain but core functionality works"
+  },
+  "detailed_results": {
+    "tests": [
+      {
+        "category": "startup",
+        "test": "configuration_loading",
+        "success": true,
+        "message": "Loaded in 0.108s",
+        "timestamp": "2025-05-25T18:55:08.588890"
+      },
+      {
+        "category": "startup",
+        "test": "integration_adapter",
+        "success": true,
+        "message": "Adapter handles compatibility issues gracefully",
+        "timestamp": "2025-05-25T18:55:10.500212"
+      },
+      {
+        "category": "integration",
+        "test": "cli_integration",
+        "success": false,
+        "message": "duplicate base class TimeoutError",
+        "timestamp": "2025-05-25T18:55:10.517702"
+      },
+      {
+        "category": "integration",
+        "test": "streamlit_integration",
+        "success": false,
+        "message": "duplicate base class TimeoutError",
+        "timestamp": "2025-05-25T18:55:11.541146"
+      },
+      {
+        "category": "integration",
+        "test": "app_wrapper",
+        "success": false,
+        "message": "duplicate base class TimeoutError",
+        "timestamp": "2025-05-25T18:55:11.552747"
+      },
+      {
+        "category": "error_handling",
+        "test": "fallback_mechanisms",
+        "success": false,
+        "message": "unindent does not match any outer indentation level (redis_fallback.py, line 197)",
+        "timestamp": "2025-05-25T18:55:11.556813"
+      },
+      {
+        "category": "error_handling",
+        "test": "graceful_degradation",
+        "success": true,
+        "message": "Handles missing modules correctly",
+        "timestamp": "2025-05-25T18:55:11.558491"
+      },
+      {
+        "category": "security",
+        "test": "rate_limiting",
+        "success": true,
+        "message": "Rate limiting system available",
+        "timestamp": "2025-05-25T18:55:11.701612"
+      },
+      {
+        "category": "security",
+        "test": "input_validation",
+        "success": true,
+        "message": "Input validation detecting threats",
+        "timestamp": "2025-05-25T18:55:12.257019"
+      },
+      {
+        "category": "performance",
+        "test": "cache_performance",
+        "success": false,
+        "message": "unexpected indent (cache_manager.py, line 232)",
+        "timestamp": "2025-05-25T18:55:12.263632"
+      },
+      {
+        "category": "performance",
+        "test": "database_performance",
+        "success": false,
+        "message": "DatabaseConnectionPool.__init__() got an unexpected keyword argument 'database'",
+        "timestamp": "2025-05-25T18:55:12.294964"
+      },
+      {
+        "category": "production",
+        "test": "logging_system",
+        "success": true,
+        "message": "Logging system functional",
+        "timestamp": "2025-05-25T18:55:12.297071"
+      },
+      {
+        "category": "production",
+        "test": "config_validation",
+        "success": true,
+        "message": "Configuration is valid",
+        "timestamp": "2025-05-25T18:55:12.297469"
+      },
+      {
+        "category": "production",
+        "test": "file_structure",
+        "success": true,
+        "message": "All required files present",
+        "timestamp": "2025-05-25T18:55:12.298745"
+      }
+    ],
+    "warnings": [],
+    "errors": [],
+    "timestamp": "2025-05-25T18:55:08.480261",
+    "compatibility_fixes_applied": true
+  },
+  "compatibility_fixes_applied": true,
+  "timestamp": "2025-05-25T18:55:12.300542"
+}

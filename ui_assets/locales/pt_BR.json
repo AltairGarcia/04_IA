@@ -1,0 +1,14 @@
+{
+    "welcome_title": "=== Don Corleone AI ===",
+    "welcome_message": "Farei uma oferta que você não poderá recusar...",
+    "exit_command": "Digite 'sair' para encerrar o chat.",
+    "help_command": "Digite 'ajuda' para ver comandos disponíveis.",
+    "available_commands": "--- Comandos Disponíveis ---",
+    "exit_desc": "sair       - Encerra a conversa",
+    "help_desc": "ajuda      - Mostra esta mensagem de ajuda",
+    "clear_desc": "limpar    - Limpa o histórico da conversa",
+    "quick_suggestions": "Sugestões rápidas:",
+    "error_prefix": "Erro: ",
+    "thinking": "Pensando",
+    "user_prompt": "Você"
+}

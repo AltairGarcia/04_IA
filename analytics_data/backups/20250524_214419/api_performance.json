@@ -1,0 +1,62 @@
+{
+  "gemini": {
+    "avg_latency": 1.0260361442565917,
+    "calls": 125,
+    "success_rate": 1.0
+  },
+  "elevenlabs": {
+    "avg_latency": 0.7005608081817627,
+    "calls": 2,
+    "success_rate": 1.0
+  },
+  "dalle": {
+    "avg_latency": 0.0003672599792480469,
+    "calls": 10,
+    "success_rate": 1.0
+  },
+  "stabilityai": {
+    "avg_latency": 0.0,
+    "calls": 0,
+    "success_rate": 1.0
+  },
+  "assemblyai": {
+    "avg_latency": 0.5577237946646554,
+    "calls": 7,
+    "success_rate": 1.0
+  },
+  "deepgram": {
+    "avg_latency": 0.5003178119659424,
+    "calls": 3,
+    "success_rate": 1.0
+  },
+  "youtube_data": {
+    "avg_latency": 0.4004793167114258,
+    "calls": 2,
+    "success_rate": 1.0
+  },
+  "tavily": {
+    "avg_latency": 1.6166240623441792,
+    "calls": 118,
+    "success_rate": 1.0
+  },
+  "wikipedia": {
+    "avg_latency": 0.30038022994995117,
+    "calls": 2,
+    "success_rate": 1.0
+  },
+  "openweather": {
+    "avg_latency": 0.024556462829177422,
+    "calls": 74,
+    "success_rate": 1.0
+  },
+  "newsapi": {
+    "avg_latency": 0.5006432135899862,
+    "calls": 6,
+    "success_rate": 1.0
+  },
+  "pexels": {
+    "avg_latency": 0.4409531156222026,
+    "calls": 12,
+    "success_rate": 1.0
+  }
+}

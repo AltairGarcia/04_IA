@@ -1,0 +1,123 @@
+{
+  "timestamp": "2025-05-25T15:07:30.777123",
+  "phase": "Phase 1 - Final Validation",
+  "tests": [
+    {
+      "name": "Configuration Loading Speed",
+      "status": "PASS",
+      "message": "Loaded in 0.068s",
+      "details": {
+        "load_time": 0.06802797317504883
+      },
+      "timestamp": "2025-05-25T15:07:30.845556"
+    },
+    {
+      "name": "Integration Adapter Startup",
+      "status": "FAIL",
+      "message": "duplicate base class TimeoutError",
+      "details": {},
+      "timestamp": "2025-05-25T15:07:32.064608"
+    },
+    {
+      "name": "CLI Integration",
+      "status": "FAIL",
+      "message": "duplicate base class TimeoutError",
+      "details": {},
+      "timestamp": "2025-05-25T15:07:32.074364"
+    },
+    {
+      "name": "Streamlit Integration",
+      "status": "FAIL",
+      "message": "duplicate base class TimeoutError",
+      "details": {},
+      "timestamp": "2025-05-25T15:07:32.846519"
+    },
+    {
+      "name": "Application Wrapper",
+      "status": "FAIL",
+      "message": "duplicate base class TimeoutError",
+      "details": {},
+      "timestamp": "2025-05-25T15:07:32.855474"
+    },
+    {
+      "name": "Fallback Mechanisms",
+      "status": "FAIL",
+      "message": "duplicate base class TimeoutError",
+      "details": {},
+      "timestamp": "2025-05-25T15:07:32.868659"
+    },
+    {
+      "name": "Graceful Degradation",
+      "status": "PASS",
+      "message": "Handles missing modules correctly",
+      "details": {},
+      "timestamp": "2025-05-25T15:07:32.869244"
+    },
+    {
+      "name": "Rate Limiting",
+      "status": "FAIL",
+      "message": "EnhancedRateLimiter.__init__() takes from 1 to 2 positional arguments but 3 were given",
+      "details": {},
+      "timestamp": "2025-05-25T15:07:32.995510"
+    },
+    {
+      "name": "Input Validation",
+      "status": "WARN",
+      "message": "Input validation not available: invalid syntax (input_security.py, line 716)",
+      "details": {},
+      "timestamp": "2025-05-25T15:07:33.008956"
+    },
+    {
+      "name": "Cache Performance",
+      "status": "PASS",
+      "message": "Set: 0.0000s, Get: 0.0000s",
+      "details": {},
+      "timestamp": "2025-05-25T15:07:37.133188"
+    },
+    {
+      "name": "Database Performance",
+      "status": "PASS",
+      "message": "Connection in 0.0000s",
+      "details": {},
+      "timestamp": "2025-05-25T15:07:37.157424"
+    },
+    {
+      "name": "Logging System",
+      "status": "PASS",
+      "message": "Logging system functional",
+      "details": {},
+      "timestamp": "2025-05-25T15:07:37.157903"
+    },
+    {
+      "name": "Configuration Validation",
+      "status": "PASS",
+      "message": "Configuration is valid",
+      "details": {},
+      "timestamp": "2025-05-25T15:07:37.158164"
+    },
+    {
+      "name": "File Structure",
+      "status": "PASS",
+      "message": "All required files present",
+      "details": {},
+      "timestamp": "2025-05-25T15:07:37.158638"
+    }
+  ],
+  "performance": {
+    "cache": {
+      "set_time": 1.4781951904296875e-05,
+      "get_time": 5.245208740234375e-06
+    },
+    "database": {
+      "connection_time": 1.2874603271484375e-05
+    }
+  },
+  "security": {},
+  "summary": {
+    "total_tests": 14,
+    "passed": 7,
+    "failed": 6,
+    "warnings": 1,
+    "phase1_score": 55.4
+  }
+}

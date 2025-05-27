@@ -1,0 +1,14 @@
+Error Log: 20250521_195536
+Category: unknown_error
+Message: Unknown error: Test error - System initialization
+
+Context:
+  source: system_initialization.py
+  operation: initialize_error_handling
+  timestamp: 1747868136.5312686
+
+Stack Trace:
+Traceback (most recent call last):
+  File "c:\ALTAIR GARCIA\04__ia\system_initialization.py", line 67, in initialize_error_handling
+    raise ValueError("Test error - System initialization")
+ValueError: Test error - System initialization

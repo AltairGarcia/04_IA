@@ -1,0 +1,177 @@
+2025-05-27 09:04:50,486 - unified_monitoring_system - INFO - Unified Monitoring System initialized (singleton)
+2025-05-27 09:05:58,850 - unified_monitoring_system - INFO - Unified Monitoring System initialized (singleton)
+2025-05-27 09:07:06,564 - unified_monitoring_system - INFO - Unified Monitoring System initialized (singleton)
+2025-05-27 09:07:07,645 - unified_monitoring_system - INFO - Unified monitoring system started
+2025-05-27 09:09:22,997 - unified_monitoring_system - INFO - Unified Monitoring System initialized (singleton)
+2025-05-27 09:09:24,045 - unified_monitoring_system - INFO - Unified monitoring system started
+2025-05-27 09:10:14,601 - unified_monitoring_system - INFO - Unified Monitoring System initialized (singleton)
+2025-05-27 09:10:15,650 - unified_monitoring_system - INFO - Unified monitoring system started
+2025-05-27 09:11:51,122 - unified_monitoring_system - INFO - Unified Monitoring System initialized (singleton)
+2025-05-27 09:11:52,183 - unified_monitoring_system - INFO - Unified monitoring system started
+2025-05-27 09:11:55,184 - unified_monitoring_system - ERROR - EMERGENCY CLEANUP ACTIVATED
+2025-05-27 09:11:55,202 - unified_monitoring_system - INFO - Emergency GC cycle 1: collected 0 objects
+2025-05-27 09:11:55,223 - unified_monitoring_system - INFO - Emergency GC cycle 2: collected 0 objects
+2025-05-27 09:11:55,243 - unified_monitoring_system - INFO - Emergency GC cycle 3: collected 0 objects
+2025-05-27 09:11:55,245 - unified_monitoring_system - ERROR - Emergency database cleanup failed: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 18624 and this is thread id 18508.
+2025-05-27 09:11:55,245 - unified_monitoring_system - ERROR - Emergency cleanup completed
+2025-05-27 09:12:07,264 - unified_monitoring_system - INFO - Unified monitoring system stopped
+2025-05-27 09:13:41,464 - unified_monitoring_system - INFO - Unified Monitoring System initialized (singleton)
+2025-05-27 09:13:41,495 - unified_monitoring_system - INFO - Unified monitoring system started
+2025-05-27 09:14:13,744 - unified_monitoring_system - ERROR - Error storing alert: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24680 and this is thread id 24632.
+2025-05-27 09:14:13,744 - unified_monitoring_system - ERROR - Error storing metrics: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24632 and this is thread id 24680.
+2025-05-27 09:14:44,778 - unified_monitoring_system - ERROR - Error storing alert: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24680 and this is thread id 24632.
+2025-05-27 09:14:44,778 - unified_monitoring_system - ERROR - Error storing metrics: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24632 and this is thread id 24680.
+2025-05-27 09:15:15,806 - unified_monitoring_system - ERROR - Error storing alert: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24680 and this is thread id 24632.
+2025-05-27 09:15:15,806 - unified_monitoring_system - ERROR - Error storing metrics: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24632 and this is thread id 24680.
+2025-05-27 09:15:46,831 - unified_monitoring_system - ERROR - Error storing alert: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24680 and this is thread id 24632.
+2025-05-27 09:15:46,831 - unified_monitoring_system - ERROR - Error storing metrics: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24632 and this is thread id 24680.
+2025-05-27 09:15:48,007 - unified_monitoring_system - ERROR - Error storing alert: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24680 and this is thread id 22048.
+2025-05-27 09:15:48,007 - unified_monitoring_system - ERROR - Error storing alert: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24632 and this is thread id 22048.
+2025-05-27 09:15:49,040 - unified_monitoring_system - ERROR - Error storing metrics: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24680 and this is thread id 22048.
+2025-05-27 09:15:50,070 - unified_monitoring_system - ERROR - Error storing metrics: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24632 and this is thread id 22048.
+2025-05-27 09:15:51,098 - unified_monitoring_system - ERROR - Error storing metrics: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24680 and this is thread id 22048.
+2025-05-27 09:15:52,122 - unified_monitoring_system - ERROR - Error storing metrics: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24632 and this is thread id 22048.
+2025-05-27 09:15:53,209 - unified_monitoring_system - ERROR - Error storing metrics: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24680 and this is thread id 22048.
+2025-05-27 09:15:54,247 - unified_monitoring_system - ERROR - Error storing metrics: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24632 and this is thread id 22048.
+2025-05-27 09:15:55,284 - unified_monitoring_system - ERROR - Error storing metrics: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24680 and this is thread id 22048.
+2025-05-27 09:15:56,326 - unified_monitoring_system - ERROR - Error storing metrics: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24632 and this is thread id 22048.
+2025-05-27 09:15:57,499 - unified_monitoring_system - ERROR - Error storing metrics: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24680 and this is thread id 22048.
+2025-05-27 09:15:58,531 - unified_monitoring_system - ERROR - Error storing metrics: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 24632 and this is thread id 22048.
+2025-05-27 09:16:08,547 - unified_monitoring_system - INFO - Unified monitoring system stopped
+2025-05-27 09:22:53,129 - unified_monitoring_system - INFO - Unified Monitoring System initialized (singleton)
+2025-05-27 09:24:01,571 - unified_monitoring_system - INFO - Unified Monitoring System initialized (singleton)
+2025-05-27 09:24:02,826 - unified_monitoring_system - INFO - Unified monitoring system started
+2025-05-27 09:25:33,759 - unified_monitoring_system - INFO - Unified monitoring system stopped
+2025-05-27 09:43:49,448 - root - WARNING - Alguns módulos não estão disponíveis: No module named 'resource'
+2025-05-27 09:45:02,560 - root - WARNING - Alguns módulos não estão disponíveis: No module named 'resource'
+2025-05-27 09:45:02,570 - root - ERROR - Não foi possível importar módulos necessários: No module named 'resource'
+2025-05-27 09:47:29,620 - root - WARNING - resource module not available (Windows platform)
+2025-05-27 09:47:30,601 - __main__ - INFO - Teste abrangente iniciado: comprehensive_test.db
+2025-05-27 09:47:30,601 - __main__ - INFO - === INICIANDO TESTES ABRANGENTES ===
+2025-05-27 09:47:30,638 - __main__ - INFO - Teste 1: Funcionamento básico do sistema
+2025-05-27 09:47:30,680 - thread_safe_connection_manager - INFO - Banco de dados inicializado com sucesso
+2025-05-27 09:47:30,685 - thread_safe_connection_manager - INFO - ThreadSafeConnectionManager inicializado para comprehensive_test.db
+2025-05-27 09:47:30,691 - enhanced_unified_monitoring - WARNING - Não foi possível integrar sistema base: UnifiedMonitoringSystem.__init__() got an unexpected keyword argument 'enable_alerts'
+2025-05-27 09:47:30,695 - enhanced_unified_monitoring - INFO - Esquema aprimorado inicializado com sucesso
+2025-05-27 09:47:30,696 - enhanced_unified_monitoring - INFO - Nenhum dado antigo encontrado para migração
+2025-05-27 09:47:30,697 - enhanced_unified_monitoring - INFO - EnhancedUnifiedMonitoringSystem inicializado: comprehensive_test.db
+2025-05-27 09:47:30,703 - enhanced_unified_monitoring - INFO - Sistema de monitoramento aprimorado iniciado
+2025-05-27 09:48:45,722 - enhanced_unified_monitoring - INFO - Sistema de monitoramento aprimorado finalizado
+2025-05-27 09:48:50,745 - thread_safe_connection_manager - INFO - Todas as conexões foram fechadas
+2025-05-27 09:48:50,747 - enhanced_unified_monitoring - INFO - EnhancedUnifiedMonitoringSystem finalizado
+2025-05-27 09:48:50,748 - __main__ - INFO - Teste 2: Profiling de memória
+2025-05-27 09:48:51,406 - advanced_memory_profiler - INFO - Tracemalloc iniciado
+2025-05-27 09:48:51,445 - advanced_memory_profiler - INFO - AdvancedMemoryProfiler inicializado
+2025-05-27 09:48:52,189 - advanced_memory_profiler - INFO - Baseline snapshot capturado
+2025-05-27 09:48:52,236 - advanced_memory_profiler - INFO - Profiling de memória iniciado
+2025-05-27 09:49:25,857 - advanced_memory_profiler - INFO - Profiling de memória parado
+2025-05-27 09:49:25,864 - advanced_memory_profiler - INFO - AdvancedMemoryProfiler finalizado
+2025-05-27 09:49:25,885 - advanced_memory_profiler - INFO - AdvancedMemoryProfiler finalizado
+2025-05-27 09:49:25,885 - __main__ - INFO - Teste 3: Gerenciador de conexões thread-safe
+2025-05-27 09:49:25,896 - thread_safe_connection_manager - INFO - Banco de dados inicializado com sucesso
+2025-05-27 09:49:25,899 - thread_safe_connection_manager - INFO - ThreadSafeConnectionManager inicializado para comprehensive_test.connections.db
+2025-05-27 09:49:30,748 - thread_safe_connection_manager - INFO - Todas as conexões foram fechadas
+2025-05-27 09:49:30,748 - enhanced_unified_monitoring - INFO - EnhancedUnifiedMonitoringSystem finalizado
+2025-05-27 09:49:30,749 - thread_safe_connection_manager - INFO - Todas as conexões foram fechadas
+2025-05-27 09:49:31,970 - thread_safe_connection_manager - INFO - Todas as conexões foram fechadas
+2025-05-27 09:49:31,970 - __main__ - INFO - Teste 4: Teste de carga com múltiplas threads
+2025-05-27 09:49:31,985 - thread_safe_connection_manager - INFO - Banco de dados inicializado com sucesso
+2025-05-27 09:49:31,985 - thread_safe_connection_manager - INFO - ThreadSafeConnectionManager inicializado para comprehensive_test.load.db
+2025-05-27 09:49:31,986 - enhanced_unified_monitoring - WARNING - Não foi possível integrar sistema base: UnifiedMonitoringSystem.__init__() got an unexpected keyword argument 'enable_alerts'
+2025-05-27 09:49:32,619 - advanced_memory_profiler - INFO - Tracemalloc iniciado
+2025-05-27 09:49:32,667 - advanced_memory_profiler - INFO - AdvancedMemoryProfiler inicializado
+2025-05-27 09:49:32,669 - enhanced_unified_monitoring - INFO - Memory profiler integrado
+2025-05-27 09:49:32,675 - enhanced_unified_monitoring - INFO - Esquema aprimorado inicializado com sucesso
+2025-05-27 09:49:32,677 - enhanced_unified_monitoring - INFO - Nenhum dado antigo encontrado para migração
+2025-05-27 09:49:32,679 - enhanced_unified_monitoring - INFO - EnhancedUnifiedMonitoringSystem inicializado: comprehensive_test.load.db
+2025-05-27 09:49:33,402 - advanced_memory_profiler - INFO - Baseline snapshot capturado
+2025-05-27 09:49:33,427 - advanced_memory_profiler - INFO - Profiling de memória iniciado
+2025-05-27 09:49:33,470 - enhanced_unified_monitoring - INFO - Memory profiler iniciado
+2025-05-27 09:49:33,517 - enhanced_unified_monitoring - INFO - Sistema de monitoramento aprimorado iniciado
+2025-05-27 09:50:31,975 - thread_safe_connection_manager - INFO - Conexão órfã removida para thread 23388
+2025-05-27 09:50:31,979 - thread_safe_connection_manager - INFO - Conexão órfã removida para thread 4868
+2025-05-27 09:50:31,990 - thread_safe_connection_manager - INFO - Conexão órfã removida para thread 29148
+2025-05-27 09:50:32,004 - thread_safe_connection_manager - INFO - Conexão órfã removida para thread 28980
+2025-05-27 09:50:32,018 - thread_safe_connection_manager - INFO - Conexão órfã removida para thread 26720
+2025-05-27 09:50:32,027 - thread_safe_connection_manager - INFO - Conexão órfã removida para thread 27952
+2025-05-27 09:50:32,035 - thread_safe_connection_manager - INFO - Conexão órfã removida para thread 28908
+2025-05-27 09:50:32,039 - thread_safe_connection_manager - INFO - Conexão órfã removida para thread 2700
+2025-05-27 09:50:32,043 - thread_safe_connection_manager - INFO - Conexão órfã removida para thread 6456
+2025-05-27 09:50:32,046 - thread_safe_connection_manager - INFO - Conexão órfã removida para thread 28396
+2025-05-27 09:50:56,825 - advanced_memory_profiler - INFO - Profiling de memória parado
+2025-05-27 09:50:56,831 - enhanced_unified_monitoring - INFO - Memory profiler finalizado
+2025-05-27 09:50:56,837 - enhanced_unified_monitoring - INFO - Sistema de monitoramento aprimorado finalizado
+2025-05-27 09:51:01,892 - thread_safe_connection_manager - INFO - Todas as conexões foram fechadas
+2025-05-27 09:51:01,901 - advanced_memory_profiler - INFO - AdvancedMemoryProfiler finalizado
+2025-05-27 09:51:01,905 - enhanced_unified_monitoring - INFO - EnhancedUnifiedMonitoringSystem finalizado
+2025-05-27 09:51:01,906 - __main__ - INFO - Teste 5: Detecção de vazamentos de memória
+2025-05-27 09:51:03,263 - advanced_memory_profiler - INFO - Tracemalloc iniciado
+2025-05-27 09:51:03,379 - advanced_memory_profiler - INFO - AdvancedMemoryProfiler inicializado
+2025-05-27 09:51:04,617 - advanced_memory_profiler - INFO - Baseline snapshot capturado
+2025-05-27 09:51:04,683 - advanced_memory_profiler - INFO - Profiling de memória iniciado
+2025-05-27 09:51:10,811 - __main__ - INFO - Leak cycle 1: 200 objects leaked
+2025-05-27 09:51:16,870 - __main__ - INFO - Leak cycle 2: 400 objects leaked
+2025-05-27 09:51:22,991 - __main__ - INFO - Leak cycle 3: 600 objects leaked
+2025-05-27 09:51:29,137 - __main__ - INFO - Leak cycle 4: 800 objects leaked
+2025-05-27 09:51:33,749 - thread_safe_connection_manager - INFO - Todas as conexões foram fechadas
+2025-05-27 09:51:33,754 - advanced_memory_profiler - INFO - AdvancedMemoryProfiler finalizado
+2025-05-27 09:51:33,755 - enhanced_unified_monitoring - INFO - EnhancedUnifiedMonitoringSystem finalizado
+2025-05-27 09:51:33,755 - thread_safe_connection_manager - INFO - Todas as conexões foram fechadas
+2025-05-27 09:51:35,261 - __main__ - INFO - Leak cycle 5: 1000 objects leaked
+2025-05-27 09:51:35,362 - advanced_memory_profiler - INFO - AdvancedMemoryProfiler finalizado
+2025-05-27 09:51:45,412 - advanced_memory_profiler - INFO - Profiling de memória parado
+2025-05-27 09:51:45,413 - advanced_memory_profiler - INFO - AdvancedMemoryProfiler finalizado
+2025-05-27 09:51:45,438 - advanced_memory_profiler - INFO - AdvancedMemoryProfiler finalizado
+2025-05-27 09:51:45,439 - __main__ - INFO - Teste 6: Integração completa do sistema
+2025-05-27 09:51:45,456 - thread_safe_connection_manager - INFO - Banco de dados inicializado com sucesso
+2025-05-27 09:51:45,457 - thread_safe_connection_manager - INFO - ThreadSafeConnectionManager inicializado para comprehensive_test.full.db
+2025-05-27 09:51:45,457 - enhanced_unified_monitoring - WARNING - Não foi possível integrar sistema base: UnifiedMonitoringSystem.__init__() got an unexpected keyword argument 'enable_alerts'
+2025-05-27 09:51:46,489 - advanced_memory_profiler - INFO - Tracemalloc iniciado
+2025-05-27 09:51:46,541 - advanced_memory_profiler - INFO - AdvancedMemoryProfiler inicializado
+2025-05-27 09:51:46,543 - enhanced_unified_monitoring - INFO - Memory profiler integrado
+2025-05-27 09:51:46,550 - enhanced_unified_monitoring - INFO - Esquema aprimorado inicializado com sucesso
+2025-05-27 09:51:46,555 - enhanced_unified_monitoring - INFO - Nenhum dado antigo encontrado para migração
+2025-05-27 09:51:46,558 - enhanced_unified_monitoring - INFO - EnhancedUnifiedMonitoringSystem inicializado: comprehensive_test.full.db
+2025-05-27 09:51:46,559 - enhanced_unified_monitoring - INFO - Handler de alerta adicionado
+2025-05-27 09:51:47,510 - advanced_memory_profiler - INFO - Baseline snapshot capturado
+2025-05-27 09:51:47,547 - advanced_memory_profiler - INFO - Profiling de memória iniciado
+2025-05-27 09:51:47,599 - enhanced_unified_monitoring - INFO - Memory profiler iniciado
+2025-05-27 09:51:47,727 - enhanced_unified_monitoring - INFO - Sistema de monitoramento aprimorado iniciado
+2025-05-27 09:54:18,003 - enhanced_unified_monitoring - INFO - Relatório de integração exportado para integration_test_20250527_095417.json
+2025-05-27 09:54:38,036 - advanced_memory_profiler - INFO - Profiling de memória parado
+2025-05-27 09:54:38,038 - enhanced_unified_monitoring - INFO - Memory profiler finalizado
+2025-05-27 09:54:38,043 - enhanced_unified_monitoring - INFO - Sistema de monitoramento aprimorado finalizado
+2025-05-27 09:54:43,054 - thread_safe_connection_manager - INFO - Todas as conexões foram fechadas
+2025-05-27 09:54:43,057 - advanced_memory_profiler - INFO - AdvancedMemoryProfiler finalizado
+2025-05-27 09:54:43,058 - enhanced_unified_monitoring - INFO - EnhancedUnifiedMonitoringSystem finalizado
+2025-05-27 09:54:43,076 - __main__ - INFO - === TESTES CONCLUÍDOS ===
+2025-05-27 09:54:43,081 - __main__ - INFO - === RESUMO DOS TESTES ===
+2025-05-27 09:54:43,084 - __main__ - INFO - Status Geral: PASS
+2025-05-27 09:54:43,084 - __main__ - INFO - Taxa de Sucesso: 83.3%
+2025-05-27 09:54:43,084 - __main__ - INFO - Testes Bem-sucedidos: 5/6
+2025-05-27 09:54:43,084 - __main__ - INFO - Tempo Total: 7.2 minutos
+2025-05-27 09:54:43,085 - __main__ - INFO - Impacto na Memória: +7.8MB
+2025-05-27 09:54:43,085 - __main__ - INFO - Eficiência da Memória: excellent
+2025-05-27 09:54:43,085 - __main__ - INFO - Resultados salvos em: comprehensive_test_results_20250527_095443.json
+2025-05-27 10:17:29,572 - root - WARNING - resource module not available (Windows platform)
+2025-05-27 10:27:32,497 - root - WARNING - resource module not available (Windows platform)
+2025-05-27 10:27:32,872 - thread_safe_connection_manager - INFO - Banco de dados inicializado com sucesso
+2025-05-27 10:27:32,872 - thread_safe_connection_manager - INFO - ThreadSafeConnectionManager inicializado para test_final.db
+2025-05-27 10:27:32,872 - enhanced_unified_monitoring - WARNING - Não foi possível integrar sistema base: UnifiedMonitoringSystem.__init__() got an unexpected keyword argument 'enable_alerts'
+2025-05-27 10:27:33,188 - advanced_memory_profiler - INFO - Tracemalloc iniciado
+2025-05-27 10:27:33,216 - advanced_memory_profiler - INFO - AdvancedMemoryProfiler inicializado
+2025-05-27 10:27:33,217 - enhanced_unified_monitoring - INFO - Memory profiler integrado
+2025-05-27 10:27:33,221 - enhanced_unified_monitoring - INFO - Esquema aprimorado inicializado com sucesso
+2025-05-27 10:27:33,223 - enhanced_unified_monitoring - INFO - Nenhum dado antigo encontrado para migração
+2025-05-27 10:27:33,224 - enhanced_unified_monitoring - INFO - EnhancedUnifiedMonitoringSystem inicializado: test_final.db
+2025-05-27 10:27:33,553 - advanced_memory_profiler - INFO - Baseline snapshot capturado
+2025-05-27 10:27:33,564 - advanced_memory_profiler - INFO - Profiling de memória iniciado
+2025-05-27 10:27:33,593 - enhanced_unified_monitoring - INFO - Memory profiler iniciado
+2025-05-27 10:27:33,691 - enhanced_unified_monitoring - INFO - Sistema de monitoramento aprimorado iniciado
+2025-05-27 10:28:03,717 - advanced_memory_profiler - INFO - Profiling de memória parado
+2025-05-27 10:28:03,718 - enhanced_unified_monitoring - INFO - Memory profiler finalizado
+2025-05-27 10:28:03,719 - enhanced_unified_monitoring - INFO - Sistema de monitoramento aprimorado finalizado
+2025-05-27 10:28:08,744 - thread_safe_connection_manager - INFO - Todas as conexões foram fechadas
+2025-05-27 10:28:08,746 - advanced_memory_profiler - INFO - AdvancedMemoryProfiler finalizado
+2025-05-27 10:28:08,746 - enhanced_unified_monitoring - INFO - EnhancedUnifiedMonitoringSystem finalizado
+2025-05-27 10:44:16,466 - root - WARNING - resource module not available (Windows platform)

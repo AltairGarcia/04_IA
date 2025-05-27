@@ -1,0 +1,206 @@
+{
+  "timestamp": "2025-05-26T19:04:16.970501",
+  "duration_seconds": 8.784717,
+  "summary": {
+    "total_tests": 12,
+    "passed_tests": 11,
+    "failed_tests": 1,
+    "success_rate": 91.66666666666666
+  },
+  "category_breakdown": {
+    "Security Validation": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    },
+    "Component Testing": {
+      "total": 3,
+      "passed": 2,
+      "failed": 1
+    },
+    "Integration Testing": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    },
+    "Performance Testing": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    }
+  },
+  "failed_tests": [
+    {
+      "name": "test_streaming_agent",
+      "category": "Component Testing",
+      "errors": [
+        "Streaming agent test failed: No module named 'openai'"
+      ],
+      "duration": 7.248270034790039
+    }
+  ],
+  "detailed_results": [
+    {
+      "test_name": "run_security_validation",
+      "category": "Security Validation",
+      "passed": true,
+      "duration": 1.2770946025848389,
+      "details": {
+        "output": ""
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:04:09.464177"
+    },
+    {
+      "test_name": "test_authentication",
+      "category": "Security Validation",
+      "passed": true,
+      "duration": 0.00046825408935546875,
+      "details": {
+        "auth_files": [
+          "advanced_auth.py",
+          "auth_middleware.py"
+        ]
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:04:09.465112"
+    },
+    {
+      "test_name": "test_encryption",
+      "category": "Security Validation",
+      "passed": true,
+      "duration": 0.027081012725830078,
+      "details": {
+        "encryption_test": "success"
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:04:09.492466"
+    },
+    {
+      "test_name": "test_streaming_agent",
+      "category": "Component Testing",
+      "passed": false,
+      "duration": 7.248270034790039,
+      "details": {},
+      "errors": [
+        "Streaming agent test failed: No module named 'openai'"
+      ],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:04:16.741368"
+    },
+    {
+      "test_name": "test_fastapi_bridge",
+      "category": "Component Testing",
+      "passed": true,
+      "duration": 0.00019049644470214844,
+      "details": {
+        "file_size": 24809
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:04:16.742117"
+    },
+    {
+      "test_name": "test_streamlit_app",
+      "category": "Component Testing",
+      "passed": true,
+      "duration": 0.00055694580078125,
+      "details": {
+        "streamlit_found": true
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:04:16.742897"
+    },
+    {
+      "test_name": "test_api_integration",
+      "category": "Integration Testing",
+      "passed": true,
+      "duration": 0.00027108192443847656,
+      "details": {
+        "integration_files": [
+          "fastapi_streaming_bridge.py",
+          "api_gateway.py",
+          "api_gateway_integration.py"
+        ]
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:04:16.744033"
+    },
+    {
+      "test_name": "test_websocket_integration",
+      "category": "Integration Testing",
+      "passed": true,
+      "duration": 0.0004360675811767578,
+      "details": {
+        "websocket_indicators": [
+          "WebSocket",
+          "ws"
+        ]
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:04:16.744717"
+    },
+    {
+      "test_name": "test_streaming_integration",
+      "category": "Integration Testing",
+      "passed": true,
+      "duration": 0.00020742416381835938,
+      "details": {
+        "streaming_files": [
+          "langgraph_streaming_agent_enhanced.py",
+          "fastapi_streaming_bridge.py"
+        ]
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:04:16.745213"
+    },
+    {
+      "test_name": "test_response_times",
+      "category": "Performance Testing",
+      "passed": true,
+      "duration": 0.11449503898620605,
+      "details": {
+        "response_time": 0.11445999145507812
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:04:16.860552"
+    },
+    {
+      "test_name": "test_concurrent_users",
+      "category": "Performance Testing",
+      "passed": true,
+      "duration": 0.10850095748901367,
+      "details": {
+        "successful_requests": 5,
+        "total_requests": 5
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:04:16.969481"
+    },
+    {
+      "test_name": "test_memory_usage",
+      "category": "Performance Testing",
+      "passed": true,
+      "duration": 0.000171661376953125,
+      "details": {
+        "memory_usage_mb": 230.68359375
+      },
+      "errors": [],
+      "warnings": [],
+      "timestamp": "2025-05-26T19:04:16.970278"
+    }
+  ],
+  "recommendations": [
+    "✅ Great! System is mostly ready with minor issues to address.",
+    "🔧 Fix component issues to ensure system stability."
+  ]
+}

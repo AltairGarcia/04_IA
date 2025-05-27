@@ -1,0 +1,112 @@
+{
+  "summary": {
+    "total_tests": 13,
+    "passed": 10,
+    "failed": 3,
+    "warnings": 0,
+    "success_rate": 76.92307692307693,
+    "status": "\u2705 GOOD",
+    "recommendation": "Phase 1 implementation is mostly complete"
+  },
+  "detailed_results": {
+    "tests": [
+      {
+        "category": "startup",
+        "test": "configuration_loading",
+        "success": true,
+        "message": "Loaded in 0.107s",
+        "timestamp": "2025-05-25T19:04:01.379939"
+      },
+      {
+        "category": "startup",
+        "test": "integration_adapter",
+        "success": true,
+        "message": "Adapter handles compatibility issues gracefully",
+        "timestamp": "2025-05-25T19:04:03.150381"
+      },
+      {
+        "category": "integration",
+        "test": "cli_integration",
+        "success": false,
+        "message": "duplicate base class TimeoutError",
+        "timestamp": "2025-05-25T19:04:03.166268"
+      },
+      {
+        "category": "integration",
+        "test": "streamlit_integration",
+        "success": false,
+        "message": "duplicate base class TimeoutError",
+        "timestamp": "2025-05-25T19:04:04.194097"
+      },
+      {
+        "category": "integration",
+        "test": "app_wrapper",
+        "success": false,
+        "message": "duplicate base class TimeoutError",
+        "timestamp": "2025-05-25T19:04:04.205855"
+      },
+      {
+        "category": "error_handling",
+        "test": "fallback_mechanisms",
+        "success": true,
+        "message": "Redis fallback system working",
+        "timestamp": "2025-05-25T19:04:04.368457"
+      },
+      {
+        "category": "error_handling",
+        "test": "graceful_degradation",
+        "success": true,
+        "message": "Handles missing modules correctly",
+        "timestamp": "2025-05-25T19:04:04.370039"
+      },
+      {
+        "category": "security",
+        "test": "rate_limiting",
+        "success": true,
+        "message": "Rate limiting system available",
+        "timestamp": "2025-05-25T19:04:04.394626"
+      },
+      {
+        "category": "security",
+        "test": "input_validation",
+        "success": true,
+        "message": "Input validation detecting threats",
+        "timestamp": "2025-05-25T19:04:04.914226"
+      },
+      {
+        "category": "performance",
+        "test": "cache_performance",
+        "success": true,
+        "message": "Set: 0.0020s, Get: 0.0000s",
+        "timestamp": "2025-05-25T19:04:04.952971"
+      },
+      {
+        "category": "production",
+        "test": "logging_system",
+        "success": true,
+        "message": "Logging system functional",
+        "timestamp": "2025-05-25T19:04:04.953562"
+      },
+      {
+        "category": "production",
+        "test": "config_validation",
+        "success": true,
+        "message": "Configuration is valid",
+        "timestamp": "2025-05-25T19:04:04.953879"
+      },
+      {
+        "category": "production",
+        "test": "file_structure",
+        "success": true,
+        "message": "All required files present",
+        "timestamp": "2025-05-25T19:04:04.954485"
+      }
+    ],
+    "warnings": [],
+    "errors": [],
+    "timestamp": "2025-05-25T19:04:01.272432",
+    "compatibility_fixes_applied": true
+  },
+  "compatibility_fixes_applied": true,
+  "timestamp": "2025-05-25T19:04:04.955175"
+}

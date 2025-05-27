@@ -1,0 +1,488 @@
+{
+  "test_summary": {
+    "overall_status": "PASS",
+    "success_rate_percent": 83.33333333333334,
+    "successful_tests": 5,
+    "total_tests": 6,
+    "total_execution_time_seconds": 432.41121315956116,
+    "test_duration_minutes": 7.207930483333333
+  },
+  "memory_impact_analysis": {
+    "baseline_memory_mb": 42.6328125,
+    "final_memory_mb": 50.4765625,
+    "memory_change_mb": 7.84375,
+    "memory_change_percent": 18.398387392340112,
+    "object_change": 4728,
+    "thread_change": 3,
+    "duration_minutes": 7.2079293,
+    "memory_efficiency": "excellent"
+  },
+  "individual_test_results": {
+    "basic_functionality": {
+      "success": true,
+      "execution_time_seconds": 80.1082456111908,
+      "metrics_collected": 2,
+      "connection_stats": {
+        "active_connections": 3,
+        "total_connections": 3,
+        "max_connections": 20,
+        "total_queries": 7,
+        "total_errors": 0,
+        "error_rate": 0.0,
+        "active_threads": 3,
+        "query_history_size": 7,
+        "error_history_size": 0
+      },
+      "report": {
+        "report_metadata": {
+          "generated_at": "2025-05-27T09:48:35.708290",
+          "report_period": "24 hours",
+          "system_status": "running"
+        },
+        "integration_statistics": {
+          "total_metrics_collected": 2,
+          "avg_active_connections": 2.0,
+          "max_active_connections": 3,
+          "avg_pool_efficiency": 10.0,
+          "total_query_errors": 0,
+          "max_database_size_mb": 0.00390625
+        },
+        "alerts_summary": [],
+        "events_summary": [
+          {
+            "event_type": "system",
+            "count": 1
+          }
+        ],
+        "connection_manager_status": {
+          "active_connections": 3,
+          "total_connections": 3,
+          "max_connections": 20,
+          "total_queries": 7,
+          "total_errors": 0,
+          "error_rate": 0.0,
+          "active_threads": 3,
+          "query_history_size": 7,
+          "error_history_size": 0
+        },
+        "memory_profiler_active": false,
+        "base_monitoring_active": false
+      }
+    },
+    "memory_profiling": {
+      "success": true,
+      "execution_time_seconds": 35.13469958305359,
+      "snapshots_captured": 3,
+      "memory_change_mb": 2.60546875,
+      "recommendations": [
+        "\u2705 Uso de mem\u00f3ria dentro dos par\u00e2metros normais."
+      ],
+      "profiling_report": {
+        "report_metadata": {
+          "generated_at": "2025-05-27T09:49:25.857525",
+          "profiling_duration_minutes": 0.38200435,
+          "total_snapshots": 3,
+          "baseline_timestamp": "2025-05-27T09:48:51.448283",
+          "current_timestamp": "2025-05-27T09:49:14.368544"
+        },
+        "memory_summary": {
+          "baseline_memory_mb": 45.08984375,
+          "current_memory_mb": 47.6953125,
+          "memory_change_mb": 2.60546875,
+          "memory_change_percent": 5.778393831759508,
+          "peak_memory_mb": 49.09375,
+          "system_memory_percent": 77.9,
+          "system_memory_available_gb": 3.5053176879882812
+        },
+        "object_analysis": {
+          "baseline_objects": 35592,
+          "current_objects": 36638,
+          "object_change": 1046,
+          "top_object_types": {
+            "tuple": 14701,
+            "function": 7567,
+            "list": 6869,
+            "dict": 3439,
+            "wrapper_descriptor": 2356,
+            "builtin_function_or_method": 1721,
+            "ReferenceType": 1620,
+            "method_descriptor": 1379,
+            "getset_descriptor": 1179,
+            "type": 961,
+            "cell": 893,
+            "member_descriptor": 550,
+            "module": 312,
+            "ModuleSpec": 310,
+            "_tuplegetter": 275,
+            "property": 237,
+            "SourceFileLoader": 231,
+            "GenericAlias": 229,
+            "set": 195,
+            "classmethod": 189
+          },
+          "gc_collections": 36638
+        },
+        "thread_analysis": {
+          "baseline_threads": 3,
+          "current_threads": 4,
+          "thread_change": 1,
+          "file_descriptors": 0
+        },
+        "memory_trend": {
+          "trend_direction": "increasing",
+          "slope_mb_per_snapshot": 1.341796875,
+          "min_memory_mb": 45.01171875,
+          "max_memory_mb": 47.6953125,
+          "avg_memory_mb": 46.63671875,
+          "memory_volatility": 2.68359375
+        },
+        "leak_analysis": {
+          "leaks_by_severity": {},
+          "top_leaking_types": [],
+          "total_leaks_detected": 0
+        },
+        "hotspot_analysis": {
+          "top_hotspots": [],
+          "hotspots_by_file": []
+        },
+        "recommendations": [
+          "\u2705 Uso de mem\u00f3ria dentro dos par\u00e2metros normais."
+        ],
+        "profiling_tools_status": {
+          "tracemalloc_enabled": true,
+          "memory_profiler_available": true,
+          "objgraph_available": true,
+          "pympler_available": true
+        }
+      }
+    },
+    "connection_manager": {
+      "success": true,
+      "execution_time_seconds": 6.084546089172363,
+      "worker_success_rate": 100.0,
+      "total_records_created": 51,
+      "connection_stats": {
+        "active_connections": 6,
+        "total_connections": 6,
+        "max_connections": 10,
+        "total_queries": 53,
+        "total_errors": 0,
+        "error_rate": 0.0,
+        "active_threads": 6,
+        "query_history_size": 53,
+        "error_history_size": 0
+      },
+      "performance_report": {
+        "connection_stats": {
+          "active_connections": 6,
+          "total_connections": 6,
+          "max_connections": 10,
+          "total_queries": 53,
+          "total_errors": 0,
+          "error_rate": 0.0,
+          "active_threads": 6,
+          "query_history_size": 53,
+          "error_history_size": 0
+        },
+        "performance_metrics": {
+          "avg_execution_time": 0.0033150304038569614,
+          "max_execution_time": 0.026460886001586914,
+          "min_execution_time": 0.00011444091796875,
+          "recent_queries_analyzed": 53
+        },
+        "recent_errors": [],
+        "database_path": "comprehensive_test.connections.db",
+        "sqlite_config": {
+          "journal_mode": "WAL",
+          "synchronous": "NORMAL",
+          "cache_size": 10000,
+          "temp_store": "MEMORY",
+          "mmap_size": 268435456,
+          "foreign_keys": "ON"
+        },
+        "report_timestamp": "2025-05-27T09:49:26.957794"
+      }
+    },
+    "load_performance": {
+      "success": true,
+      "execution_time_seconds": 89.93466758728027,
+      "total_operations": 500,
+      "memory_growth_mb": 1.7890625,
+      "operations_per_second": 5.55959129123058,
+      "integration_report": {
+        "report_metadata": {
+          "generated_at": "2025-05-27T09:50:36.727852",
+          "report_period": "24 hours",
+          "system_status": "running"
+        },
+        "integration_statistics": {
+          "total_metrics_collected": 2,
+          "avg_active_connections": 2.0,
+          "max_active_connections": 3,
+          "avg_pool_efficiency": 10.0,
+          "total_query_errors": 0,
+          "max_database_size_mb": 0.125
+        },
+        "alerts_summary": [],
+        "events_summary": [
+          {
+            "event_type": "load_test",
+            "count": 500
+          },
+          {
+            "event_type": "system",
+            "count": 1
+          }
+        ],
+        "connection_manager_status": {
+          "active_connections": 3,
+          "total_connections": 13,
+          "max_connections": 20,
+          "total_queries": 507,
+          "total_errors": 0,
+          "error_rate": 0.0,
+          "active_threads": 13,
+          "query_history_size": 507,
+          "error_history_size": 0
+        },
+        "memory_profiler_active": true,
+        "base_monitoring_active": false
+      },
+      "profiling_report": {
+        "report_metadata": {
+          "generated_at": "2025-05-27T09:50:36.738650",
+          "profiling_duration_minutes": 1.02343885,
+          "total_snapshots": 2,
+          "baseline_timestamp": "2025-05-27T09:49:32.681638",
+          "current_timestamp": "2025-05-27T09:50:34.087969"
+        },
+        "memory_summary": {
+          "baseline_memory_mb": 46.984375,
+          "current_memory_mb": 48.27734375,
+          "memory_change_mb": 1.29296875,
+          "memory_change_percent": 2.7519122048553375,
+          "peak_memory_mb": 55.57421875,
+          "system_memory_percent": 79.9,
+          "system_memory_available_gb": 3.1795997619628906
+        },
+        "object_analysis": {
+          "baseline_objects": 35683,
+          "current_objects": 36038,
+          "object_change": 355,
+          "top_object_types": {
+            "tuple": 8866,
+            "function": 7581,
+            "list": 5900,
+            "dict": 3452,
+            "wrapper_descriptor": 2356,
+            "builtin_function_or_method": 1793,
+            "ReferenceType": 1659,
+            "method_descriptor": 1379,
+            "getset_descriptor": 1179,
+            "type": 961,
+            "cell": 950,
+            "member_descriptor": 550,
+            "module": 312,
+            "ModuleSpec": 310,
+            "_tuplegetter": 275,
+            "property": 237,
+            "SourceFileLoader": 231,
+            "GenericAlias": 229,
+            "set": 196,
+            "classmethod": 189
+          },
+          "gc_collections": 36038
+        },
+        "thread_analysis": {
+          "baseline_threads": 3,
+          "current_threads": 4,
+          "thread_change": 1,
+          "file_descriptors": 0
+        },
+        "memory_trend": {
+          "error": "Insuficientes snapshots para an\u00e1lise de tend\u00eancia"
+        },
+        "leak_analysis": {
+          "leaks_by_severity": {},
+          "top_leaking_types": [],
+          "total_leaks_detected": 0
+        },
+        "hotspot_analysis": {
+          "top_hotspots": [],
+          "hotspots_by_file": []
+        },
+        "recommendations": [
+          "\u2705 Uso de mem\u00f3ria dentro dos par\u00e2metros normais."
+        ],
+        "profiling_tools_status": {
+          "tracemalloc_enabled": true,
+          "memory_profiler_available": true,
+          "objgraph_available": true,
+          "pympler_available": true
+        }
+      }
+    },
+    "leak_detection": {
+      "success": false,
+      "execution_time_seconds": 43.53136658668518,
+      "leaks_detected": 1,
+      "memory_growth_mb": 2.046875,
+      "leak_analysis": {
+        "leaks_by_severity": {
+          "high": 1
+        },
+        "top_leaking_types": [
+          {
+            "object_type": "tuple",
+            "total_count_increase": 3886,
+            "total_size_increase_mb": 3.886
+          }
+        ],
+        "total_leaks_detected": 1
+      },
+      "recommendations": [
+        "ATEN\u00c7\u00c3O: Uso de mem\u00f3ria do sistema > 80%. Monitorar carga do sistema."
+      ]
+    },
+    "full_integration": {
+      "success": true,
+      "execution_time_seconds": 177.61768770217896,
+      "integration_report": {
+        "report_metadata": {
+          "generated_at": "2025-05-27T09:54:17.994332",
+          "report_period": "24 hours",
+          "system_status": "running"
+        },
+        "integration_statistics": {
+          "total_metrics_collected": 3,
+          "avg_active_connections": 2.3333333333333335,
+          "max_active_connections": 3,
+          "avg_pool_efficiency": 15.555555555555555,
+          "total_query_errors": 0,
+          "max_database_size_mb": 0.00390625
+        },
+        "alerts_summary": [],
+        "events_summary": [
+          {
+            "event_type": "integration_test",
+            "count": 30
+          },
+          {
+            "event_type": "system",
+            "count": 1
+          }
+        ],
+        "connection_manager_status": {
+          "active_connections": 3,
+          "total_connections": 3,
+          "max_connections": 15,
+          "total_queries": 39,
+          "total_errors": 0,
+          "error_rate": 0.0,
+          "active_threads": 3,
+          "query_history_size": 39,
+          "error_history_size": 0
+        },
+        "memory_profiler_active": true,
+        "base_monitoring_active": false
+      },
+      "memory_report": {
+        "report_metadata": {
+          "generated_at": "2025-05-27T09:54:18.016740",
+          "profiling_duration_minutes": 2.040465766666667,
+          "total_snapshots": 3,
+          "baseline_timestamp": "2025-05-27T09:51:46.561260",
+          "current_timestamp": "2025-05-27T09:53:48.989206"
+        },
+        "memory_summary": {
+          "baseline_memory_mb": 47.7578125,
+          "current_memory_mb": 50.3359375,
+          "memory_change_mb": 2.578125,
+          "memory_change_percent": 5.398331424832325,
+          "peak_memory_mb": 58.12109375,
+          "system_memory_percent": 81.4,
+          "system_memory_available_gb": 2.9480247497558594
+        },
+        "object_analysis": {
+          "baseline_objects": 35661,
+          "current_objects": 35825,
+          "object_change": 164,
+          "top_object_types": {
+            "function": 7571,
+            "list": 5889,
+            "tuple": 4886,
+            "dict": 3459,
+            "wrapper_descriptor": 2356,
+            "builtin_function_or_method": 1721,
+            "ReferenceType": 1693,
+            "method_descriptor": 1379,
+            "getset_descriptor": 1179,
+            "type": 961,
+            "cell": 900,
+            "member_descriptor": 550,
+            "module": 312,
+            "ModuleSpec": 310,
+            "_tuplegetter": 275,
+            "property": 237,
+            "SourceFileLoader": 231,
+            "GenericAlias": 229,
+            "set": 195,
+            "classmethod": 189
+          },
+          "gc_collections": 35825
+        },
+        "thread_analysis": {
+          "baseline_threads": 2,
+          "current_threads": 4,
+          "thread_change": 2,
+          "file_descriptors": 0
+        },
+        "memory_trend": {
+          "trend_direction": "increasing",
+          "slope_mb_per_snapshot": 0.25,
+          "min_memory_mb": 49.8359375,
+          "max_memory_mb": 50.3359375,
+          "avg_memory_mb": 50.123697916666664,
+          "memory_volatility": 0.5
+        },
+        "leak_analysis": {
+          "leaks_by_severity": {},
+          "top_leaking_types": [],
+          "total_leaks_detected": 0
+        },
+        "hotspot_analysis": {
+          "top_hotspots": [],
+          "hotspots_by_file": []
+        },
+        "recommendations": [
+          "ATEN\u00c7\u00c3O: Uso de mem\u00f3ria do sistema > 80%. Monitorar carga do sistema."
+        ],
+        "profiling_tools_status": {
+          "tracemalloc_enabled": true,
+          "memory_profiler_available": true,
+          "objgraph_available": true,
+          "pympler_available": true
+        }
+      },
+      "alerts_received": [],
+      "report_file": "integration_test_20250527_095417.json",
+      "operations_completed": 30
+    }
+  },
+  "performance_summary": {
+    "memory_efficiency": "excellent",
+    "system_stability": "stable",
+    "resource_usage": "optimal"
+  },
+  "recommendations": [
+    "ATEN\u00c7\u00c3O: Uso de mem\u00f3ria do sistema > 80%. Monitorar carga do sistema.",
+    "\u2705 Uso de mem\u00f3ria dentro dos par\u00e2metros normais."
+  ],
+  "test_metadata": {
+    "test_database": "comprehensive_test.db",
+    "test_start_time": "2025-05-27T09:47:30.600716",
+    "test_end_time": "2025-05-27T09:54:43.076570",
+    "python_version": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]",
+    "platform": "nt"
+  }
+}

@@ -1,0 +1,446 @@
+2025-05-24 20:43:47,355 - INFO - ======================================================================
+2025-05-24 20:43:47,390 - INFO -    Details: Status code: 200, Response size: 1837 bytes
+2025-05-24 20:43:47,973 - INFO -    Details: Health check failed: Expecting value: line 1 column 1 (char 0)
+2025-05-24 20:43:48,495 - INFO -    Details: Configuration loading failed: AppConfig.__init__() missing 2 required positional arguments: 'api_key' and 'tavily_api_key'
+2025-05-24 20:43:49,020 - INFO -    Details: Error recovery testing failed: cannot import name 'robust_function' from 'error_handling' (C:\ALTAIR GARCIA\04__ia\error_handling.py)
+2025-05-24 20:54:36,682 - INFO - Starting End-to-End Testing for LangGraph 101 Application
+2025-05-24 20:54:36,682 - INFO - ======================================================================
+2025-05-24 20:54:36,683 - INFO - 
+Running: Application Availability
+2025-05-24 20:54:36,695 - INFO - [PASSED]: Application Availability (0.01s)
+2025-05-24 20:54:36,695 - INFO -    Details: Status code: 200, Response size: 1837 bytes
+2025-05-24 20:54:37,210 - INFO - 
+Running: Health Monitoring System
+2025-05-24 20:54:37,229 - INFO - [FAILED]: Health Monitoring System (0.02s)
+2025-05-24 20:54:37,229 - INFO -    Details: Health check failed: Expecting value: line 1 column 1 (char 0)
+2025-05-24 20:54:37,738 - INFO - 
+Running: Configuration Loading
+2025-05-24 20:54:37,745 - INFO - Successfully loaded 27 environment variables from C:\ALTAIR GARCIA\04__ia\.env
+2025-05-24 20:54:37,746 - WARNING - API_KEY (Google Gemini) is using placeholder value - this is OK for development but not for production
+2025-05-24 20:54:37,746 - WARNING - TAVILY_API_KEY is using placeholder value - this is OK for development but not for production
+2025-05-24 20:54:37,746 - INFO - Configuration loaded successfully
+2025-05-24 20:54:37,746 - INFO - [PASSED]: Configuration Loading (0.01s)
+2025-05-24 20:54:37,746 - INFO -    Details: Config loaded successfully in development mode
+2025-05-24 20:54:38,253 - INFO - 
+Running: Error Recovery System
+2025-05-24 20:54:38,258 - WARNING - Function test_function failed on attempt 1: Test error for retry mechanism. Retrying in 0.1s...
+2025-05-24 20:54:38,359 - ERROR - Unknown error encountered: Test connection error
+Traceback (most recent call last):
+  File "C:\ALTAIR GARCIA\04__ia\error_handling.py", line 252, in wrapper
+    return func(*args, **kwargs)
+  File "C:\ALTAIR GARCIA\04__ia\test_end_to_end_fixed.py", line 210, in failing_operation
+    raise ConnectionError("Test connection error")
+ConnectionError: Test connection error
+2025-05-24 20:54:38,361 - INFO - [FAILED]: Error Recovery System (0.11s)
+2025-05-24 20:54:38,363 - INFO -    Details: Error recovery testing failed: Test connection error
+2025-05-24 20:54:38,876 - INFO - 
+Running: System Initialization
+2025-05-24 20:56:00,128 - INFO - Starting End-to-End Testing for LangGraph 101 Application
+2025-05-24 20:56:00,128 - INFO - ======================================================================
+2025-05-24 20:56:00,128 - INFO - 
+Running: Application Availability
+2025-05-24 20:56:00,156 - INFO - [PASSED]: Application Availability (0.03s)
+2025-05-24 20:56:00,157 - INFO -    Details: Status code: 200, Response size: 1837 bytes
+2025-05-24 20:56:00,667 - INFO - 
+Running: Health Monitoring System
+2025-05-24 20:56:00,686 - INFO - [FAILED]: Health Monitoring System (0.02s)
+2025-05-24 20:56:00,686 - INFO -    Details: Health check failed: Expecting value: line 1 column 1 (char 0)
+2025-05-24 20:56:01,197 - INFO - 
+Running: Configuration Loading
+2025-05-24 20:56:01,202 - INFO - Successfully loaded 27 environment variables from C:\ALTAIR GARCIA\04__ia\.env
+2025-05-24 20:56:01,203 - WARNING - API_KEY (Google Gemini) is using placeholder value - this is OK for development but not for production
+2025-05-24 20:56:01,203 - WARNING - TAVILY_API_KEY is using placeholder value - this is OK for development but not for production
+2025-05-24 20:56:01,203 - INFO - Configuration loaded successfully
+2025-05-24 20:56:01,204 - INFO - [PASSED]: Configuration Loading (0.01s)
+2025-05-24 20:56:01,204 - INFO -    Details: Config loaded successfully in development mode
+2025-05-24 20:56:01,714 - INFO - 
+Running: Error Recovery System
+2025-05-24 20:56:01,719 - WARNING - Function test_function failed on attempt 1: Test error for retry mechanism. Retrying in 0.1s...
+2025-05-24 20:56:01,820 - ERROR - Unknown error encountered: Test connection error
+Traceback (most recent call last):
+  File "C:\ALTAIR GARCIA\04__ia\error_handling.py", line 252, in wrapper
+    return func(*args, **kwargs)
+  File "C:\ALTAIR GARCIA\04__ia\test_end_to_end_fixed.py", line 210, in failing_operation
+    raise ConnectionError("Test connection error")
+ConnectionError: Test connection error
+2025-05-24 20:56:01,822 - INFO - [FAILED]: Error Recovery System (0.11s)
+2025-05-24 20:56:01,823 - INFO -    Details: Error recovery testing failed: Test connection error
+2025-05-24 20:56:02,334 - INFO - 
+Running: System Initialization
+2025-05-24 21:02:12,153 - INFO - Starting End-to-End Testing for LangGraph 101 Application
+2025-05-24 21:02:12,153 - INFO - ======================================================================
+2025-05-24 21:02:12,154 - INFO - 
+Running: Application Availability
+2025-05-24 21:02:12,169 - INFO - [PASSED]: Application Availability (0.02s)
+2025-05-24 21:02:12,169 - INFO -    Details: Status code: 200, Response size: 1837 bytes
+2025-05-24 21:02:12,680 - INFO - 
+Running: Health Monitoring System
+2025-05-24 21:02:12,698 - INFO - [FAILED]: Health Monitoring System (0.02s)
+2025-05-24 21:02:12,698 - INFO -    Details: Health check failed: Expecting value: line 1 column 1 (char 0)
+2025-05-24 21:02:13,208 - INFO - 
+Running: Configuration Loading
+2025-05-24 21:02:13,213 - INFO - Successfully loaded 27 environment variables from C:\ALTAIR GARCIA\04__ia\.env
+2025-05-24 21:02:13,214 - WARNING - API_KEY (Google Gemini) is using placeholder value - this is OK for development but not for production
+2025-05-24 21:02:13,214 - WARNING - TAVILY_API_KEY is using placeholder value - this is OK for development but not for production
+2025-05-24 21:02:13,215 - INFO - Configuration loaded successfully
+2025-05-24 21:02:13,215 - INFO - [PASSED]: Configuration Loading (0.01s)
+2025-05-24 21:02:13,215 - INFO -    Details: Config loaded successfully in development mode
+2025-05-24 21:02:13,721 - INFO - 
+Running: Error Recovery System
+2025-05-24 21:02:13,724 - WARNING - Function test_function failed on attempt 1: Test error for retry mechanism. Retrying in 0.1s...
+2025-05-24 21:02:13,825 - ERROR - Unknown error encountered: Test connection error
+Traceback (most recent call last):
+  File "C:\ALTAIR GARCIA\04__ia\error_handling.py", line 252, in wrapper
+    return func(*args, **kwargs)
+  File "C:\ALTAIR GARCIA\04__ia\test_end_to_end_fixed.py", line 210, in failing_operation
+    raise ConnectionError("Test connection error")
+ConnectionError: Test connection error
+2025-05-24 21:02:13,827 - INFO - [FAILED]: Error Recovery System (0.11s)
+2025-05-24 21:02:13,827 - INFO -    Details: Error recovery testing failed: Test connection error
+2025-05-24 21:02:14,329 - INFO - 
+Running: System Initialization
+2025-05-24 21:05:11,158 - INFO - Starting End-to-End Testing for LangGraph 101 Application
+2025-05-24 21:05:11,158 - INFO - ======================================================================
+2025-05-24 21:05:11,159 - INFO - 
+Running: Application Availability
+2025-05-24 21:05:11,172 - INFO - [PASSED]: Application Availability (0.01s)
+2025-05-24 21:05:11,172 - INFO -    Details: Status code: 200, Response size: 1837 bytes
+2025-05-24 21:05:11,686 - INFO - 
+Running: Health Monitoring System
+2025-05-24 21:05:11,694 - INFO - [FAILED]: Health Monitoring System (0.01s)
+2025-05-24 21:05:11,694 - INFO -    Details: Health check failed: Expecting value: line 1 column 1 (char 0)
+2025-05-24 21:05:12,197 - INFO - 
+Running: Configuration Loading
+2025-05-24 21:05:12,202 - INFO - Successfully loaded 27 environment variables from C:\ALTAIR GARCIA\04__ia\.env
+2025-05-24 21:05:12,203 - WARNING - API_KEY (Google Gemini) is using placeholder value - this is OK for development but not for production
+2025-05-24 21:05:12,203 - WARNING - TAVILY_API_KEY is using placeholder value - this is OK for development but not for production
+2025-05-24 21:05:12,203 - INFO - Configuration loaded successfully
+2025-05-24 21:05:12,203 - INFO - [PASSED]: Configuration Loading (0.01s)
+2025-05-24 21:05:12,204 - INFO -    Details: Config loaded successfully in development mode
+2025-05-24 21:05:12,709 - INFO - 
+Running: Error Recovery System
+2025-05-24 21:05:12,713 - WARNING - Function test_function failed on attempt 1: Test error for retry mechanism. Retrying in 0.1s...
+2025-05-24 21:05:12,814 - ERROR - Unknown error encountered: Test connection error
+Traceback (most recent call last):
+  File "C:\ALTAIR GARCIA\04__ia\error_handling.py", line 252, in wrapper
+    return func(*args, **kwargs)
+  File "C:\ALTAIR GARCIA\04__ia\test_end_to_end_fixed.py", line 210, in failing_operation
+    raise ConnectionError("Test connection error")
+ConnectionError: Test connection error
+2025-05-24 21:05:12,817 - INFO - [FAILED]: Error Recovery System (0.11s)
+2025-05-24 21:05:12,817 - INFO -    Details: Error recovery testing failed: Test connection error
+2025-05-24 21:05:13,332 - INFO - 
+Running: System Initialization
+2025-05-24 21:09:01,967 - INFO - Starting End-to-End Testing for LangGraph 101 Application
+2025-05-24 21:09:01,968 - INFO - ======================================================================
+2025-05-24 21:09:01,968 - INFO - 
+Running: Application Availability
+2025-05-24 21:09:01,985 - INFO - [PASSED]: Application Availability (0.02s)
+2025-05-24 21:09:01,985 - INFO -    Details: Status code: 200, Response size: 1837 bytes
+2025-05-24 21:09:02,491 - INFO - 
+Running: Health Monitoring System
+2025-05-24 21:09:06,599 - INFO - [FAILED]: Health Monitoring System (4.11s)
+2025-05-24 21:09:06,602 - INFO -    Details: Health check failed: HTTPConnectionPool(host='localhost', port=8502): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001B320DEE710>: Failed to establish a new connection: [WinError 10061] Nenhuma conexão pôde ser feita porque a máquina de destino as recusou ativamente'))
+2025-05-24 21:09:07,109 - INFO - 
+Running: Configuration Loading
+2025-05-24 21:09:07,116 - INFO - Successfully loaded 27 environment variables from C:\ALTAIR GARCIA\04__ia\.env
+2025-05-24 21:09:07,117 - WARNING - API_KEY (Google Gemini) is using placeholder value - this is OK for development but not for production
+2025-05-24 21:09:07,117 - WARNING - TAVILY_API_KEY is using placeholder value - this is OK for development but not for production
+2025-05-24 21:09:07,117 - INFO - Configuration loaded successfully
+2025-05-24 21:09:07,117 - INFO - [PASSED]: Configuration Loading (0.01s)
+2025-05-24 21:09:07,117 - INFO -    Details: Config loaded successfully in development mode
+2025-05-24 21:09:07,633 - INFO - 
+Running: Error Recovery System
+2025-05-24 21:09:07,647 - WARNING - Function test_function failed on attempt 1: Test error for retry mechanism. Retrying in 0.1s...
+2025-05-24 21:09:07,748 - WARNING - Retry 1/2 for failing_operation after 0.1s due to network_error: Test connection error
+2025-05-24 21:09:07,849 - INFO - [PASSED]: Error Recovery System (0.22s)
+2025-05-24 21:09:07,850 - INFO -    Details: Both robust_function and ErrorHandler.with_retry working correctly
+2025-05-24 21:09:08,366 - INFO - 
+Running: System Initialization
+2025-05-24 21:09:08,370 - INFO - [FAILED]: System Initialization (0.00s)
+2025-05-24 21:09:08,370 - INFO -    Details: System initialization test failed: unexpected indent (system_initialization.py, line 45)
+2025-05-24 21:09:08,873 - INFO - 
+Running: Deployment Readiness
+2025-05-24 21:09:08,875 - INFO - Starting deployment readiness check...
+2025-05-24 21:09:08,875 - INFO - Starting comprehensive deployment readiness check...
+2025-05-24 21:09:08,875 - INFO - Running python_version check...
+2025-05-24 21:09:08,875 - INFO - Running package_dependencies check...
+2025-05-24 21:09:08,921 - INFO - Running configuration check...
+2025-05-24 21:09:08,922 - INFO - Successfully loaded 27 environment variables from C:\ALTAIR GARCIA\04__ia\.env
+2025-05-24 21:09:08,922 - INFO - Running file_permissions check...
+2025-05-24 21:09:08,933 - INFO - Running network_connectivity check...
+2025-05-24 21:09:12,105 - INFO - Running memory_requirements check...
+2025-05-24 21:09:12,150 - INFO - Running performance_test check...
+2025-05-24 21:09:17,021 - INFO - Successfully loaded 27 environment variables from C:\ALTAIR GARCIA\04__ia\.env
+2025-05-24 21:09:17,022 - WARNING - API_KEY (Google Gemini) is using placeholder value - this is OK for development but not for production
+2025-05-24 21:09:17,022 - WARNING - TAVILY_API_KEY is using placeholder value - this is OK for development but not for production
+2025-05-24 21:09:17,023 - INFO - Configuration loaded successfully
+2025-05-24 21:09:17,684 - INFO - Deployment check completed. Overall status: warning
+2025-05-24 21:09:17,685 - INFO - Deployment check completed. Status: WARNING
+2025-05-24 21:09:17,685 - INFO - [PASSED]: Deployment Readiness (8.81s)
+2025-05-24 21:09:17,685 - INFO -    Details: Status: WARNING, Passed: 4/7
+2025-05-24 21:09:18,189 - INFO - 
+Running: Performance Metrics
+2025-05-24 21:09:18,270 - INFO - [PASSED]: Performance Metrics (0.08s)
+2025-05-24 21:09:18,270 - INFO -    Details: Avg response: 0.02s, Max: 0.03s
+2025-05-24 21:09:18,780 - INFO - 
+Running: Streamlit Features
+2025-05-24 21:09:18,798 - INFO - [FAILED]: Streamlit Features (0.02s)
+2025-05-24 21:09:18,798 - INFO -    Details: Missing elements: ['LangGraph', 'health', 'status']
+2025-05-24 21:09:19,305 - INFO - 
+======================================================================
+2025-05-24 21:09:19,305 - INFO - END-TO-END TESTING SUMMARY
+2025-05-24 21:09:19,305 - INFO - ======================================================================
+2025-05-24 21:09:19,306 - INFO - Total Tests: 8
+2025-05-24 21:09:19,306 - INFO - Passed: 5
+2025-05-24 21:09:19,306 - INFO - Failed: 3
+2025-05-24 21:09:19,307 - INFO - Success Rate: 62.5%
+2025-05-24 21:09:19,307 - INFO - Overall Status: FAILED
+2025-05-24 21:09:19,307 - INFO - Duration: 17.34 seconds
+2025-05-24 21:09:19,307 - INFO - 
+RECOMMENDATIONS:
+2025-05-24 21:09:19,308 - INFO - 1. Review health monitoring system configuration
+2025-05-24 21:09:19,308 - INFO - 2. Check app_health.py for proper endpoint setup
+2025-05-24 21:09:19,308 - INFO - 
+Detailed report saved to: C:\ALTAIR GARCIA\04__ia\end_to_end_test_report.json
+2025-05-24 21:14:01,801 - INFO - Starting End-to-End Testing for LangGraph 101 Application
+2025-05-24 21:14:01,804 - INFO - ======================================================================
+2025-05-24 21:14:01,809 - INFO - 
+Running: Application Availability
+2025-05-24 21:14:01,841 - INFO - [PASSED]: Application Availability (0.03s)
+2025-05-24 21:14:01,841 - INFO -    Details: Status code: 200, Response size: 1837 bytes
+2025-05-24 21:14:02,348 - INFO - 
+Running: Health Monitoring System
+2025-05-24 21:14:06,441 - INFO - [FAILED]: Health Monitoring System (4.09s)
+2025-05-24 21:14:06,441 - INFO -    Details: Health check failed: HTTPConnectionPool(host='localhost', port=8502): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000027BE055E710>: Failed to establish a new connection: [WinError 10061] Nenhuma conexão pôde ser feita porque a máquina de destino as recusou ativamente'))
+2025-05-24 21:14:06,955 - INFO - 
+Running: Configuration Loading
+2025-05-24 21:14:06,962 - INFO - Successfully loaded 27 environment variables from C:\ALTAIR GARCIA\04__ia\.env
+2025-05-24 21:14:06,963 - WARNING - API_KEY (Google Gemini) is using placeholder value - this is OK for development but not for production
+2025-05-24 21:14:06,963 - WARNING - TAVILY_API_KEY is using placeholder value - this is OK for development but not for production
+2025-05-24 21:14:06,963 - INFO - Configuration loaded successfully
+2025-05-24 21:14:06,965 - INFO - [PASSED]: Configuration Loading (0.01s)
+2025-05-24 21:14:06,965 - INFO -    Details: Config loaded successfully in development mode
+2025-05-24 21:14:07,466 - INFO - 
+Running: Error Recovery System
+2025-05-24 21:14:07,470 - WARNING - Function test_function failed on attempt 1: Test error for retry mechanism. Retrying in 0.1s...
+2025-05-24 21:14:07,571 - WARNING - Retry 1/2 for failing_operation after 0.1s due to network_error: Test connection error
+2025-05-24 21:14:07,671 - INFO - [PASSED]: Error Recovery System (0.20s)
+2025-05-24 21:14:07,672 - INFO -    Details: Both robust_function and ErrorHandler.with_retry working correctly
+2025-05-24 21:14:08,184 - INFO - 
+Running: System Initialization
+2025-05-24 21:21:39,303 - INFO - Starting End-to-End Testing for LangGraph 101 Application
+2025-05-24 21:21:39,304 - INFO - ======================================================================
+2025-05-24 21:21:39,304 - INFO - 
+Running: Application Availability
+2025-05-24 21:21:43,405 - INFO - [FAILED]: Application Availability (4.10s)
+2025-05-24 21:21:43,407 - INFO -    Details: Connection error: HTTPConnectionPool(host='localhost', port=8501): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001F1565EDA90>: Failed to establish a new connection: [WinError 10061] Nenhuma conexão pôde ser feita porque a máquina de destino as recusou ativamente'))
+2025-05-24 21:21:43,915 - INFO - 
+Running: Health Monitoring System
+2025-05-24 21:21:47,988 - INFO - [FAILED]: Health Monitoring System (4.07s)
+2025-05-24 21:21:47,989 - INFO -    Details: Health check failed: HTTPConnectionPool(host='localhost', port=8502): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001F15656F390>: Failed to establish a new connection: [WinError 10061] Nenhuma conexão pôde ser feita porque a máquina de destino as recusou ativamente'))
+2025-05-24 21:21:48,498 - INFO - 
+Running: Configuration Loading
+2025-05-24 21:21:48,504 - INFO - Successfully loaded 27 environment variables from C:\ALTAIR GARCIA\04__ia\.env
+2025-05-24 21:21:48,504 - WARNING - API_KEY (Google Gemini) is using placeholder value - this is OK for development but not for production
+2025-05-24 21:21:48,504 - WARNING - TAVILY_API_KEY is using placeholder value - this is OK for development but not for production
+2025-05-24 21:21:48,505 - INFO - Configuration loaded successfully
+2025-05-24 21:21:48,505 - INFO - [PASSED]: Configuration Loading (0.01s)
+2025-05-24 21:21:48,505 - INFO -    Details: Config loaded successfully in development mode
+2025-05-24 21:21:49,008 - INFO - 
+Running: Error Recovery System
+2025-05-24 21:21:49,014 - WARNING - Function test_function failed on attempt 1: Test error for retry mechanism. Retrying in 0.1s...
+2025-05-24 21:21:49,115 - WARNING - Retry 1/2 for failing_operation after 0.1s due to network_error: Test connection error
+2025-05-24 21:21:49,216 - INFO - [PASSED]: Error Recovery System (0.21s)
+2025-05-24 21:21:49,217 - INFO -    Details: Both robust_function and ErrorHandler.with_retry working correctly
+2025-05-24 21:21:49,722 - INFO - 
+Running: System Initialization
+2025-05-24 21:25:18,686 - INFO - Starting End-to-End Testing for LangGraph 101 Application
+2025-05-24 21:25:18,686 - INFO - ======================================================================
+2025-05-24 21:25:18,686 - INFO - 
+Running: Application Availability
+2025-05-24 21:25:18,703 - INFO - [PASSED]: Application Availability (0.02s)
+2025-05-24 21:25:18,703 - INFO -    Details: Status code: 200, Response size: 1837 bytes
+2025-05-24 21:25:19,214 - INFO - 
+Running: Health Monitoring System
+2025-05-24 21:25:23,308 - INFO - [FAILED]: Health Monitoring System (4.09s)
+2025-05-24 21:25:23,308 - INFO -    Details: Health check failed: HTTPConnectionPool(host='localhost', port=8502): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000002453720E710>: Failed to establish a new connection: [WinError 10061] Nenhuma conexão pôde ser feita porque a máquina de destino as recusou ativamente'))
+2025-05-24 21:25:23,816 - INFO - 
+Running: Configuration Loading
+2025-05-24 21:25:23,820 - INFO - Successfully loaded 27 environment variables from C:\ALTAIR GARCIA\04__ia\.env
+2025-05-24 21:25:23,820 - WARNING - API_KEY (Google Gemini) is using placeholder value - this is OK for development but not for production
+2025-05-24 21:25:23,820 - WARNING - TAVILY_API_KEY is using placeholder value - this is OK for development but not for production
+2025-05-24 21:25:23,821 - INFO - Configuration loaded successfully
+2025-05-24 21:25:23,821 - INFO - [PASSED]: Configuration Loading (0.01s)
+2025-05-24 21:25:23,821 - INFO -    Details: Config loaded successfully in development mode
+2025-05-24 21:25:24,330 - INFO - 
+Running: Error Recovery System
+2025-05-24 21:25:24,333 - WARNING - Function test_function failed on attempt 1: Test error for retry mechanism. Retrying in 0.1s...
+2025-05-24 21:25:24,434 - WARNING - Retry 1/2 for failing_operation after 0.1s due to network_error: Test connection error
+2025-05-24 21:25:24,535 - INFO - [PASSED]: Error Recovery System (0.20s)
+2025-05-24 21:25:24,535 - INFO -    Details: Both robust_function and ErrorHandler.with_retry working correctly
+2025-05-24 21:25:25,041 - INFO - 
+Running: System Initialization
+2025-05-24 21:30:08,904 - INFO - Starting End-to-End Testing for LangGraph 101 Application
+2025-05-24 21:30:08,905 - INFO - ======================================================================
+2025-05-24 21:30:08,906 - INFO - 
+Running: Application Availability
+2025-05-24 21:30:08,933 - INFO - [PASSED]: Application Availability (0.03s)
+2025-05-24 21:30:08,933 - INFO -    Details: Status code: 200, Response size: 1837 bytes
+2025-05-24 21:30:09,442 - INFO - 
+Running: Health Monitoring System
+2025-05-24 21:30:13,534 - INFO - [FAILED]: Health Monitoring System (4.09s)
+2025-05-24 21:30:13,534 - INFO -    Details: Health check failed: HTTPConnectionPool(host='localhost', port=8502): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000021E70AAE710>: Failed to establish a new connection: [WinError 10061] Nenhuma conexão pôde ser feita porque a máquina de destino as recusou ativamente'))
+2025-05-24 21:30:14,048 - INFO - 
+Running: Configuration Loading
+2025-05-24 21:30:14,053 - INFO - Successfully loaded 27 environment variables from C:\ALTAIR GARCIA\04__ia\.env
+2025-05-24 21:30:14,054 - WARNING - API_KEY (Google Gemini) is using placeholder value - this is OK for development but not for production
+2025-05-24 21:30:14,054 - WARNING - TAVILY_API_KEY is using placeholder value - this is OK for development but not for production
+2025-05-24 21:30:14,054 - INFO - Configuration loaded successfully
+2025-05-24 21:30:14,055 - INFO - [PASSED]: Configuration Loading (0.01s)
+2025-05-24 21:30:14,055 - INFO -    Details: Config loaded successfully in development mode
+2025-05-24 21:30:14,559 - INFO - 
+Running: Error Recovery System
+2025-05-24 21:30:14,564 - WARNING - Function test_function failed on attempt 1: Test error for retry mechanism. Retrying in 0.1s...
+2025-05-24 21:30:14,665 - WARNING - Retry 1/2 for failing_operation after 0.1s due to network_error: Test connection error
+2025-05-24 21:30:14,766 - INFO - [PASSED]: Error Recovery System (0.21s)
+2025-05-24 21:30:14,766 - INFO -    Details: Both robust_function and ErrorHandler.with_retry working correctly
+2025-05-24 21:30:15,270 - INFO - 
+Running: System Initialization
+2025-05-24 21:39:12,032 - INFO - Starting End-to-End Testing for LangGraph 101 Application
+2025-05-24 21:39:12,032 - INFO - ======================================================================
+2025-05-24 21:39:12,033 - INFO - 
+Running: Application Availability
+2025-05-24 21:39:12,048 - INFO - [PASSED]: Application Availability (0.02s)
+2025-05-24 21:39:12,048 - INFO -    Details: Status code: 200, Response size: 1837 bytes
+2025-05-24 21:39:12,554 - INFO - 
+Running: Health Monitoring System
+2025-05-24 21:39:16,652 - INFO - [FAILED]: Health Monitoring System (4.10s)
+2025-05-24 21:39:16,652 - INFO -    Details: Health check failed: HTTPConnectionPool(host='localhost', port=8502): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000002A31DC0E710>: Failed to establish a new connection: [WinError 10061] Nenhuma conexão pôde ser feita porque a máquina de destino as recusou ativamente'))
+2025-05-24 21:39:17,163 - INFO - 
+Running: Configuration Loading
+2025-05-24 21:39:17,171 - INFO - Successfully loaded 27 environment variables from C:\ALTAIR GARCIA\04__ia\.env
+2025-05-24 21:39:17,171 - WARNING - API_KEY (Google Gemini) is using placeholder value - this is OK for development but not for production
+2025-05-24 21:39:17,171 - WARNING - TAVILY_API_KEY is using placeholder value - this is OK for development but not for production
+2025-05-24 21:39:17,171 - INFO - Configuration loaded successfully
+2025-05-24 21:39:17,172 - INFO - [PASSED]: Configuration Loading (0.01s)
+2025-05-24 21:39:17,172 - INFO -    Details: Config loaded successfully in development mode
+2025-05-24 21:39:17,674 - INFO - 
+Running: Error Recovery System
+2025-05-24 21:39:17,679 - WARNING - Function test_function failed on attempt 1: Test error for retry mechanism. Retrying in 0.1s...
+2025-05-24 21:39:17,780 - WARNING - Retry 1/2 for failing_operation after 0.1s due to network_error: Test connection error
+2025-05-24 21:39:17,881 - INFO - [PASSED]: Error Recovery System (0.21s)
+2025-05-24 21:39:17,881 - INFO -    Details: Both robust_function and ErrorHandler.with_retry working correctly
+2025-05-24 21:39:18,386 - INFO - 
+Running: System Initialization
+2025-05-24 21:43:59,556 - INFO - Starting End-to-End Testing for LangGraph 101 Application
+2025-05-24 21:43:59,557 - INFO - ======================================================================
+2025-05-24 21:43:59,557 - INFO - 
+Running: Application Availability
+2025-05-24 21:43:59,568 - INFO - [PASSED]: Application Availability (0.01s)
+2025-05-24 21:43:59,568 - INFO -    Details: Status code: 200, Response size: 1837 bytes
+2025-05-24 21:44:00,077 - INFO - 
+Running: Health Monitoring System
+2025-05-24 21:44:10,211 - WARNING - Could not start health server: HTTPConnectionPool(host='localhost', port=8502): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000026381E42850>: Failed to establish a new connection: [WinError 10061] Nenhuma conexão pôde ser feita porque a máquina de destino as recusou ativamente'))
+2025-05-24 21:44:14,299 - INFO - [FAILED]: Health Monitoring System (14.22s)
+2025-05-24 21:44:14,299 - INFO -    Details: Health check failed: HTTPConnectionPool(host='localhost', port=8502): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000026381E27BB0>: Failed to establish a new connection: [WinError 10061] Nenhuma conexão pôde ser feita porque a máquina de destino as recusou ativamente'))
+2025-05-24 21:44:14,807 - INFO - 
+Running: Configuration Loading
+2025-05-24 21:44:14,812 - INFO - Successfully loaded 27 environment variables from C:\ALTAIR GARCIA\04__ia\.env
+2025-05-24 21:44:14,812 - WARNING - API_KEY (Google Gemini) is using placeholder value - this is OK for development but not for production
+2025-05-24 21:44:14,813 - WARNING - TAVILY_API_KEY is using placeholder value - this is OK for development but not for production
+2025-05-24 21:44:14,813 - INFO - Configuration loaded successfully
+2025-05-24 21:44:14,813 - INFO - [PASSED]: Configuration Loading (0.01s)
+2025-05-24 21:44:14,813 - INFO -    Details: Config loaded successfully in development mode
+2025-05-24 21:44:15,320 - INFO - 
+Running: Error Recovery System
+2025-05-24 21:44:15,323 - WARNING - Function test_function failed on attempt 1: Test error for retry mechanism. Retrying in 0.1s...
+2025-05-24 21:44:15,424 - WARNING - Retry 1/2 for failing_operation after 0.1s due to network_error: Test connection error
+2025-05-24 21:44:15,525 - INFO - [PASSED]: Error Recovery System (0.20s)
+2025-05-24 21:44:15,525 - INFO -    Details: Both robust_function and ErrorHandler.with_retry working correctly
+2025-05-24 21:44:16,032 - INFO - 
+Running: System Initialization
+2025-05-24 21:51:07,793 - INFO - Starting End-to-End Testing for LangGraph 101 Application
+2025-05-24 21:51:07,793 - INFO - ======================================================================
+2025-05-24 21:51:07,793 - INFO - 
+Running: Application Availability
+2025-05-24 21:51:07,805 - INFO - [PASSED]: Application Availability (0.01s)
+2025-05-24 21:51:07,805 - INFO -    Details: Status code: 200, Response size: 1837 bytes
+2025-05-24 21:51:08,318 - INFO - 
+Running: Health Monitoring System
+2025-05-24 21:51:08,319 - INFO - [FAILED]: Health Monitoring System (0.00s)
+2025-05-24 21:51:08,319 - INFO -    Details: Health system test failed: cannot import name 'HealthTracker' from 'app_health' (C:\ALTAIR GARCIA\04__ia\app_health.py)
+2025-05-24 21:51:08,830 - INFO - 
+Running: Configuration Loading
+2025-05-24 21:51:08,837 - INFO - Successfully loaded 27 environment variables from C:\ALTAIR GARCIA\04__ia\.env
+2025-05-24 21:51:08,838 - WARNING - API_KEY (Google Gemini) is using placeholder value - this is OK for development but not for production
+2025-05-24 21:51:08,838 - WARNING - TAVILY_API_KEY is using placeholder value - this is OK for development but not for production
+2025-05-24 21:51:08,838 - INFO - Configuration loaded successfully
+2025-05-24 21:51:08,839 - INFO - [PASSED]: Configuration Loading (0.01s)
+2025-05-24 21:51:08,839 - INFO -    Details: Config loaded successfully in development mode
+2025-05-24 21:51:09,340 - INFO - 
+Running: Error Recovery System
+2025-05-24 21:51:09,342 - WARNING - Function test_function failed on attempt 1: Test error for retry mechanism. Retrying in 0.1s...
+2025-05-24 21:51:09,443 - WARNING - Retry 1/2 for failing_operation after 0.1s due to network_error: Test connection error
+2025-05-24 21:51:09,544 - INFO - [PASSED]: Error Recovery System (0.20s)
+2025-05-24 21:51:09,544 - INFO -    Details: Both robust_function and ErrorHandler.with_retry working correctly
+2025-05-24 21:51:10,045 - INFO - 
+Running: System Initialization
+2025-05-25 11:41:12,296 - INFO - Starting End-to-End Testing for LangGraph 101 Application
+2025-05-25 11:41:12,296 - INFO - ======================================================================
+2025-05-25 11:41:12,297 - INFO - 
+Running: Application Availability
+2025-05-25 11:41:16,408 - INFO - [FAILED]: Application Availability (4.11s)
+2025-05-25 11:41:16,409 - INFO -    Details: Connection error: HTTPConnectionPool(host='localhost', port=8501): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x0000014D41FD1A90>: Failed to establish a new connection: [WinError 10061] Nenhuma conexão pôde ser feita porque a máquina de destino as recusou ativamente'))
+2025-05-25 11:41:16,921 - INFO - 
+Running: Health Monitoring System
+2025-05-25 11:41:22,963 - INFO - Loaded environment from .env
+2025-05-25 11:41:22,965 - WARNING - Generated new secret key. Set SECRET_KEY environment variable for production.
+2025-05-25 11:41:22,965 - WARNING - Generated new JWT secret. Set JWT_SECRET environment variable for production.
+2025-05-25 11:41:23,057 - ERROR - Unexpected error loading configuration: 'UnifiedConfig' object has no attribute 'api_keys'
+2025-05-25 11:41:23,483 - INFO - [PASSED]: Health Monitoring System (6.56s)
+2025-05-25 11:41:23,483 - INFO -    Details: Health system functional, status: unknown
+2025-05-25 11:41:23,992 - INFO - 
+Running: Configuration Loading
+2025-05-25 11:41:23,993 - ERROR - Unexpected error loading configuration: 'UnifiedConfig' object has no attribute 'api_keys'
+2025-05-25 11:41:23,993 - INFO - [FAILED]: Configuration Loading (0.00s)
+2025-05-25 11:41:23,993 - INFO -    Details: Configuration loading failed: Failed to load configuration: 'UnifiedConfig' object has no attribute 'api_keys'
+2025-05-25 11:41:24,504 - INFO - 
+Running: Error Recovery System
+2025-05-25 11:41:24,506 - WARNING - Function test_function failed on attempt 1: Test error for retry mechanism. Retrying in 0.1s...
+2025-05-25 11:41:24,607 - WARNING - Retry 1/2 for failing_operation after 0.1s due to network_error: Test connection error
+2025-05-25 11:41:24,708 - INFO - [PASSED]: Error Recovery System (0.20s)
+2025-05-25 11:41:24,708 - INFO -    Details: Both robust_function and ErrorHandler.with_retry working correctly
+2025-05-25 11:41:25,218 - INFO - 
+Running: System Initialization
+2025-05-25 11:44:02,977 - INFO - Starting End-to-End Testing for LangGraph 101 Application
+2025-05-25 11:44:02,978 - INFO - ======================================================================
+2025-05-25 11:44:02,978 - INFO - 
+Running: Application Availability
+2025-05-25 11:44:03,031 - INFO - [PASSED]: Application Availability (0.05s)
+2025-05-25 11:44:03,031 - INFO -    Details: Status code: 200, Response size: 1837 bytes
+2025-05-25 11:44:03,545 - INFO - 
+Running: Health Monitoring System
+2025-05-25 11:44:07,207 - INFO - Loaded environment from .env
+2025-05-25 11:44:07,209 - WARNING - Generated new secret key. Set SECRET_KEY environment variable for production.
+2025-05-25 11:44:07,210 - WARNING - Generated new JWT secret. Set JWT_SECRET environment variable for production.
+2025-05-25 11:44:07,305 - WARNING - API_KEY (Google Gemini) is using placeholder value - this is OK for development but not for production
+2025-05-25 11:44:07,305 - WARNING - TAVILY_API_KEY is using placeholder value - this is OK for development but not for production
+2025-05-25 11:44:07,305 - INFO - Configuration loaded successfully using unified system
+2025-05-25 11:44:07,815 - INFO - [PASSED]: Health Monitoring System (4.27s)
+2025-05-25 11:44:07,815 - INFO -    Details: Health system functional, status: unknown
+2025-05-25 11:44:08,320 - INFO - 
+Running: Configuration Loading
+2025-05-25 11:44:08,321 - WARNING - API_KEY (Google Gemini) is using placeholder value - this is OK for development but not for production
+2025-05-25 11:44:08,321 - WARNING - TAVILY_API_KEY is using placeholder value - this is OK for development but not for production
+2025-05-25 11:44:08,321 - INFO - Configuration loaded successfully using unified system
+2025-05-25 11:44:08,322 - INFO - [PASSED]: Configuration Loading (0.00s)
+2025-05-25 11:44:08,322 - INFO -    Details: Config loaded successfully in development mode
+2025-05-25 11:44:08,831 - INFO - 
+Running: Error Recovery System
+2025-05-25 11:44:08,833 - WARNING - Function test_function failed on attempt 1: Test error for retry mechanism. Retrying in 0.1s...
+2025-05-25 11:44:08,934 - WARNING - Retry 1/2 for failing_operation after 0.1s due to network_error: Test connection error
+2025-05-25 11:44:09,035 - INFO - [PASSED]: Error Recovery System (0.20s)
+2025-05-25 11:44:09,035 - INFO -    Details: Both robust_function and ErrorHandler.with_retry working correctly
+2025-05-25 11:44:09,538 - INFO - 
+Running: System Initialization

@@ -1,0 +1,87 @@
+{
+  "timestamp": "2025-05-25T13:33:43.019493",
+  "total_execution_time": 0.8831720352172852,
+  "total_tests": 4,
+  "passed_tests": 4,
+  "failed_tests": 0,
+  "performance_score": 0.0,
+  "average_overhead_percent": 20905.381180092,
+  "max_execution_time_ms": 61.87796592712402,
+  "concurrent_performance": {
+    "total_operations": 50,
+    "total_time_seconds": 0.004442930221557617,
+    "operations_per_second": 11253.834182989,
+    "concurrent_threads": 10,
+    "average_metrics": {
+      "avg_cpu_percent": 56.3,
+      "avg_memory_percent": 90.5,
+      "avg_memory_mb": 14675.4140625,
+      "max_cpu_percent": 56.3,
+      "max_memory_mb": 14675.4140625
+    },
+    "status": "PASS"
+  },
+  "test_results": [
+    {
+      "test_name": "Authentication Performance",
+      "baseline_time": 10.360002517700195,
+      "security_enhanced_time": 30.80916404724121,
+      "overhead_percent": 197.38568108070788,
+      "memory_usage_mb": 0.09375,
+      "cpu_usage_percent": 0.0,
+      "status": "PASS",
+      "threshold_ms": 1000.0,
+      "details": {
+        "baseline_success": true,
+        "enhanced_success": true,
+        "baseline_error": null,
+        "enhanced_error": null
+      }
+    },
+    {
+      "test_name": "Session Management Performance",
+      "baseline_time": 4.032611846923828,
+      "security_enhanced_time": 0.2219676971435547,
+      "overhead_percent": -94.49568404871704,
+      "memory_usage_mb": 0.0,
+      "cpu_usage_percent": 0.0,
+      "status": "PASS",
+      "threshold_ms": 200.0,
+      "details": {
+        "baseline_success": true,
+        "enhanced_success": true
+      }
+    },
+    {
+      "test_name": "Encryption Performance",
+      "baseline_time": 0.0820159912109375,
+      "security_enhanced_time": 61.87796592712402,
+      "overhead_percent": 75346.22093023256,
+      "memory_usage_mb": 0.421875,
+      "cpu_usage_percent": 0.0,
+      "status": "PASS",
+      "threshold_ms": 500.0,
+      "details": {
+        "baseline_success": true,
+        "enhanced_success": true
+      }
+    },
+    {
+      "test_name": "Input Validation Performance",
+      "baseline_time": 0.0069141387939453125,
+      "security_enhanced_time": 0.5719661712646484,
+      "overhead_percent": 8172.4137931034475,
+      "memory_usage_mb": 0.0,
+      "cpu_usage_percent": 0.0,
+      "status": "PASS",
+      "threshold_ms": 100.0,
+      "details": {
+        "baseline_success": true,
+        "enhanced_success": true
+      }
+    }
+  ],
+  "recommendations": [
+    "Consider optimizing security implementations with >100% overhead"
+  ]
+}

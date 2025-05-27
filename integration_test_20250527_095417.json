@@ -1,0 +1,39 @@
+{
+  "report_metadata": {
+    "generated_at": "2025-05-27T09:54:17.995774",
+    "report_period": "24 hours",
+    "system_status": "running"
+  },
+  "integration_statistics": {
+    "total_metrics_collected": 3,
+    "avg_active_connections": 2.3333333333333335,
+    "max_active_connections": 3,
+    "avg_pool_efficiency": 15.555555555555555,
+    "total_query_errors": 0,
+    "max_database_size_mb": 0.00390625
+  },
+  "alerts_summary": [],
+  "events_summary": [
+    {
+      "event_type": "integration_test",
+      "count": 30
+    },
+    {
+      "event_type": "system",
+      "count": 1
+    }
+  ],
+  "connection_manager_status": {
+    "active_connections": 3,
+    "total_connections": 3,
+    "max_connections": 15,
+    "total_queries": 40,
+    "total_errors": 0,
+    "error_rate": 0.0,
+    "active_threads": 3,
+    "query_history_size": 40,
+    "error_history_size": 0
+  },
+  "memory_profiler_active": true,
+  "base_monitoring_active": false
+}

@@ -1,0 +1,22 @@
+{
+  "data": {
+    "test_key": "test_value",
+    "fallback_test": "fallback_value"
+  },
+  "expiration": {},
+  "access_times": {
+    "fallback_test": "2025-05-25T18:14:40.039017"
+  },
+  "stats": {
+    "connection_attempts": 0,
+    "successful_connections": 0,
+    "failed_connections": 0,
+    "fallback_operations": 0,
+    "cache_hits": 0,
+    "cache_misses": 0,
+    "total_operations": 1,
+    "last_successful_ping": null,
+    "uptime_start": "2025-05-25 18:13:22.696699"
+  },
+  "timestamp": "2025-05-25T18:14:40.039435"
+}

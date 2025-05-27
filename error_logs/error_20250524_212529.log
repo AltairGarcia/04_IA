@@ -1,0 +1,14 @@
+Error Log: 20250524_212529
+Category: validation_error
+Message: Value error (potential validation issue): Test error - System initialization
+
+Context:
+  source: system_initialization.py
+  operation: initialize_error_handling
+  timestamp: 1748132729.6648107
+
+Stack Trace:
+Traceback (most recent call last):
+  File "C:\ALTAIR GARCIA\04__ia\system_initialization.py", line 135, in initialize_error_handling
+    raise ValueError("Test error - System initialization")
+ValueError: Test error - System initialization

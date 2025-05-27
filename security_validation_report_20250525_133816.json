@@ -1,0 +1,87 @@
+{
+  "timestamp": "2025-05-25T13:38:16.676160",
+  "total_tests": 8,
+  "passed_tests": 7,
+  "failed_tests": 1,
+  "critical_failures": 1,
+  "overall_score": 62.5,
+  "production_ready": false,
+  "results": [
+    {
+      "component": "File System",
+      "test_name": "Security Files Existence",
+      "passed": true,
+      "message": "All 13 security files present",
+      "execution_time": 0.0006618499755859375,
+      "severity": "critical"
+    },
+    {
+      "component": "Imports",
+      "test_name": "Module Import Capabilities",
+      "passed": true,
+      "message": "All 8 modules imported successfully",
+      "execution_time": 2.3882577419281006,
+      "severity": "critical"
+    },
+    {
+      "component": "Database",
+      "test_name": "Database Connectivity",
+      "passed": true,
+      "message": "Database connectivity verified",
+      "execution_time": 0.0005779266357421875,
+      "severity": "high"
+    },
+    {
+      "component": "Encryption",
+      "test_name": "Encryption Capabilities",
+      "passed": true,
+      "message": "All encryption capabilities verified",
+      "execution_time": 0.001905679702758789,
+      "severity": "high"
+    },
+    {
+      "component": "Configuration",
+      "test_name": "Configuration Validity",
+      "passed": true,
+      "message": "Warning: Missing recommended env vars: SECRET_KEY, JWT_SECRET_KEY, DATABASE_URL",
+      "execution_time": 3.075599670410156e-05,
+      "severity": "medium"
+    },
+    {
+      "component": "Integration",
+      "test_name": "Integration Readiness",
+      "passed": true,
+      "message": "Security manager created successfully",
+      "execution_time": 0.0941171646118164,
+      "severity": "high"
+    },
+    {
+      "component": "Security Tests",
+      "test_name": "Security Test Suite",
+      "passed": false,
+      "message": "Security tests failed:   File \"C:\\ALTAIR GARCIA\\04__ia\\security_test_simple.py\", line 397\n    print(\"\\n\" + \"-\" * 60)\nIndentationError: unexpected indent\n",
+      "execution_time": 0.1373271942138672,
+      "severity": "critical"
+    },
+    {
+      "component": "Performance",
+      "test_name": "Performance Assessment",
+      "passed": true,
+      "message": "Performance assessment completed successfully",
+      "execution_time": 1.0830535888671875,
+      "severity": "medium"
+    }
+  ],
+  "recommendations": [
+    "CRITICAL: Address all critical failures before deployment",
+    "  - Fix Security Tests: Security tests failed:   File \"C:\\ALTAIR GARCIA\\04__ia\\security_test_simple.py\", line 397\n    print(\"\\n\" + \"-\" * 60)\nIndentationError: unexpected indent\n"
+  ],
+  "next_steps": [
+    "\u274c System requires fixes before production deployment",
+    "Address all critical and high-priority issues",
+    "Re-run validation after fixes",
+    "Consider phased deployment approach",
+    "Implement additional testing if needed",
+    "Review security configuration and policies"
+  ]
+}

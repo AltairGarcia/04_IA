@@ -1,0 +1,38 @@
+{
+  "fixes_applied": [
+    {
+      "name": "global_suppression",
+      "success": true,
+      "description": "Applied global Python 3.13 warning suppression"
+    },
+    {
+      "name": "aioredis_compatibility",
+      "success": true,
+      "description": "Enhanced aioredis compatibility with fallback"
+    },
+    {
+      "name": "integration_compatibility",
+      "success": true,
+      "description": "Created integration compatibility wrapper"
+    },
+    {
+      "name": "redis_fallback_syntax",
+      "success": true,
+      "description": "Fixed syntax errors in redis_fallback.py"
+    },
+    {
+      "name": "cache_manager_syntax",
+      "success": true,
+      "description": "Fixed syntax errors in cache_manager.py"
+    },
+    {
+      "name": "database_pool_compatibility",
+      "success": true,
+      "description": "Fixed database pool parameter compatibility"
+    }
+  ],
+  "errors": [],
+  "success_rate": 100.0,
+  "timestamp": "2025-05-25T18:54:01.499994",
+  "python_version": "3.13.3 (tags/v3.13.3:6280bb5, Apr  8 2025, 14:47:33) [MSC v.1943 64 bit (AMD64)]"
+}

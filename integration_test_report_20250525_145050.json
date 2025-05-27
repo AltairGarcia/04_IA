@@ -1,0 +1,124 @@
+{
+  "timestamp": "2025-05-25T14:50:43.528166",
+  "tests": [
+    {
+      "name": "Import langgraph_integration_adapter.LangGraphIntegrationAdapter",
+      "status": "PASS",
+      "message": "Successfully imported LangGraphIntegrationAdapter",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:44.979307"
+    },
+    {
+      "name": "Import integrated_config.LangGraphIntegratedConfig",
+      "status": "PASS",
+      "message": "Successfully imported LangGraphIntegratedConfig",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:45.019210"
+    },
+    {
+      "name": "Import app_integration_wrapper.EnhancedLangGraphApp",
+      "status": "PASS",
+      "message": "Successfully imported EnhancedLangGraphApp",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:45.962992"
+    },
+    {
+      "name": "Import streamlit_integration_patch.patch_streamlit_app",
+      "status": "PASS",
+      "message": "Successfully imported patch_streamlit_app",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:45.982948"
+    },
+    {
+      "name": "Import cli_integration_patch.patch_cli_app",
+      "status": "PASS",
+      "message": "Successfully imported patch_cli_app",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:46.004874"
+    },
+    {
+      "name": "Configuration Load",
+      "status": "PASS",
+      "message": "Default configuration loaded successfully",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:46.005228"
+    },
+    {
+      "name": "Configuration Structure",
+      "status": "PASS",
+      "message": "Configuration has required sections",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:46.005353"
+    },
+    {
+      "name": "Configuration Validation",
+      "status": "PASS",
+      "message": "Configuration validation passed",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:46.005475"
+    },
+    {
+      "name": "Fallback Mechanisms",
+      "status": "FAIL",
+      "message": "Fallback test failed: with_infrastructure_fallback.<locals>.decorator() missing 1 required positional argument: 'func'",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:46.005606"
+    },
+    {
+      "name": "Redis Connectivity",
+      "status": "WARN",
+      "message": "Redis not available: Error 10061 connecting to localhost:6379. Nenhuma conex\u00e3o p\u00f4de ser feita porque a m\u00e1quina de destino as recusou ativamente.",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:50.199885"
+    },
+    {
+      "name": "Infrastructure Hub",
+      "status": "WARN",
+      "message": "Infrastructure Hub not available: No module named 'aioredis'",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:50.204129"
+    },
+    {
+      "name": "Integration Adapter Creation",
+      "status": "PASS",
+      "message": "Adapter created successfully",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:50.205957"
+    },
+    {
+      "name": "Integration Adapter Routes",
+      "status": "PASS",
+      "message": "FastAPI routes available",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:50.206116"
+    },
+    {
+      "name": "CLI Patch",
+      "status": "PASS",
+      "message": "CLI patch available",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:50.206263"
+    },
+    {
+      "name": "Streamlit Patch",
+      "status": "WARN",
+      "message": "Streamlit patch returned None (fallback mode)",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:50.265347"
+    },
+    {
+      "name": "Error Handling",
+      "status": "PASS",
+      "message": "Enhanced app handles missing dependencies gracefully",
+      "details": "",
+      "timestamp": "2025-05-25T14:50:50.266286"
+    }
+  ],
+  "summary": {
+    "total": 16,
+    "passed": 12,
+    "failed": 1,
+    "warnings": 3,
+    "success_rate": 75.0
+  }
+}

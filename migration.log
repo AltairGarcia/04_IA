@@ -1,0 +1,24 @@
+2025-05-27 09:02:11,444 - INFO - Starting migration to unified monitoring system...
+2025-05-27 09:02:11,709 - INFO - ✓ ANALYSIS: Found 12 monitoring files, 2 issues
+2025-05-27 09:02:11,710 - WARNING - Issues detected in current system:
+2025-05-27 09:02:11,711 - WARNING -   - High memory usage: 86.4%
+2025-05-27 09:02:11,712 - WARNING -   - Multiple PerformanceMonitor classes found: ['migrate_to_unified_monitoring.py', 'monitoring_dashboard.py', 'performance_assessment.py', 'performance_test_simple.py']
+2025-05-27 09:02:11,712 - WARNING - Use --force to proceed anyway
+2025-05-27 09:02:26,648 - INFO - Starting migration to unified monitoring system...
+2025-05-27 09:02:26,807 - INFO - ✓ ANALYSIS: Found 12 monitoring files, 2 issues
+2025-05-27 09:02:26,820 - INFO - ✓ DEPENDENCIES: All required modules available
+2025-05-27 09:02:27,268 - INFO - Unified Monitoring System initialized (singleton)
+2025-05-27 09:02:27,269 - INFO - ✓ DEPLOY: Unified monitoring system deployed successfully
+2025-05-27 09:02:27,269 - INFO - Applying monitoring system patches...
+2025-05-27 09:02:27,276 - ERROR - Error patching monitoring_dashboard: unindent does not match any outer indentation level (monitoring_dashboard.py, line 339)
+2025-05-27 09:02:29,193 - WARNING - performance_assessment module not found - skipping patch
+2025-05-27 09:02:29,205 - INFO - Successfully patched performance_test_simple.PerformanceMonitor
+2025-05-27 09:02:29,212 - INFO - Successfully patched enhanced_cache_manager
+2025-05-27 09:02:29,213 - INFO - Applied 2/4 patches successfully
+2025-05-27 09:02:29,213 - INFO - Starting unified monitoring system...
+2025-05-27 09:02:29,263 - INFO - Unified monitoring system started
+2025-05-27 09:02:29,263 - INFO - ✓ PATCHES: Applied 2/4 patches successfully
+2025-05-27 09:02:29,264 - WARNING - Monitoring already active
+2025-05-27 09:02:34,264 - INFO - ✓ TEST: System working - Memory: 85.7%
+2025-05-27 09:02:44,288 - ERROR - ✗ TEST: Testing failed: ThreadPoolExecutor.shutdown() got an unexpected keyword argument 'timeout'
+2025-05-27 09:02:44,289 - ERROR - Unified system test failed

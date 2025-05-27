@@ -1,0 +1,62 @@
+{
+  "api_keys": {
+    "ElevenLabs TTS": true,
+    "Stability AI": true,
+    "DALL-E (OpenAI)": true,
+    "Pexels": true,
+    "Pixabay": true,
+    "AssemblyAI": true,
+    "Deepgram": true,
+    "YouTube Data API": true,
+    "Google Gemini": false
+  },
+  "gemini": {
+    "status": "skipped",
+    "reason": "No API key"
+  },
+  "elevenlabs": {
+    "status": "success",
+    "response_time": 1.0796008110046387,
+    "audio_size_bytes": 48110
+  },
+  "image_generation": {
+    "dalle": {
+      "status": "failed",
+      "error": "401 Client Error: Unauthorized for url: https://api.openai.com/v1/images/generations"
+    },
+    "stability": {
+      "status": "success",
+      "response_time": 6.0761237144470215,
+      "result_keys": [
+        "artifacts"
+      ]
+    }
+  },
+  "stock_media": {
+    "pexels": {
+      "status": "success",
+      "response_time": 0.5366451740264893,
+      "images_found": 5
+    },
+    "pixabay": {
+      "status": "success",
+      "response_time": 1.5124211311340332,
+      "images_found": 5
+    }
+  },
+  "transcription": {
+    "assemblyai": {
+      "status": "connection_ok",
+      "note": "API key valid, would need audio file for full test"
+    },
+    "deepgram": {
+      "status": "connection_ok",
+      "note": "API key valid, would need audio file for full test"
+    }
+  },
+  "youtube": {
+    "status": "success",
+    "response_time": 0.7785389423370361,
+    "videos_found": 5
+  }
+}

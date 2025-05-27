@@ -1,0 +1,172 @@
+{
+  "2025-05-22": {
+    "gemini": {
+      "calls": 2,
+      "tokens": 300,
+      "errors": 0,
+      "estimated_cost": 7.5e-05
+    },
+    "elevenlabs": {
+      "calls": 2,
+      "seconds": 25.0,
+      "errors": 0,
+      "estimated_cost": 0.15
+    },
+    "dalle": {
+      "calls": 0,
+      "images": 0,
+      "errors": 0,
+      "estimated_cost": 0.0
+    },
+    "stabilityai": {
+      "calls": 0,
+      "images": 0,
+      "errors": 0,
+      "estimated_cost": 0.0
+    },
+    "assemblyai": {
+      "calls": 4,
+      "seconds": 120.8,
+      "errors": 0,
+      "estimated_cost": 0.0302
+    },
+    "deepgram": {
+      "calls": 0,
+      "seconds": 0,
+      "errors": 0,
+      "estimated_cost": 0.0
+    },
+    "youtube_data": {
+      "calls": 2,
+      "queries": 2,
+      "errors": 0
+    },
+    "tavily": {
+      "calls": 0,
+      "queries": 0,
+      "errors": 0,
+      "estimated_cost": 0.0
+    },
+    "arxiv": {
+      "calls": 0,
+      "queries": 0,
+      "errors": 0
+    },
+    "wikipedia": {
+      "calls": 2,
+      "queries": 2,
+      "errors": 0
+    }
+  },
+  "2025-05-23": {
+    "assemblyai": {
+      "calls": 2,
+      "errors": 0,
+      "estimated_cost": 0.028800000000000003,
+      "seconds": 57.6
+    },
+    "deepgram": {
+      "calls": 2,
+      "errors": 0,
+      "estimated_cost": 0.002666666666666667,
+      "seconds": 64.0
+    },
+    "tavily": {
+      "calls": 72,
+      "errors": 0,
+      "queries": 23,
+      "estimated_cost": 0.19000000000000003
+    },
+    "openweather": {
+      "calls": 50,
+      "errors": 0,
+      "queries": 28,
+      "estimated_cost": 0.0024
+    },
+    "newsapi": {
+      "calls": 6,
+      "errors": 0,
+      "queries": 6,
+      "estimated_cost": 0.01
+    },
+    "gemini": {
+      "calls": 12,
+      "errors": 0,
+      "estimated_cost": 0.0,
+      "tokens": 0
+    },
+    "pexels": {
+      "calls": 12,
+      "errors": 0,
+      "queries": 10
+    }
+  },
+  "2025-05-24": {
+    "gemini": {
+      "calls": 111,
+      "tokens": 150,
+      "errors": 0,
+      "estimated_cost": 3.75e-05
+    },
+    "elevenlabs": {
+      "calls": 0,
+      "seconds": 0,
+      "errors": 0,
+      "estimated_cost": 0.0
+    },
+    "dalle": {
+      "calls": 10,
+      "images": 0,
+      "errors": 0,
+      "estimated_cost": 0.0
+    },
+    "stabilityai": {
+      "calls": 0,
+      "images": 0,
+      "errors": 0,
+      "estimated_cost": 0.0
+    },
+    "assemblyai": {
+      "calls": 1,
+      "seconds": 30.5,
+      "errors": 0,
+      "estimated_cost": 0.007625
+    },
+    "deepgram": {
+      "calls": 1,
+      "seconds": 25.3,
+      "errors": 0,
+      "estimated_cost": 0.01012
+    },
+    "youtube_data": {
+      "calls": 0,
+      "queries": 0,
+      "errors": 0
+    },
+    "tavily": {
+      "calls": 46,
+      "queries": 14,
+      "errors": 0
+    },
+    "arxiv": {
+      "calls": 0,
+      "queries": 0,
+      "errors": 0
+    },
+    "wikipedia": {
+      "calls": 0,
+      "queries": 0,
+      "errors": 0
+    },
+    "newsapi": {
+      "calls": 0,
+      "queries": 0,
+      "errors": 0
+    },
+    "openweather": {
+      "calls": 24,
+      "queries": 12,
+      "errors": 0
+    }
+  }
+}
