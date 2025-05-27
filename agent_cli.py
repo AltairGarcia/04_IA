@@ -103,4 +103,51 @@ def main():
     print(result.get("output", "No output."))
 
 if __name__ == "__main__":
-    main()
+    # Configure basic logger for CLI if not configured by other imports
+    # (assuming a global logger setup might be absent in pure CLI tools)
+    import logging # Make sure logging is imported
+    logger = logging.getLogger(__name__)
+    if not logger.handlers: # Check if handlers are already configured
+        logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+    monitor_instance = None
+    # Attempt to import and start monitoring if available
+    # This matches the pattern in streamlit_app.py, though for a CLI it might be optional
+    # or controlled by a command-line argument.
+    try:
+        from enhanced_unified_monitoring import get_enhanced_monitoring_system
+        monitor_instance = get_enhanced_monitoring_system()
+        if monitor_instance:
+             if hasattr(monitor_instance, 'is_running') and not monitor_instance.is_running:
+                logger.info("Agent CLI: Starting Enhanced Monitoring System...")
+                monitor_instance.start_monitoring()
+    except ImportError:
+        logger.warning("Agent CLI: Enhanced monitoring system not available.")
+        monitor_instance = None # Ensure it's None if import fails
+    except Exception as e_monitor_start:
+        logger.error(f"Agent CLI: Error starting monitoring system: {e_monitor_start}", exc_info=True)
+        monitor_instance = None
+
+
+    try:
+        main()
+    finally:
+        logger.info("Agent CLI: Initiating application shutdown...")
+        if monitor_instance:
+            try:
+                if hasattr(monitor_instance, 'is_running') and monitor_instance.is_running:
+                    logger.info("Agent CLI: Stopping monitoring system...")
+                    monitor_instance.stop_monitoring()
+            except Exception as e_monitor_stop:
+                logger.error(f"Agent CLI: Error stopping monitoring system: {e_monitor_stop}", exc_info=True)
+        
+        try:
+            from thread_safe_connection_manager import close_connection_manager
+            logger.info("Agent CLI: Closing database connection manager...")
+            close_connection_manager()
+        except ImportError:
+            logger.warning("Agent CLI: ThreadSafeConnectionManager not available for shutdown.")
+        except Exception as e_db_close:
+            logger.error(f"Agent CLI: Error closing database connection manager: {e_db_close}", exc_info=True)
+        
+        logger.info("Agent CLI: Application shutdown complete.")

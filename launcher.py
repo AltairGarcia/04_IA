@@ -25,6 +25,22 @@ from config_robust import load_config_robust
 from app_health import get_health_summary, start_health_monitoring
 from langchain_robust import suppress_langchain_warnings
 
+# Enhanced imports for shutdown
+try:
+    from enhanced_unified_monitoring import get_enhanced_monitoring_system
+    EUMS_AVAILABLE = True
+except ImportError:
+    EUMS_AVAILABLE = False
+    get_enhanced_monitoring_system = None
+
+try:
+    from thread_safe_connection_manager import close_connection_manager
+    TSCM_AVAILABLE = True
+except ImportError:
+    TSCM_AVAILABLE = False
+    close_connection_manager = None
+
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -222,9 +238,26 @@ class LangGraphLauncher:
     
     def handle_shutdown(self, signum, frame):
         """Handle shutdown signals gracefully."""
-        print("\n🛑 Shutdown signal received...")
-        self.stop_streamlit()
-        print("👋 Goodbye!")
+        logger.info("\n🛑 Shutdown signal received...")
+        self.stop_streamlit() # Stop Streamlit first
+
+        if EUMS_AVAILABLE and get_enhanced_monitoring_system:
+            try:
+                monitor = get_enhanced_monitoring_system()
+                if monitor and hasattr(monitor, 'is_running') and monitor.is_running:
+                    logger.info("Launcher: Stopping monitoring system...")
+                    monitor.stop_monitoring()
+            except Exception as e_monitor_stop:
+                logger.error(f"Launcher: Error stopping monitoring system: {e_monitor_stop}", exc_info=True)
+        
+        if TSCM_AVAILABLE and close_connection_manager:
+            try:
+                logger.info("Launcher: Closing database connection manager...")
+                close_connection_manager()
+            except Exception as e_db_close:
+                logger.error(f"Launcher: Error closing database connection manager: {e_db_close}", exc_info=True)
+
+        logger.info("👋 Launcher: Goodbye!")
         sys.exit(0)
     
     def monitor_application(self, interval: int = 60):
@@ -279,14 +312,29 @@ class LangGraphLauncher:
         
         # Start health monitoring
         if not args.skip_health_monitoring:
-            self.start_health_monitoring()
+            self.start_health_monitoring() # This is an internal method of LangGraphLauncher
+
+        # Start Enhanced Unified Monitoring System (EUMS)
+        # This should happen early, after config and deployment checks, but before Streamlit if EUMS monitors Streamlit process too.
+        # For now, starting it here.
+        monitor_instance = None
+        if EUMS_AVAILABLE and get_enhanced_monitoring_system:
+            try:
+                monitor_instance = get_enhanced_monitoring_system()
+                if monitor_instance and hasattr(monitor_instance, 'is_running') and not monitor_instance.is_running:
+                    logger.info("Launcher: Starting Enhanced Monitoring System...")
+                    monitor_instance.start_monitoring()
+            except Exception as e_monitor_start:
+                logger.error(f"Launcher: Error starting EUMS: {e_monitor_start}", exc_info=True)
         
         # Show system status
         self.show_system_status()
         
         # Start Streamlit
         if not self.start_streamlit(port=args.port, host=args.host):
-            print("❌ Failed to start application")
+            logger.error("❌ Failed to start application via Streamlit.")
+            # Ensure cleanup even if Streamlit fails to start
+            self.handle_shutdown(None, None) # Call shutdown manually
             return 1
         
         print(f"\n🎉 LangGraph 101 is ready!")

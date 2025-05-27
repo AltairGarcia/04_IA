@@ -2036,3 +2036,42 @@ def main():
 
     # st.title("Test: Streamlit App Reached Main")
     # st.write("If you see this, Streamlit is running and the main function was reached.")
+
+if __name__ == "__main__":
+    # Ensure basic logger for shutdown messages if not configured elsewhere
+    if not logger.handlers:
+        logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+    monitor_instance = None
+    if MODULES_AVAILABLE.get('enhanced_unified_monitoring'):
+        try:
+            from enhanced_unified_monitoring import get_enhanced_monitoring_system
+            monitor_instance = get_enhanced_monitoring_system()
+            if monitor_instance: # EUMS is a singleton, start_monitoring might be called elsewhere too
+                 if hasattr(monitor_instance, 'is_running') and not monitor_instance.is_running:
+                    logger.info("Streamlit App: Starting Enhanced Monitoring System...")
+                    monitor_instance.start_monitoring()
+        except Exception as e_monitor_start:
+            logger.error(f"Streamlit App: Error starting monitoring system: {e_monitor_start}", exc_info=True)
+
+    try:
+        main()
+    finally:
+        logger.info("Streamlit App: Initiating application shutdown...")
+        if monitor_instance:
+            try:
+                if hasattr(monitor_instance, 'is_running') and monitor_instance.is_running:
+                    logger.info("Streamlit App: Stopping monitoring system...")
+                    monitor_instance.stop_monitoring()
+            except Exception as e_monitor_stop:
+                logger.error(f"Streamlit App: Error stopping monitoring system: {e_monitor_stop}", exc_info=True)
+        
+        if MODULES_AVAILABLE.get('thread_safe_connection_manager'):
+            try:
+                from thread_safe_connection_manager import close_connection_manager
+                logger.info("Streamlit App: Closing database connection manager...")
+                close_connection_manager()
+            except Exception as e_db_close:
+                logger.error(f"Streamlit App: Error closing database connection manager: {e_db_close}", exc_info=True)
+        
+        logger.info("Streamlit App: Application shutdown complete.")

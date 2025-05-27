@@ -20,7 +20,8 @@ from dataclasses import dataclass
 try:
     from thread_safe_connection_manager import get_connection_manager
     from advanced_memory_profiler import AdvancedMemoryProfiler
-    from enhanced_unified_monitoring import EnhancedUnifiedMonitoringSystem
+    # Updated import to use the new global accessor
+    from enhanced_unified_monitoring import get_enhanced_monitoring_system 
     OPTIMIZED_IMPORTS = True
 except ImportError as e:
     logging.warning(f"Optimized modules not available: {e}")
@@ -185,25 +186,68 @@ class DatabaseOptimizationEnhancer:
                 conn.execute('VACUUM')
                 results["vacuum_completed"] = True
 
-                # Get table information safely
-                tables = conn.execute(
-                    "SELECT name FROM sqlite_master WHERE type='table'"
-                ).fetchall()
+                # Define specific tables for cleanup
+                tables_to_clean = [
+                    'system_logs', 
+                    'system_metrics', 
+                    'performance_metrics', 
+                    'profiler_snapshots', 
+                    'connection_metrics', 
+                    'query_history'
+                ]
+                
+                # For tables that might not exist if a module is disabled, check first
+                # Get existing tables to prevent errors on non-existent ones
+                cursor = conn.cursor() # Use a cursor for operations
+                cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+                existing_tables = [row[0] for row in cursor.fetchall()]
 
-                # Clean old log/metric records (keep last 1000)
-                for (table_name,) in tables:
-                    if ('log' in table_name.lower() or
-                            'metric' in table_name.lower()):
-                        cursor = conn.execute(f'''
-                            DELETE FROM {table_name}
-                            WHERE rowid NOT IN (
-                                SELECT rowid FROM {table_name}
-                                ORDER BY rowid DESC LIMIT 1000
-                            )
-                        ''')
-                        results["old_records_cleaned"] += cursor.rowcount
+                records_cleaned_for_table = {}
+
+                for table_name in tables_to_clean:
+                    if table_name not in existing_tables:
+                        logger.info(f"Table '{table_name}' not found, skipping cleanup for it.")
+                        continue
+
+                    # All targeted tables have a 'timestamp' column suitable for ordering.
+                    # Using 'id' as a fallback if 'timestamp' is missing for some reason,
+                    # but 'timestamp' is preferred for time-series data.
+                    # The schemas confirm 'timestamp' is present in all these tables.
+                    # For tables like 'profiler_snapshots', 'connection_metrics', 'query_history',
+                    # their primary key 'id' is AUTOINCREMENT, so it also reflects insertion order.
+                    # However, using 'timestamp' is more semantically correct for time-based cleanup.
+                    
+                    # Check if 'timestamp' column exists, otherwise use 'id' or 'rowid'
+                    # For these specific tables, we know 'timestamp' exists.
+                    order_column = "timestamp" # Default to timestamp
+
+                    logger.info(f"Cleaning up table: {table_name}, ordering by {order_column}")
+                    
+                    # Construct the subquery to find IDs to keep
+                    # This approach is generally safer and more performant on large tables than using rowid with NOT IN.
+                    # It selects the IDs of the latest N records.
+                    sub_query = f"""
+                        SELECT id FROM {table_name} 
+                        ORDER BY {order_column} DESC LIMIT 1000 
+                    """
+                    
+                    # Then delete records whose IDs are NOT IN this set of latest N records.
+                    delete_query = f"""
+                        DELETE FROM {table_name}
+                        WHERE id NOT IN ({sub_query})
+                    """
+                    
+                    try:
+                        delete_cursor = conn.execute(delete_query)
+                        cleaned_count = delete_cursor.rowcount
+                        results["old_records_cleaned"] += cleaned_count
+                        records_cleaned_for_table[table_name] = cleaned_count
+                        logger.info(f"Cleaned {cleaned_count} records from {table_name}")
+                    except Exception as e_del:
+                        logger.error(f"Error cleaning table {table_name}: {e_del}")
 
                 conn.commit()
+                results["records_cleaned_per_table"] = records_cleaned_for_table
 
         except Exception as e:
             logger.error(f"Database optimization error: {e}")
@@ -234,7 +278,8 @@ class MemoryEnhancementIntegrator:
         if OPTIMIZED_IMPORTS:
             try:
                 self.memory_profiler = AdvancedMemoryProfiler()
-                self.monitoring_system = EnhancedUnifiedMonitoringSystem()
+                # Updated to use the global accessor
+                self.monitoring_system = get_enhanced_monitoring_system() 
             except Exception as e:
                 logger.warning(f"Could not initialize existing systems: {e}")
                 self.memory_profiler = None

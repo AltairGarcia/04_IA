@@ -20,7 +20,7 @@ import time
 import psutil
 import threading
 import logging
-import sqlite3
+# import sqlite3 # No longer directly used by this class for connections
 import tracemalloc
 import weakref
 import json
@@ -29,9 +29,11 @@ from typing import Dict, List, Any, Optional, Set, Union, Callable, Tuple
 from dataclasses import dataclass, asdict
 from collections import defaultdict, deque, Counter
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor
+# from concurrent.futures import ThreadPoolExecutor # Not used
 import uuid
 import platform
+
+from core.database import get_database_manager # Added import
 
 # Try to import platform-specific modules
 try:
@@ -123,16 +125,18 @@ class AdvancedMemoryProfiler:
     """
     
     def __init__(self, 
-                 db_path: str = "memory_profiling.db",
+                 # db_path: str = "memory_profiling.db", # Removed
                  snapshot_interval: int = 30,
                  enable_tracemalloc: bool = True,
                  max_snapshots: int = 1000):
         
-        self.db_path = Path(db_path)
+        # self.db_path = Path(db_path) # Removed
         self.snapshot_interval = snapshot_interval
         self.max_snapshots = max_snapshots
-        self.conn: Optional[sqlite3.Connection] = None  # Initialize conn
+        # self.conn: Optional[sqlite3.Connection] = None  # Removed
         self.enable_tracemalloc = enable_tracemalloc
+        
+        self.db_manager = get_database_manager() # Added
         
         # Estado do profiler
         self.is_running = False
@@ -141,8 +145,8 @@ class AdvancedMemoryProfiler:
         
         # Dados coletados
         self.snapshots = deque(maxlen=max_snapshots)
-        self.leak_detections = {}
-        self.hotspots = []
+        self.leak_detections = {} # This seems to be for in-memory detection, can be kept or refactored
+        self.hotspots = [] # This seems to be for in-memory detection, can be kept or refactored
         self.baseline_snapshot = None
         
         # Trackers externos
@@ -155,64 +159,14 @@ class AdvancedMemoryProfiler:
             tracemalloc.start(25)  # Mantém stack traces de até 25 frames
             logger.info("Tracemalloc iniciado em __init__")
         
-        # Inicializar banco
-        self._initialize_database()
+        # Inicializar banco - Removed, tables are created by UnifiedDatabaseManager
+        # self._initialize_database() 
         
-        logger.info(f"AdvancedMemoryProfiler inicializado")
+        logger.info(f"AdvancedMemoryProfiler inicializado, using UnifiedDatabaseManager.")
     
-    def _initialize_database(self):
-        """Initialize the database and schema."""
-        try:
-            self.conn = sqlite3.connect(str(self.db_path))
-            cursor = self.conn.cursor()
-            # Example table creation (adjust as per actual schema)
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS snapshots (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    timestamp TEXT,
-                    process_memory_mb REAL,
-                    system_memory_percent REAL,
-                    system_memory_available_gb REAL,
-                    gc_stats_json TEXT,
-                    tracemalloc_top_json TEXT,
-                    object_counts_json TEXT,
-                    thread_count INTEGER,
-                    file_descriptors INTEGER,
-                    stack_size_kb REAL,
-                    peak_memory_mb REAL
-                )
-            """)
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS leaks (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    object_type TEXT,
-                    count_increase INTEGER,
-                    size_increase_mb REAL,
-                    first_seen TEXT,
-                    last_seen TEXT,
-                    severity TEXT
-                )
-            """)
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS hotspots (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    filename TEXT,
-                    line_number INTEGER,
-                    function_name TEXT,
-                    size_mb REAL,
-                    count INTEGER,
-                    traceback_json TEXT
-                )
-            """)
-            self.conn.commit()
-            logger.info(f"Database initialized/schema verified at {self.db_path}")
-        except sqlite3.Error as e:
-            logger.error(f"Database initialization error: {e}")
-            if self.conn:
-                self.conn.close()
-                self.conn = None
-            # Re-raise or handle as appropriate for the application
-            raise
+    # def _initialize_database(self): # Removed entire method
+    #     """Initialize the database and schema."""
+    #     pass # No longer needed here
     
     def start_profiling(self, baseline: bool = True):
         """Inicia o profiling de memória."""
@@ -220,19 +174,16 @@ class AdvancedMemoryProfiler:
             logger.warning("Profiling já está ativo")
             return
 
-        # Ensure tracemalloc is started if enabled and not already tracing.
         if self.enable_tracemalloc and not tracemalloc.is_tracing():
             tracemalloc.start(25)
             logger.info("Tracemalloc iniciado em start_profiling")
         
         self.is_running = True
         
-        # Capturar baseline se solicitado
         if baseline:
             self.baseline_snapshot = self._take_snapshot()
             logger.info("Baseline snapshot capturado")
         
-        # Iniciar thread de profiling
         self.profiling_thread = threading.Thread(
             target=self._profiling_loop,
             daemon=True,
@@ -249,31 +200,26 @@ class AdvancedMemoryProfiler:
         
         self.is_running = False
         
-        if self.profiling_thread:
+        if self.profiling_thread and self.profiling_thread.is_alive():
             self.profiling_thread.join(timeout=10)
         
-        # Gerar relatório final
         final_report = self.generate_comprehensive_report()
         
-        if self.conn: # Ensure connection is closed if profiling stops
-            logger.info("Closing database connection during stop_profiling.")
-            self.conn.close()
-            self.conn = None
+        # self.conn management removed
         
         logger.info("Profiling de memória parado")
         return final_report
     
     def cleanup(self):
-        """Clean up resources, like closing the database connection and stopping tracemalloc."""
+        """Clean up resources, stopping tracemalloc and joining profiling thread."""
         logger.info(f"Iniciando cleanup do AdvancedMemoryProfiler ({id(self)})...")
         
-        # Stop the profiling thread if it's running
         if self.is_running:
-            self.is_running = False # Signal the loop to stop
+            self.is_running = False 
             if self.profiling_thread and self.profiling_thread.is_alive():
                 logger.info("Aguardando a thread de profiling terminar...")
                 try:
-                    self.profiling_thread.join(timeout=5.0) # Wait for 5 seconds
+                    self.profiling_thread.join(timeout=5.0) 
                     if self.profiling_thread.is_alive():
                         logger.warning("Thread de profiling não terminou a tempo.")
                     else:
@@ -282,20 +228,9 @@ class AdvancedMemoryProfiler:
                     logger.error(f"Erro ao aguardar a thread de profiling: {e}")
             self.profiling_thread = None
 
-        # Close the database connection
-        if self.conn:
-            logger.info(f"Fechando conexão com o banco de dados: {self.db_path}")
-            try:
-                self.conn.close()
-                logger.info("Conexão com o banco de dados fechada com sucesso.")
-            except sqlite3.Error as e:
-                logger.error(f"Erro ao fechar conexão com o banco de dados: {e}")
-            finally:
-                self.conn = None # Ensure conn is None even if close fails
-        else:
-            logger.info("Nenhuma conexão com o banco de dados para fechar em cleanup.")
+        # self.conn management removed
+        # No direct database connection to close here. UnifiedDatabaseManager handles its connections.
 
-        # Stop tracemalloc
         if self.enable_tracemalloc and tracemalloc.is_tracing():
             tracemalloc.stop()
             logger.info("Tracemalloc parado via cleanup.")
@@ -311,104 +246,88 @@ class AdvancedMemoryProfiler:
         """Loop principal de profiling."""
         while self.is_running:
             try:
-                # Capturar snapshot
                 snapshot = self._take_snapshot()
-                
                 with self._lock:
                     self.snapshots.append(snapshot)
-                
-                # Salvar no banco
                 self._save_snapshot(snapshot)
                 
-                # Detectar vazamentos
-                if len(self.snapshots) >= 5:  # Precisamos de histórico
-                    leaks = self._detect_memory_leaks()
+                if len(self.snapshots) >= 5:
+                    leaks = self._detect_memory_leaks() # In-memory detection from snapshots
                     for leak in leaks:
-                        self._save_leak(leak)
+                        self._save_leak(leak) # Save to DB via UnifiedDatabaseManager
                 
-                # Detectar hotspots
-                hotspots = self._detect_hotspots()
+                hotspots = self._detect_hotspots() # In-memory detection from tracemalloc
                 for hotspot in hotspots:
-                    self._save_hotspot(hotspot)
+                    self._save_hotspot(hotspot) # Save to DB via UnifiedDatabaseManager
                 
-                # Log status periodicamente
                 if len(self.snapshots) % 10 == 0:
                     self._log_profiling_status()
                 
                 time.sleep(self.snapshot_interval)
-                
+
+            except (sqlite3.Error, DatabaseError) as db_e:
+                logger.error(f"Database error in AMP profiling loop: {db_e}", exc_info=True)
+                # This simple handling will just make the loop stop on DB error.
+                # A retry mechanism would be more complex to add here for each _save call.
+                # For this iteration, stopping the profiler on DB error is chosen.
+                logger.critical("Database error encountered. Stopping AdvancedMemoryProfiler.")
+                self.is_running = False # Signal to stop
+                break 
+            except psutil.Error as ps_e:
+                logger.error(f"psutil error during AMP snapshot: {ps_e}", exc_info=True)
+                # Continue, but the snapshot might be incomplete or missing.
+                if self.is_running: time.sleep(self.snapshot_interval) 
+            except KeyboardInterrupt:
+                logger.info("AMP Profiling loop received KeyboardInterrupt. Setting running to False.")
+                self.is_running = False 
+                # Allow loop to terminate naturally
             except Exception as e:
-                logger.error(f"Erro no loop de profiling: {e}")
-                time.sleep(60)
+                logger.critical(f"Unexpected critical error in AMP profiling loop: {e}", exc_info=True)
+                if self.is_running: 
+                    try:
+                        time.sleep(120) # Sleep for 2 minutes before trying again
+                    except KeyboardInterrupt:
+                        logger.info("AMP sleep interrupted. Exiting.")
+                        self.is_running = False
     
     def _take_snapshot(self) -> MemorySnapshot:
         """Captura snapshot detalhado de memória."""
         timestamp = datetime.now()
-        
-        # Informações do processo
         process = psutil.Process()
         process_memory = process.memory_info()
         process_memory_mb = process_memory.rss / 1024 / 1024
         
-        # Informações do sistema
         system_memory = psutil.virtual_memory()
         system_memory_percent = system_memory.percent
         system_memory_available_gb = system_memory.available / 1024 / 1024 / 1024
         
-        # Estatísticas do GC
-        gc_stats = {
-            f"generation_{i}": len(gc.get_objects(i)) 
-            for i in range(3)
-        }
+        gc_stats = {f"generation_{i}": len(gc.get_objects(i)) for i in range(3)}
         gc_stats["total_objects"] = len(gc.get_objects())
-        gc_stats["collected"] = gc.collect()
+        gc_stats["collected"] = gc.collect() # Trigger collection
         
-        # Tracemalloc top allocations
-        tracemalloc_top = []
+        tracemalloc_top_list = []
         if tracemalloc.is_tracing():
             current, peak = tracemalloc.get_traced_memory()
-            tracemalloc_top.append({
-                "current_mb": current / 1024 / 1024,
-                "peak_mb": peak / 1024 / 1024
-            })
-            
-            # Top 10 alocações
-            snapshot = tracemalloc.take_snapshot()
-            top_stats = snapshot.statistics('lineno')[:10]
-            
+            tracemalloc_top_list.append({"current_mb": current / 1024 / 1024, "peak_mb": peak / 1024 / 1024})
+            tm_snapshot = tracemalloc.take_snapshot()
+            top_stats = tm_snapshot.statistics('lineno')[:10]
             for stat in top_stats:
-                tracemalloc_top.append({
+                tracemalloc_top_list.append({
                     "filename": stat.traceback.format()[-1] if stat.traceback else "unknown",
                     "size_mb": stat.size / 1024 / 1024,
                     "count": stat.count
                 })
         
-        # Contagem de objetos por tipo
         object_counts = Counter(type(obj).__name__ for obj in gc.get_objects())
         top_objects = dict(object_counts.most_common(20))
         
-        # Informações do sistema
         thread_count = threading.active_count()
+        file_descriptors = process.num_fds() if hasattr(process, "num_fds") else 0
+        stack_size_kb = resource.getrlimit(resource.RLIMIT_STACK)[0] / 1024 if RESOURCE_AVAILABLE else 0
         
-        # File descriptors (Unix only)
-        file_descriptors = 0
-        try:
-            if hasattr(process, "num_fds"):
-                file_descriptors = process.num_fds()
-        except:
-            pass
-          # Stack size
-        stack_size_kb = 0
-        try:
-            if RESOURCE_AVAILABLE:
-                stack_size_kb = resource.getrlimit(resource.RLIMIT_STACK)[0] / 1024
-        except:
-            pass
-        
-        # Peak memory
-        peak_memory_mb = process_memory_mb
-        if hasattr(process_memory, 'peak_wset'):
-            peak_memory_mb = process_memory.peak_wset / 1024 / 1024
+        # Peak memory might be more accurate from tracemalloc if available and tracing all memory
+        # psutil's peak_wset is often a good system-level indicator.
+        peak_memory_mb_psutil = getattr(process_memory, 'peak_wset', process_memory.rss) / 1024 / 1024
         
         return MemorySnapshot(
             timestamp=timestamp,
@@ -416,351 +335,192 @@ class AdvancedMemoryProfiler:
             system_memory_percent=system_memory_percent,
             system_memory_available_gb=system_memory_available_gb,
             gc_stats=gc_stats,
-            tracemalloc_top=tracemalloc_top,
+            tracemalloc_top=tracemalloc_top_list,
             object_counts=top_objects,
             thread_count=thread_count,
             file_descriptors=file_descriptors,
             stack_size_kb=stack_size_kb,
-            peak_memory_mb=peak_memory_mb
+            peak_memory_mb=peak_memory_mb_psutil
         )
     
     def _detect_memory_leaks(self) -> List[MemoryLeak]:
-        """Detecta vazamentos de memória comparando snapshots."""
-        if len(self.snapshots) < 5:
-            return []
-        
+        """Detecta vazamentos de memória comparando snapshots (in-memory logic)."""
+        if len(self.snapshots) < 5: return []
         leaks = []
-        recent_snapshots = list(self.snapshots)[-5:]  # Últimos 5 snapshots
-        
-        # Comparar contagens de objetos
+        recent_snapshots = list(self.snapshots)[-5:]
         baseline_objects = recent_snapshots[0].object_counts
         current_objects = recent_snapshots[-1].object_counts
-        
         for obj_type, current_count in current_objects.items():
             baseline_count = baseline_objects.get(obj_type, 0)
             count_increase = current_count - baseline_count
-            
-            # Detectar aumento significativo
             if count_increase > 100 and count_increase > baseline_count * 0.5:
-                # Estimar tamanho (aproximação)
-                size_increase_mb = count_increase * 0.001  # Estimativa conservadora
-                
+                size_increase_mb = count_increase * sys.getsizeof(obj_type) / (1024*1024) if baseline_count > 0 else count_increase * 0.0001 # Rough estimate
                 severity = "low"
-                if count_increase > 1000:
-                    severity = "high"
-                elif count_increase > 500:
-                    severity = "medium"
-                
-                leak = MemoryLeak(
-                    object_type=obj_type,
-                    count_increase=count_increase,
-                    size_increase_mb=size_increase_mb,
-                    first_seen=recent_snapshots[0].timestamp,
-                    last_seen=recent_snapshots[-1].timestamp,
-                    severity=severity
-                )
-                leaks.append(leak)
-        
+                if count_increase > 1000 or size_increase_mb > 10: severity = "high"
+                elif count_increase > 500 or size_increase_mb > 1: severity = "medium"
+                leaks.append(MemoryLeak(
+                    object_type=obj_type, count_increase=count_increase, size_increase_mb=size_increase_mb,
+                    first_seen=recent_snapshots[0].timestamp, last_seen=recent_snapshots[-1].timestamp, severity=severity
+                ))
         return leaks
     
     def _detect_hotspots(self) -> List[MemoryHotspot]:
-        """Detecta hotspots de uso de memória."""
+        """Detecta hotspots de uso de memória (in-memory logic using tracemalloc)."""
         hotspots = []
-        
-        if not tracemalloc.is_tracing():
-            return hotspots
-        
+        if not tracemalloc.is_tracing(): return hotspots
         try:
-            snapshot = tracemalloc.take_snapshot()
-            # Filtrar por tamanho e agrupar por traceback para identificar hotspots reais
-            # Aumentar o limite para top_stats para ter uma visão mais ampla
-            top_stats = snapshot.statistics('traceback')[:50] 
-            
-            processed_hotspots = {}
-
+            tm_snapshot = tracemalloc.take_snapshot()
+            top_stats = tm_snapshot.statistics('traceback')[:20] # Check top 20 for potential hotspots
             for stat in top_stats:
-                if stat.size < 1024 * 1024:  # Ignorar < 1MB
-                    continue
-                
-                # Usar o traceback formatado como chave para agrupar alocações similares
-                traceback_key_list = stat.traceback.format()
-                traceback_key = "\\n".join(traceback_key_list) # Chave mais robusta
-
-                if traceback_key not in processed_hotspots:
-                    frame = stat.traceback[-1] # Frame mais específico
-                    filename = frame.filename
-                    line_number = frame.lineno
-                    # Tentar extrair o nome da função do traceback, se possível
-                    # Isso pode ser complexo, então uma abordagem simples é usada aqui
-                    function_name = "unknown" 
-                    try:
-                        # Tenta pegar o nome da função da última linha do traceback formatado
-                        last_trace_line = traceback_key_list[-1].strip()
-                        if " in " in last_trace_line:
-                            function_name = last_trace_line.split(" in ")[-1]
-                            if function_name.startswith("<"): # Ex: <module>
-                                function_name = "unknown" 
-                    except Exception:
-                        pass # Mantém unknown se a extração falhar
-
-                    processed_hotspots[traceback_key] = MemoryHotspot(
-                        filename=filename,
-                        line_number=line_number,
-                        function_name=function_name, 
-                        size_mb=0, # Será agregado
-                        count=0,   # Será agregado
-                        traceback=traceback_key_list 
-                    )
-                
-                processed_hotspots[traceback_key].size_mb += stat.size / 1024 / 1024
-                processed_hotspots[traceback_key].count += stat.count
-            
-            # Converter para lista e ordenar por tamanho
-            hotspots = sorted(list(processed_hotspots.values()), key=lambda h: h.size_mb, reverse=True)[:20]
-
+                if stat.size < (512 * 1024): continue # Ignore if less than 0.5MB total for this traceback
+                frame = stat.traceback[-1]
+                filename = frame.filename
+                line_number = frame.lineno
+                function_name = "unknown"
+                try:
+                    formatted_traceback = stat.traceback.format()
+                    last_trace_line = formatted_traceback[-1].strip()
+                    if " in " in last_trace_line: function_name = last_trace_line.split(" in ")[-1]
+                    if function_name.startswith("<"): function_name = "unknown"
+                except: pass
+                hotspots.append(MemoryHotspot(
+                    filename=filename, line_number=line_number, function_name=function_name,
+                    size_mb=stat.size / 1024 / 1024, count=stat.count, traceback=stat.traceback.format()
+                ))
         except Exception as e:
-            logger.error(f"Erro ao detectar hotspots: {e}")
-        
-        return hotspots
+            logger.error(f"Erro ao detectar hotspots: {e}", exc_info=True)
+        return sorted(hotspots, key=lambda h: h.size_mb, reverse=True)[:10] # Return top 10 found
     
     def _save_snapshot(self, snapshot: MemorySnapshot):
-        """Save a memory snapshot to the database."""
-        if not self.conn:
-            logger.warning("No database connection available to save snapshot.")
-            return
-
+        """Save a memory snapshot to the database via UnifiedDatabaseManager."""
+        data_dict = {
+            "timestamp": snapshot.timestamp.isoformat(),
+            "process_memory_mb": snapshot.process_memory_mb,
+            "system_memory_percent": snapshot.system_memory_percent,
+            "system_memory_available_gb": snapshot.system_memory_available_gb,
+            "gc_stats_json": json.dumps(snapshot.gc_stats),
+            "tracemalloc_top_json": json.dumps(snapshot.tracemalloc_top),
+            "object_counts_json": json.dumps(snapshot.object_counts),
+            "thread_count": snapshot.thread_count,
+            "file_descriptors": snapshot.file_descriptors,
+            "stack_size_kb": snapshot.stack_size_kb,
+            "peak_memory_mb": snapshot.peak_memory_mb
+        }
         try:
-            cursor = self.conn.cursor()
-            # Corrigido o nome da tabela para 'snapshots'
-            cursor.execute("""
-                INSERT INTO snapshots (
-                    timestamp, process_memory_mb, system_memory_percent,
-                    system_memory_available_gb, gc_stats_json, tracemalloc_top_json,
-                    object_counts_json, thread_count, file_descriptors,
-                    stack_size_kb, peak_memory_mb
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                snapshot.timestamp.isoformat(),
-                snapshot.process_memory_mb,
-                snapshot.system_memory_percent,
-                snapshot.system_memory_available_gb,
-                json.dumps(snapshot.gc_stats),
-                json.dumps(snapshot.tracemalloc_top),
-                json.dumps(snapshot.object_counts),
-                snapshot.thread_count,
-                snapshot.file_descriptors,
-                snapshot.stack_size_kb,
-                snapshot.peak_memory_mb
-            ))
-            self.conn.commit()
-        except sqlite3.Error as e:
-            logger.error(f"Error saving snapshot: {e}")
+            self.db_manager.insert_record('profiler_snapshots', data_dict)
+        except (sqlite3.Error, DatabaseError) as db_e: # More specific error handling
+            logger.error(f"DB error saving snapshot: {db_e}", exc_info=True)
+            raise # Re-raise to be caught by the loop's retry mechanism or error handling
+        except Exception as e: 
+            logger.error(f"Generic error saving snapshot via db_manager: {e}", exc_info=True)
+            # Depending on policy, could re-raise or just log
     
     def _save_leak(self, leak: MemoryLeak):
-        """Save a detected memory leak to the database."""
-        if not self.conn:
-            logger.warning("No database connection available to save leak.")
-            return
+        """Save a detected memory leak to the database via UnifiedDatabaseManager."""
+        data_dict = {
+            "object_type": leak.object_type,
+            "count_increase": leak.count_increase,
+            "size_increase_mb": leak.size_increase_mb,
+            "first_seen": leak.first_seen.isoformat(),
+            "last_seen": leak.last_seen.isoformat(),
+            "severity": leak.severity
+        }
         try:
-            cursor = self.conn.cursor()
-            # Corrigido o nome da tabela para 'leaks' e campo detection_timestamp
-            cursor.execute("""
-                INSERT INTO leaks (
-                    object_type, count_increase, size_increase_mb,
-                    first_seen, last_seen, severity
-                ) VALUES (?, ?, ?, ?, ?, ?)
-            """, (
-                leak.object_type,
-                leak.count_increase,
-                leak.size_increase_mb,
-                leak.first_seen.isoformat(),
-                leak.last_seen.isoformat(),
-                leak.severity
-            ))
-            self.conn.commit()
-        except sqlite3.Error as e:
-            logger.error(f"Error saving leak: {e}")
+            self.db_manager.insert_record('profiler_leaks', data_dict)
+        except (sqlite3.Error, DatabaseError) as db_e:
+            logger.error(f"DB error saving leak: {db_e}", exc_info=True)
+            raise 
+        except Exception as e:
+            logger.error(f"Generic error saving leak via db_manager: {e}", exc_info=True)
     
     def _save_hotspot(self, hotspot: MemoryHotspot):
-        """Save a detected memory hotspot to the database."""
-        if not self.conn:
-            logger.warning("No database connection available to save hotspot.")
-            return
+        """Save a detected memory hotspot to the database via UnifiedDatabaseManager."""
+        data_dict = {
+            "filename": hotspot.filename,
+            "line_number": hotspot.line_number,
+            "function_name": hotspot.function_name,
+            "size_mb": hotspot.size_mb,
+            "count": hotspot.count,
+            "traceback_json": json.dumps(hotspot.traceback)
+        }
         try:
-            cursor = self.conn.cursor()
-            # Corrigido o nome da tabela para 'hotspots' e campo traceback_json
-            cursor.execute("""
-                INSERT INTO hotspots (
-                    filename, line_number, function_name,
-                    size_mb, count, traceback_json
-                ) VALUES (?, ?, ?, ?, ?, ?)
-            """, (
-                hotspot.filename,
-                hotspot.line_number,
-                hotspot.function_name,
-                hotspot.size_mb,
-                hotspot.count,
-                json.dumps(hotspot.traceback) # Salvar traceback como JSON
-            ))
-            self.conn.commit()
-        except sqlite3.Error as e:
-            logger.error(f"Error saving hotspot: {e}")
+            self.db_manager.insert_record('profiler_hotspots', data_dict)
+        except (sqlite3.Error, DatabaseError) as db_e:
+            logger.error(f"DB error saving hotspot: {db_e}", exc_info=True)
+            raise
+        except Exception as e:
+            logger.error(f"Generic error saving hotspot via db_manager: {e}", exc_info=True)
 
-    def _analyze_leaks(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """Analyze stored leak data from the database."""
-        if not self.conn:
-            logger.warning("Database connection not available for leak analysis.")
-            return []
+    def _analyze_leaks_from_db(self, limit: int = 10) -> List[Dict[str, Any]]: # Renamed to avoid conflict
+        """Analyze stored leak data from the database via UnifiedDatabaseManager."""
+        query = f"""
+            SELECT object_type, SUM(count_increase) as total_increase, 
+                   SUM(size_increase_mb) as total_size_mb,
+                   MIN(first_seen) as first_occurrence,
+                   MAX(last_seen) as last_occurrence,
+                   GROUP_CONCAT(severity) as severities_csv
+            FROM profiler_leaks
+            GROUP BY object_type
+            ORDER BY total_size_mb DESC, total_increase DESC
+            LIMIT ?
+        """
         try:
-            cursor = self.conn.cursor()
-            # Corrigido o nome da tabela para 'leaks'
-            cursor.execute(f"""
-                SELECT object_type, SUM(count_increase) as total_increase, 
-                       SUM(size_increase_mb) as total_size_mb,
-                       MIN(first_seen) as first_occurrence,
-                       MAX(last_seen) as last_occurrence,
-                       GROUP_CONCAT(severity) as severities
-                FROM leaks
-                GROUP BY object_type
-                ORDER BY total_size_mb DESC, total_increase DESC
-                LIMIT {limit}
-            """)
-            leaks_data = []
-            for row in cursor.fetchall():
-                leaks_data.append({
-                    "object_type": row[0],
-                    "total_increase": row[1],
-                    "total_size_mb": row[2],
-                    "first_occurrence": row[3],
-                    "last_occurrence": row[4],
-                    "severities": list(set(row[5].split(','))) if row[5] else []
-                })
-            return leaks_data
-        except sqlite3.Error as e:
-            logger.error(f"Error analyzing leaks: {e}")
+            results = self.db_manager.execute_query(query, (limit,))
+            # Process severities_csv if needed, e.g., split(',') and unique
+            for row in results:
+                if row.get('severities_csv'):
+                    row['severities'] = list(set(str(row['severities_csv']).split(',')))
+                else:
+                    row['severities'] = []
+            return results
+        except Exception as e:
+            logger.error(f"Error analyzing leaks from DB: {e}", exc_info=True)
             return []
 
-    def _analyze_hotspots(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """Analyze stored hotspot data from the database."""
-        if not self.conn:
-            logger.warning("Database connection not available for hotspot analysis.")
-            return []
+    def _analyze_hotspots_from_db(self, limit: int = 10) -> List[Dict[str, Any]]: # Renamed to avoid conflict
+        """Analyze stored hotspot data from the database via UnifiedDatabaseManager."""
+        query = f"""
+            SELECT filename, line_number, function_name, 
+                   SUM(size_mb) as total_size_mb, 
+                   SUM(count) as total_count,
+                   GROUP_CONCAT(traceback_json) as tracebacks_json_group -- Be cautious with large JSONs and GROUP_CONCAT
+            FROM profiler_hotspots
+            GROUP BY filename, line_number, function_name
+            ORDER BY total_size_mb DESC, total_count DESC
+            LIMIT ?
+        """
         try:
-            cursor = self.conn.cursor()
-            # Corrigido o nome da tabela para 'hotspots' e campo traceback_json
-            cursor.execute(f"""
-                SELECT filename, line_number, function_name, 
-                       SUM(size_mb) as total_size_mb, 
-                       SUM(count) as total_count,
-                       GROUP_CONCAT(traceback_json) as tracebacks_json_array
-                FROM hotspots
-                GROUP BY filename, line_number, function_name
-                ORDER BY total_size_mb DESC, total_count DESC
-                LIMIT {limit}
-            """)
-            hotspots_data = []
-            for row in cursor.fetchall():
-                # Processar os tracebacks concatenados
-                # Cada traceback_json é uma string JSON de uma lista.
-                # GROUP_CONCAT junta essas strings com vírgula.
-                # Precisamos parsear cada um individualmente se quisermos a lista de listas.
-                # Ou, mais simples, pegar o primeiro ou o mais comum se for o caso.
-                # Aqui, vamos apenas tentar carregar o primeiro se houver muitos.
-                raw_tracebacks = row[5]
-                tracebacks = []
-                if raw_tracebacks:
-                    # Tentativa de parsear o JSON concatenado.
-                    # Isso pode ser problemático se os JSONs não estiverem bem formados
-                    # ou se a concatenação criar um JSON inválido.
-                    # Uma abordagem mais segura seria armazenar tracebacks de forma diferente
-                    # ou processá-los antes do GROUP_CONCAT.
-                    # Para este exemplo, vamos assumir que cada traceback é uma string JSON válida
-                    # e tentar parsear a primeira.
+            results = self.db_manager.execute_query(query, (limit,))
+            # Process tracebacks_json_group: potentially large, may need careful handling or take first one
+            for row in results:
+                if row.get('tracebacks_json_group'):
+                    # This simplistic approach takes the first JSON string if multiple are concatenated.
+                    # A more robust solution might involve splitting carefully or storing differently.
                     try:
-                        # Isso provavelmente não funcionará como esperado com GROUP_CONCAT
-                        # de múltiplas listas JSON.
-                        # tracebacks = json.loads(f'[{raw_tracebacks}]')
-                        # Uma abordagem mais simples: pegar a primeira string JSON e parseá-la
-                        first_traceback_json = raw_tracebacks.split('],[')[0] + ']' if '],[' in raw_tracebacks else raw_tracebacks
-                        if not first_traceback_json.startswith('['):
-                            first_traceback_json = '[' + first_traceback_json
-                        if not first_traceback_json.endswith(']'):
-                             # Pode já ter sido cortado, ou ser um único JSON
-                            if not first_traceback_json.endswith('"}'): # fim de um objeto json
-                                first_traceback_json = first_traceback_json + ']'
-                        
-
-                        # Sanitize common issues with concatenated JSON strings
-                        # This is a common issue with GROUP_CONCAT of JSON strings.
-                        # Example: "[...], [...]" needs to become "[[...], [...]]"
-                        # Or, if they are distinct JSON objects: "{...}, {...}" needs to become "[{...}, {...}]"
-                        # For now, we'll just try to parse the first one if it's a list of strings.
-                        
-                        # Simplificando: apenas pegamos a string bruta por enquanto
-                        # A lógica de reconstrução de JSON a partir de GROUP_CONCAT é complexa
-                        # e depende de como os dados foram inseridos.
-                        # Se cada `traceback_json` era `json.dumps(["line1", "line2"])`
-                        # então `GROUP_CONCAT` produz algo como:
-                        # '["lineA1", "lineA2"],["lineB1", "lineB2"]'
-                        # Para transformar isso em um JSON válido de lista de listas:
-                        # `json.loads('[' + raw_tracebacks + ']')`
-                        
-                        # Se o traceback_json já é uma string representando uma lista de strings
-                        # e o GROUP_CONCAT as une, precisamos de uma estratégia.
-                        # Assumindo que cada traceback_json é uma lista de strings serializada:
-                        # e.g., '["file:1", "file:2"]'
-                        # GROUP_CONCAT resultaria em: '["file:1", "file:2"],["file:3", "file:4"]'
-                        # Para parsear isso como uma lista de listas de strings:
-                        parsed_tracebacks = []
-                        current_json_str = ""
-                        depth = 0
-                        for char in raw_tracebacks:
-                            current_json_str += char
-                            if char == '[':
-                                depth += 1
-                            elif char == ']':
-                                depth -= 1
-                                if depth == 0 and current_json_str:
-                                    try:
-                                        parsed_tracebacks.append(json.loads(current_json_str))
-                                        current_json_str = ""
-                                    except json.JSONDecodeError:
-                                        # Ignorar se uma sub-string não é JSON válido, pode acontecer com GROUP_CONCAT
-                                        current_json_str = "" # Reset
-                                        pass 
-                        if parsed_tracebacks:
-                             tracebacks = parsed_tracebacks[0] # Pegar o primeiro traceback completo
-
-                    except json.JSONDecodeError as je:
-                        logger.warning(f"Could not parse tracebacks for hotspot {row[0]}:{row[1]}: {je}. Raw: {raw_tracebacks[:100]}")
-                        tracebacks = [raw_tracebacks] # fallback to raw string if parsing fails
-
-                hotspots_data.append({
-                    "filename": row[0],
-                    "line_number": row[1],
-                    "function_name": row[2],
-                    "total_size_mb": row[3],
-                    "total_count": row[4],
-                    "tracebacks": tracebacks # Idealmente, uma lista de strings (o primeiro traceback)
-                })
-            return hotspots_data
-        except sqlite3.Error as e:
-            logger.error(f"Error analyzing hotspots: {e}")
+                        first_json_str = row['tracebacks_json_group'].split('],[', 1)[0]
+                        if not first_json_str.endswith(']'):
+                            first_json_str += ']'
+                        row['traceback_sample'] = json.loads(first_json_str)
+                    except (json.JSONDecodeError, IndexError):
+                        row['traceback_sample'] = [row['tracebacks_json_group'][:1000]] # Truncated raw on error
+                else:
+                    row['traceback_sample'] = []
+            return results
+        except Exception as e:
+            logger.error(f"Error analyzing hotspots from DB: {e}", exc_info=True)
             return []
 
     def get_summary(self) -> Dict[str, Any]:
-        """Gera um resumo rápido do estado atual da memória."""
+        """Gera um resumo rápido do estado atual da memória (from in-memory snapshots)."""
         if not self.snapshots:
             return {"error": "Nenhum snapshot disponível"}
-        
         current = self.snapshots[-1]
-        
-        summary_report = {
+        return {
             "timestamp": current.timestamp.isoformat(),
             "process_memory_mb": current.process_memory_mb,
             "system_memory_percent": current.system_memory_percent,
             "system_memory_available_gb": current.system_memory_available_gb,
-            "total_objects": current.gc_stats["total_objects"],
+            "total_objects": current.gc_stats.get("total_objects", 0),
             "active_threads": current.thread_count,
             "file_descriptors": current.file_descriptors,
             "peak_memory_mb": current.peak_memory_mb,
