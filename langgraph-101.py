@@ -52,6 +52,132 @@ def print_export_formats():
     print_colored("\nUse 'exportar FORMAT' para exportar a conversa (ex: exportar html)", Colors.WHITE)
     print_colored("------------------------\n", Colors.YELLOW)
 
+# --- Test Function for Multi-Provider Agent ---
+# Ensure necessary imports for this test function are at the top of the file or here if scoped.
+# Already imported: load_config, get_tools, ContentCreator, logging
+# Need to import: ModelManager, AIModelLangChainAdapter, SimpleAgent
+# Assuming model_manager.py is in the root and ai_providers is a subdirectory.
+# sys.path manipulations might be needed if not already handled by the existing structure.
+# For this specific placement, we'll add imports inside the function or ensure they are globally available.
+
+def test_multi_provider_agent():
+    """
+    Temporary test function to verify that models from different providers
+    can be loaded and invoked through AIModelLangChainAdapter and SimpleAgent.
+    """
+    # Ensure these are imported. If they are already at the top, this is redundant but safe.
+    import logging # Already imported globally
+    from pathlib import Path # For sys.path if needed, but agent.py handles its own
+    
+    # Manually ensure paths if direct execution of langgraph-101.py is the context
+    # and these modules might not be found otherwise.
+    # This is similar to what's in agent.py.
+    current_file_dir = Path(__file__).resolve().parent
+    if str(current_file_dir) not in sys.path:
+        sys.path.append(str(current_file_dir))
+    # If ai_providers is a direct subdir of where model_manager.py is (root)
+    # and langgraph-101.py is also in root, then this might be okay.
+    # Let's assume model_manager and ai_providers are findable due to existing sys.path or structure.
+
+    from model_manager import ModelManager
+    from ai_providers.adapters import AIModelLangChainAdapter
+    from agent import SimpleAgent # SimpleAgent is in agent.py
+
+    logger = logging.getLogger(__name__) # Use the globally configured logger
+    logger.info("--- Starting Multi-Provider Agent Test ---")
+    print_colored("\n--- Running Multi-Provider Agent Test ---", Colors.MAGENTA, bold=True)
+
+    try:
+        config = load_config()
+        # tools = get_tools() # Not strictly needed for this test as SimpleAgent will use an empty dict
+
+        # Initialize ContentCreator (as SimpleAgent expects it, can be None if agent handles it)
+        api_keys_dict = {
+            "api_key": config.get('api_key'), # Gemini API Key
+            "model_name": config.get("model_name", "gemini-1.5-pro-latest"), # Default if not in config
+            "temperature": config.get("temperature", 0.7),
+            "elevenlabs_api_key": config.get("elevenlabs_api_key"),
+            "dalle_api_key": config.get("dalle_api_key"),
+            "stabilityai_api_key": config.get("stabilityai_api_key"),
+            # Add other keys if ContentCreator strictly needs them, otherwise None is fine
+        }
+        content_creator_instance = ContentCreator(api_keys=api_keys_dict)
+        
+        model_manager = ModelManager()
+        available_model_configs = model_manager.list_available_models()
+        
+        if not available_model_configs:
+            logger.warning("Multi-Provider Test: No models configured in ModelManager.")
+            print_error("Multi-Provider Test: No models configured in ModelManager. Test cannot run.")
+            return
+
+        providers_to_test = ["google", "openai", "anthropic"]
+        system_prompt_str = config.get("system_prompt", "You are a helpful assistant.")
+
+        for provider_name in providers_to_test:
+            print_colored(f"\nTesting provider: {provider_name.upper()}", Colors.YELLOW, bold=True)
+            
+            found_model_id_for_provider = None
+            for model_conf in available_model_configs:
+                if model_conf['provider'].lower() == provider_name.lower():
+                    found_model_id_for_provider = model_conf['model_id']
+                    break
+            
+            if not found_model_id_for_provider:
+                logger.warning(f"Multi-Provider Test: No model found for provider '{provider_name}' in config.")
+                print_colored(f"No model configured for provider: {provider_name}", Colors.RED)
+                continue
+
+            logger.info(f"Multi-Provider Test: Attempting to load model '{found_model_id_for_provider}' for provider '{provider_name}'.")
+            test_ai_model = model_manager.get_model(found_model_id_for_provider)
+
+            if not test_ai_model:
+                logger.error(f"Multi-Provider Test: Failed to get model instance for '{found_model_id_for_provider}'.")
+                print_error(f"Failed to get model instance for: {found_model_id_for_provider}")
+                continue
+
+            try:
+                logger.info(f"Multi-Provider Test: Adapting model '{test_ai_model.model_id}'.")
+                adapted_model = AIModelLangChainAdapter(ai_model=test_ai_model, system_prompt_override=system_prompt_str)
+                
+                # We use SimpleAgent for testing the invocation logic.
+                # Tools are not the focus here, so available_tools_dict is empty.
+                logger.info(f"Multi-Provider Test: Creating SimpleAgent for '{test_ai_model.model_id}'.")
+                test_agent_instance = SimpleAgent(
+                    model_instance=adapted_model, 
+                    system_prompt_str_for_agent_logic=system_prompt_str, 
+                    available_tools_dict={}, # No tools needed for this basic invocation test
+                    content_creator_instance=content_creator_instance
+                )
+                
+                test_input = f"Hello, this is a test for the {provider_name} model ({test_ai_model.model_id}). How are you?"
+                logger.info(f"Multi-Provider Test: Invoking agent with input: '{test_input}'")
+                print_colored(f"Invoking agent for {provider_name} ({test_ai_model.model_id})...", Colors.BLUE)
+                
+                response_dict = test_agent_instance.invoke({"input": test_input})
+                response_content = response_dict.get("output", "No output content.")
+                
+                logger.info(f"Multi-Provider Test: Response from {provider_name} ({test_ai_model.model_id}): {response_content[:100]}...")
+                print_success(f"Response from {provider_name} ({test_ai_model.model_id}):")
+                print_colored(response_content, Colors.WHITE)
+
+            except Exception as e_agent:
+                logger.error(f"Multi-Provider Test: Error during agent invocation for {provider_name} ({found_model_id_for_provider}): {e_agent}", exc_info=True)
+                print_error(f"Error during agent test for {provider_name} ({found_model_id_for_provider}): {e_agent}")
+    
+    except ConfigError as e_conf:
+        logger.error(f"Multi-Provider Test: Configuration error: {e_conf}", exc_info=True)
+        print_error(f"Test Configuration Error: {e_conf}")
+    except ImportError as e_import:
+        logger.error(f"Multi-Provider Test: Import error: {e_import}", exc_info=True)
+        print_error(f"Test Import Error: {e_import}. Ensure all modules are correctly placed and named.")
+    except Exception as e_general:
+        logger.error(f"Multi-Provider Test: A general error occurred: {e_general}", exc_info=True)
+        print_error(f"Test General Error: {e_general}")
+    finally:
+        print_colored("\n--- Multi-Provider Agent Test Finished ---", Colors.MAGENTA, bold=True)
+        logger.info("--- Multi-Provider Agent Test Finished ---")
+
 
 def update_help_menu():
     """Print updated help information including persona commands."""
@@ -1019,4 +1145,14 @@ Certifique-se de que o JSON é válido.
 
 
 if __name__ == "__main__":
+    # It's good practice to ensure logging is configured before any major operations,
+    # including tests that might log.
+    # initialize_all_systems() in main() handles this, but if test runs first,
+    # we might want a basic config here or ensure test_multi_provider_agent also sets up basic logging if needed.
+    # For now, assuming logger in test_multi_provider_agent will use whatever default or pre-configured setup.
+    
+    # Call the test function before the main application loop
+    test_multi_provider_agent() 
+    
+    # Proceed to the main application
     main()

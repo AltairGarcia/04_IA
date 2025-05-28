@@ -9,11 +9,13 @@ from .openai_provider import OpenAIProvider
 from .anthropic_provider import AnthropicProvider
 from .google_provider import GoogleProvider
 from .model_selector import ModelSelector, ModelPerformanceTracker
+from .adapters import AIModelLangChainAdapter # Added import
 
 __all__ = [
     'OpenAIProvider',
     'AnthropicProvider', 
     'GoogleProvider',
     'ModelSelector',
-    'ModelPerformanceTracker'
+    'ModelPerformanceTracker',
+    'AIModelLangChainAdapter' # Added to __all__
 ]

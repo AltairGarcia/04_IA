@@ -269,6 +269,7 @@ class ModelsConfig:
             self.available_models = [
                 ModelDetail(model_id="gemini-1.5-pro", provider="google", api_key_env_var="GEMINI_API_KEY"),
                 ModelDetail(model_id="gpt-4o", provider="openai", api_key_env_var="OPENAI_API_KEY"),
+                ModelDetail(model_id="claude-3-haiku-20240307", provider="anthropic", api_key_env_var="ANTHROPIC_API_KEY"),
                 # Example for a local model (actual implementation would require more setup)
                 # ModelDetail(model_id="llama3-8b-local", provider="local", parameters={"path": "/models/llama3-8b"})
             ]
