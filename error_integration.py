@@ -102,7 +102,7 @@ def api_call_decorator(
                 )
 
                 # Log the error
-                logger.error(f"API call to {api_name} failed after {duration_ms:.2f}ms: {message}")
+                logger.error(f"API call to {api_name} failed after {duration_ms:.2f}ms: {message}", exc_info=True)
 
                 # Re-raise the exception
                 raise

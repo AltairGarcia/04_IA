@@ -15,10 +15,10 @@ from personas import get_default_persona, get_persona_by_name, get_all_personas,
 # Configure logging
 logger = logging.getLogger(__name__)
 
-# Keep backward compatibility for external imports
-class ConfigError(Exception):
-    """Exception raised for configuration errors."""
-    pass
+# ConfigError is now imported from core.config
+# class ConfigError(Exception):
+#     """Exception raised for configuration errors."""
+#     pass
 
 
 def load_config() -> Dict[str, Any]:
@@ -65,7 +65,7 @@ def load_config() -> Dict[str, Any]:
             
             # Optional API keys from unified config
             "elevenlabs_api_key": unified_config.api.elevenlabs_api_key,
-            "dalle_api_key": unified_config.api.stability_api_key,  # Map to stability for compatibility
+            "dalle_api_key": unified_config.api.openai_api_key,  # Correctly mapped to OpenAI
             "stabilityai_api_key": unified_config.api.stability_api_key,
             "pixabay_api_key": unified_config.api.pixabay_api_key,
             "pexels_api_key": unified_config.api.pexels_api_key,

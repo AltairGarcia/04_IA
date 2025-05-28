@@ -6,10 +6,12 @@ Provides secure authentication and authorization for production deployment.
 import os
 import jwt
 import time
-import hashlib
+# import hashlib # Removed hashlib
 import logging
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any, Callable
+from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError, InvalidHashError # Add InvalidHashError
 from functools import wraps
 from dataclasses import dataclass
 import streamlit as st
@@ -44,6 +46,7 @@ class AuthManager:
         self.secret_key = self.config.security.secret_key
         self.jwt_secret = self.config.security.jwt_secret
         self.session_timeout = self.config.security.session_timeout
+        self.ph = PasswordHasher()
         
         # Initialize session state
         if 'authenticated' not in st.session_state:
@@ -54,13 +57,22 @@ class AuthManager:
             st.session_state.auth_timestamp = None
     
     def hash_password(self, password: str) -> str:
-        """Hash password using SHA-256 with salt."""
-        salt = self.secret_key[:16]  # Use part of secret key as salt
-        return hashlib.sha256((password + salt).encode()).hexdigest()
+        """Hash password using Argon2."""
+        return self.ph.hash(password)
     
     def verify_password(self, password: str, hashed: str) -> bool:
-        """Verify password against hash."""
-        return self.hash_password(password) == hashed
+        """Verify password against Argon2 hash."""
+        try:
+            self.ph.verify(hashed, password)
+            return True
+        except VerifyMismatchError:
+            return False
+        except InvalidHashError: # Catch if the hash is not a valid Argon2 hash
+            logger.error(f"Attempted to verify an invalid Argon2 hash: {hashed[:20]}...")
+            return False
+        except Exception as e: # Catch other potential argon2 errors
+            logger.error(f"Argon2 verification error: {e}")
+            return False
     
     def create_token(self, user_id: str, username: str) -> str:
         """Create JWT token for user."""
@@ -99,7 +111,8 @@ class AuthManager:
         admin_user = {
             'id': '1',
             'username': 'admin',
-            'password_hash': self.hash_password('admin123'),  # Default password
+            # Replace placeholder with actual Argon2 hash for 'admin123'
+            'password_hash': '$argon2id$v=19$m=65536,t=3,p=4$qCIoOLMAbdlelzpyAgWXdA$BAaiWuXo81SovtBNjfWslhqNVydmO0Xx5gR2J7wxMEk', 
             'email': 'admin@langgraph101.com',
             'role': 'admin'
         }
@@ -107,7 +120,8 @@ class AuthManager:
         demo_user = {
             'id': '2',
             'username': 'demo',
-            'password_hash': self.hash_password('demo123'),  # Default password
+            # Replace placeholder with actual Argon2 hash for 'demo123'
+            'password_hash': '$argon2id$v=19$m=65536,t=3,p=4$0aLXi9zzU+NFPiC31ciT7Q$sCcBfhl1FPTzYVQ+N+5icqaZU2wScLmSxc6G+MJzbxw',
             'email': 'demo@langgraph101.com',
             'role': 'user'
         }

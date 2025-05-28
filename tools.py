@@ -12,6 +12,7 @@ import time
 from typing import List  # Added back List
 from langchain_core.tools import tool, BaseTool  # Added back BaseTool
 from langchain_community.tools.tavily_search import TavilySearchResults
+from simpleeval import SimpleEval, NameNotDefined, InvalidExpression # Added for calculator
 from weather import get_weather, format_weather_response, WeatherError, get_mock_weather
 import requests
 
@@ -48,7 +49,7 @@ class ElevenLabsTTS:
         if response.status_code == 200:
             return response.content
         else:
-            logger.error(f"ElevenLabs TTS API error: {response.status_code} - {response.text}")
+            logger.error(f"ElevenLabs TTS API error: {response.status_code} - {response.text}", exc_info=True)
             return b""  # Return empty bytes on error
 
 class PexelsAPI:
@@ -259,31 +260,35 @@ class GeminiAPI:
                     try:
                         return data["candidates"][0]["content"]["parts"][0]["text"]
                     except (KeyError, IndexError, TypeError) as e:
-                        self.logger.error(f"Gemini API response parsing error: {e} | Raw: {data}")
+                        self.logger.error(f"Gemini API response parsing error. Raw: {data}", exc_info=e)
                         raise requests.exceptions.RequestException(f"Gemini API response parsing error: {e} | Raw: {data}")
                 elif response.status_code in (429, 500, 502, 503, 504):
                     # Transient error, retry
-                    self.logger.warning(f"Gemini API transient error (status {response.status_code}), attempt {attempt}/{self.max_retries}")
+                    self.logger.warning(f"Gemini API transient error (status {response.status_code}), attempt {attempt}/{self.max_retries}", exc_info=True) # Added exc_info for warnings
                     last_http_error_response = response  # Capture the response
                     time.sleep(self.retry_delay * attempt)
                     continue
                 else:
                     # Permanent error
-                    self.logger.error(f"Gemini API error: {response.status_code} {response.text}")
+                    self.logger.error(f"Gemini API error: {response.status_code} {response.text}", exc_info=True)
                     response.raise_for_status()
                     raise requests.exceptions.RequestException(f"Erro ao acessar Gemini API: {response.status_code} - {response.text}. Verifique sua chave de API, conexão de internet ou limite de uso.")
             except requests.exceptions.RequestException as e:
-                self.logger.warning(f"Gemini API network error: {e}, attempt {attempt}/{self.max_retries}")
+                self.logger.warning(f"Gemini API network error: {e}, attempt {attempt}/{self.max_retries}", exc_info=True) # Added exc_info for warnings
                 last_exception = e
                 last_http_error_response = None  # Clear if network error overrides
                 time.sleep(self.retry_delay * attempt)
                 continue
         # If we get here, all retries failed
         final_error_detail = str(last_exception) if last_exception else "Unknown error"
-        if last_http_error_response and not last_exception:
+        if last_http_error_response and not last_exception: # If the last failure was an HTTP error, not a network exception
             final_error_detail = f"HTTP Status {last_http_error_response.status_code}: {last_http_error_response.text}"
-
-        self.logger.error(f"Gemini API failed after {self.max_retries} attempts: {final_error_detail}")
+            # Log with exc_info=True if we want the stack trace leading to this specific point of raising the final RequestException
+            self.logger.error(f"Gemini API failed after {self.max_retries} attempts due to HTTP error: {final_error_detail}", exc_info=True)
+        elif last_exception: # If the last failure was a network or other RequestException
+             self.logger.error(f"Gemini API failed after {self.max_retries} attempts: {final_error_detail}", exc_info=last_exception)
+        else: # Should not happen if logic is correct, but as a fallback
+            self.logger.error(f"Gemini API failed after {self.max_retries} attempts: {final_error_detail}", exc_info=True)
         raise requests.exceptions.RequestException(f"Falha ao conectar à Gemini API após {self.max_retries} tentativas. Verifique sua conexão de internet, chave de API ou tente novamente mais tarde. Erro: {final_error_detail}")
 
 @tool
@@ -416,7 +421,7 @@ def search_web(query: str = "") -> str:
             "results_count": len(formatted_results)
         }
     except Exception as e:
-        print(f"Erro na busca web: {str(e)}")
+        logger.error(f"Erro na busca web: {str(e)}", exc_info=True)
         return f"Erro ao buscar na web: {str(e)}"
 
 @tool
@@ -433,42 +438,44 @@ def calculator(expression: str) -> str:
         O resultado do cálculo ou uma mensagem de erro se a expressão for inválida.
     """
     try:
-        # Sanitize the input to prevent code injection
-        # Only allow basic math operations and functions
-        sanitized = expression.lower()
+        # Basic check for obviously unsafe keywords before even trying simpleeval
+        if any(unsafe in expression.lower() for unsafe in ['import', 'eval', 'exec', 'compile', '__']):
+            return "Expressão inválida ou não permitida (palavras-chave perigosas)."
 
-        # Check for unsafe patterns
-        if re.search(r'[^0-9+\-*/().\s\w]', sanitized) or \
-           any(unsafe in sanitized for unsafe in ['import', 'eval', 'exec', 'compile', '__']):
-            return "Expressão inválida ou não permitida."
+        s = SimpleEval(functions={
+            "sin": math.sin, "cos": math.cos, "tan": math.tan,
+            "asin": math.asin, "acos": math.acos, "atan": math.atan, "atan2": math.atan2,
+            "sqrt": math.sqrt, "log": math.log, "log10": math.log10, "exp": math.exp,
+            "fabs": math.fabs, "pow": math.pow, "abs": abs,
+            "degrees": math.degrees, "radians": math.radians,
+            "ceil": math.ceil, "floor": math.floor, "round": round
+            # round is a builtin, but can be explicitly added
+        })
+        # Define allowed names (constants)
+        s.names = {"pi": math.pi, "e": math.e, "True": True, "False": False, "None": None}
 
-        # Replace common math functions with their math module equivalents
-        sanitized = re.sub(r'\bsin\b', 'math.sin', sanitized)
-        sanitized = re.sub(r'\bcos\b', 'math.cos', sanitized)
-        sanitized = re.sub(r'\btan\b', 'math.tan', sanitized)
-        sanitized = re.sub(r'\bsqrt\b', 'math.sqrt', sanitized)
-        sanitized = re.sub(r'\blog\b', 'math.log', sanitized)
-        sanitized = re.sub(r'\blog10\b', 'math.log10', sanitized)
-        sanitized = re.sub(r'\bexp\b', 'math.exp', sanitized)
-        sanitized = re.sub(r'\bpi\b', 'math.pi', sanitized)
-        sanitized = re.sub(r'\be\b', 'math.e', sanitized)
-
-        # Calculate the result
-        result = eval(sanitized, {"__builtins__": {}}, {"math": math})
+        # Evaluate the expression
+        result = s.eval(expression)
 
         # Format the result
         if isinstance(result, (int, float)):
-            if result.is_integer() and isinstance(result, float):
+            if result == int(result): # Check if it's a whole number
                 return str(int(result))
-            elif abs(result) < 1e-10:  # Handle very small numbers close to zero
+            elif abs(result) < 1e-9:  # Handle very small numbers close to zero
                 return "0"
-            elif abs(result) > 1e10:  # Scientific notation for very large numbers
-                return f"{result:.6e}"
-            else:
-                return str(round(result, 6)).rstrip('0').rstrip('.') if '.' in str(round(result, 6)) else str(round(result, 6))
+            # Format to a reasonable number of decimal places, remove trailing zeros
+            formatted_result = f"{result:.10f}".rstrip('0').rstrip('.')
+            return formatted_result
         else:
             return str(result)
+
+    except NameNotDefined as e:
+        return f"Erro: Nome não definido ou função não permitida: {e.name}"
+    except InvalidExpression as e:
+        return f"Erro: Expressão inválida: {e}"
     except Exception as e:
+        # Catch other potential errors from simpleeval or math functions
+        logger.error(f"Erro ao calcular: {str(e)}", exc_info=True)
         return f"Erro ao calcular: {str(e)}"
 
 
@@ -504,8 +511,10 @@ def get_weather_info(location: str) -> str:
             "location": location
         } if isinstance(weather_data, dict) else response
     except WeatherError as e:
+        logger.error(f"Erro ao obter informações do clima: {str(e)}", exc_info=True)
         return f"Erro ao obter informações do clima: {str(e)}"
     except Exception as e:
+        logger.error(f"Erro inesperado ao obter informações do clima: {str(e)}", exc_info=True)
         return f"Erro inesperado ao obter informações do clima: {str(e)}"
 
 
@@ -551,12 +560,16 @@ def search_news(query: str = "", language: str = "pt", max_results: int = 5) -> 
             "articles_count": len(articles)
         }
     except requests.exceptions.HTTPError as e:
+        logger.error(f"Erro HTTP ao buscar notícias: {e.response.status_code} - {e.response.reason}", exc_info=True)
         return f"Erro HTTP ao buscar notícias: {e.response.status_code} - {e.response.reason}"
     except requests.exceptions.RequestException as e:
+        logger.error(f"Erro de conexão ao buscar notícias: {str(e)}", exc_info=True)
         return f"Erro de conexão ao buscar notícias: {str(e)}"
     except ValueError as e:
+        logger.error(f"Erro ao decodificar resposta JSON das notícias: {str(e)}", exc_info=True)
         return f"Erro ao decodificar resposta JSON das notícias: {str(e)}"
     except Exception as e:
+        logger.error(f"Erro inesperado ao buscar notícias: {str(e)}", exc_info=True)
         return f"Erro inesperado ao buscar notícias: {str(e)}"
 
 

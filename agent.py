@@ -319,7 +319,7 @@ def create_agent(config: Dict[str, Any], tools: List[Any], content_creator: Opti
                 response = self.model.invoke(messages)
                 return {"output": response.content or date_info}
             except Exception as e:
-                logger.warning(f"Erro ao processar data internamente: {e}, usando prompt padrão para LLM.")
+                logger.warning(f"Erro ao processar data internamente: {e}, usando prompt padrão para LLM.", exc_info=True)
                 # Fallback to general LLM if specific handling fails
                 return self._invoke_llm_with_prompt(user_input, self.system_prompt, f"Ocorreu um erro ao tentar obter a data/hora: {e}. Tente responder à pergunta do usuário de outra forma.")
 
@@ -348,7 +348,7 @@ def create_agent(config: Dict[str, Any], tools: List[Any], content_creator: Opti
                 response = self.model.invoke(messages)
                 return {"output": response.content or f"O resultado de {expression_to_calculate} é {math_result}."}
             except Exception as e:
-                logger.warning(f"Erro no cálculo: {e}. Tentando com LLM.")
+                logger.warning(f"Erro no cálculo: {e}. Tentando com LLM.", exc_info=True)
                 # Fallback to general LLM if tool fails
                 return self._invoke_llm_with_prompt(user_input, self.system_prompt, f"Ocorreu um erro ao tentar calcular ({user_input}): {e}. Tente responder à pergunta do usuário de outra forma ou peça para reformular.")
 
@@ -367,7 +367,7 @@ def create_agent(config: Dict[str, Any], tools: List[Any], content_creator: Opti
                 response = self.model.invoke(messages)
                 return {"output": response.content or "Não encontrei uma resposta direta, mas aqui estão os resultados da busca."}
             except Exception as e:
-                logger.warning(f"Erro na busca web: {e}. Tentando com LLM sem busca.")
+                logger.warning(f"Erro na busca web: {e}. Tentando com LLM sem busca.", exc_info=True)
                 return self._invoke_llm_with_prompt(user_input, self.system_prompt, f"Ocorreu um erro ao tentar buscar na web ({user_input}): {e}. Tente responder à pergunta do usuário de outra forma ou peça para reformular.")
 
         def _handle_weather_request(self, user_input: str) -> Dict[str, str]:
@@ -430,7 +430,7 @@ def create_agent(config: Dict[str, Any], tools: List[Any], content_creator: Opti
                 response = self.model.invoke(messages)
                 return {"output": response.content or "Não consegui obter a previsão do tempo detalhada."}
             except Exception as e:
-                logger.warning(f"Erro na busca de clima: {e}. Tentando com LLM sem busca.")
+                logger.warning(f"Erro na busca de clima: {e}. Tentando com LLM sem busca.", exc_info=True)
                 return self._invoke_llm_with_prompt(user_input, self.system_prompt, f"Ocorreu um erro ao tentar buscar o clima ({user_input}): {e}. Tente responder à pergunta do usuário de outra forma ou peça para reformular.")
 
         def _invoke_llm_with_prompt(self, user_input: str, system_prompt_override: Optional[str] = None, context_info: Optional[str] = None) -> Dict[str, str]:
