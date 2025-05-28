@@ -198,6 +198,7 @@ class AppConfig:
     data_dir: str = "data"
     temp_dir: str = "temp"
     uploads_dir: str = "uploads"
+    enable_memory_profiling: bool = True # Added field
     
     def __post_init__(self):
         # Create necessary directories
@@ -322,7 +323,8 @@ class UnifiedConfig:
             debug=os.getenv("DEBUG", "false").lower() in ("true", "1", "yes"),
             host=os.getenv("HOST", "localhost"),
             port=int(os.getenv("PORT", "8000")),
-            workers=int(os.getenv("WORKERS", "1"))
+            workers=int(os.getenv("WORKERS", "1")),
+            enable_memory_profiling=os.getenv("ENABLE_MEMORY_PROFILING", "true").lower() in ("true", "1", "yes") # Added line
         )
         
         self.database = DatabaseConfig(

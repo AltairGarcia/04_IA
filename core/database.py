@@ -15,8 +15,9 @@ from pathlib import Path
 from contextlib import contextmanager
 from dataclasses import dataclass
 import threading
-from concurrent.futures import ThreadPoolExecutor
+# from concurrent.futures import ThreadPoolExecutor # No longer needed
 import time
+from thread_safe_connection_manager import get_connection_manager, ThreadSafeConnectionManager
 
 logger = logging.getLogger(__name__)
 
@@ -85,51 +86,46 @@ class UnifiedDatabaseManager:
             return
         
         self._initialized = True
-        self.database_url = database_url or "sqlite:///data/langgraph_101.db"
-        self.db_path = self._extract_db_path()
-        self._connection_pool = {}
-        self._executor = ThreadPoolExecutor(max_workers=5)
+        # Get the centrally managed ThreadSafeConnectionManager instance
+        self.ts_connection_manager = get_connection_manager()
+        
+        # The database_url passed to UDM constructor might be an override,
+        # but ts_connection_manager.db_path is the actual path being used by the shared manager.
+        # For consistency, UDM's database_url should reflect what ts_connection_manager uses.
+        # If database_url is provided to UDM, it's effectively ignored if different from
+        # what ThreadSafeConnectionManager is configured with via UnifiedConfig,
+        # as get_connection_manager() will always return the singleton based on UnifiedConfig.
+        self.database_url = str(self.ts_connection_manager.db_path) # Use actual path from ts_connection_manager
+        # self.db_path is no longer needed as a separate attribute.
+        
+        # _connection_pool and _executor are no longer needed.
         self._migrations = []
         
-        # Ensure database directory exists
-        Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
-        
-        # Initialize database
+        # Ensure database directory exists (ThreadSafeConnectionManager might not create it)
+        # Though typically the path from config should be writable.
+        # Path(self.database_url).parent.mkdir(parents=True, exist_ok=True) # Re-eval if needed, get_connection_manager might handle this.
+
+        # Initialize database schema via UnifiedDatabaseManager
         self._initialize_database()
         self._register_migrations()
         self._run_migrations()
     
-    def _extract_db_path(self) -> str:
-        """Extract database file path from URL"""
-        if self.database_url.startswith("sqlite:///"):
-            return self.database_url.replace("sqlite:///", "")
-        elif self.database_url.startswith("sqlite://"):
-            return self.database_url.replace("sqlite://", "")
-        else:
-            return self.database_url
+    # _extract_db_path is no longer needed.
     
     @contextmanager
     def get_connection(self) -> ContextManager[sqlite3.Connection]:
-        """Get a database connection with automatic cleanup"""
-        conn = None
-        try:
-            conn = sqlite3.connect(
-                self.db_path,
-                check_same_thread=False,
-                timeout=30.0
-            )
-            conn.execute("PRAGMA foreign_keys = ON")
-            conn.execute("PRAGMA journal_mode = WAL")  # Better concurrency
+        """
+        Get a database connection using ThreadSafeConnectionManager.
+        """
+        # All PRAGMAs and connection setup are now handled by ThreadSafeConnectionManager.
+        # The ThreadSafeConnectionManager's get_connection already returns a context-managed connection.
+        with self.ts_connection_manager.get_connection() as conn:
+            # UnifiedDatabaseManager methods rely on dict-like row access.
+            # ThreadSafeConnectionManager's connections do not set row_factory by default.
+            # Set it here to ensure compatibility for UDM's existing methods.
             conn.row_factory = sqlite3.Row
             yield conn
-        except Exception as e:
-            if conn:
-                conn.rollback()
-            logger.error(f"Database error: {e}")
-            raise DatabaseError(f"Database operation failed: {e}")
-        finally:
-            if conn:
-                conn.close()
+        # Exception handling and conn.close() are managed by ts_connection_manager.get_connection()
     
     def _initialize_database(self):
         """Initialize database with all required tables"""
@@ -151,10 +147,137 @@ class UnifiedDatabaseManager:
             self._create_analytics_tables(conn)
             self._create_security_tables(conn)
             self._create_system_tables(conn)
+            # Ensure _create_profiler_tables is called if it wasn't already correctly placed or present
+            self._create_profiler_tables(conn) 
+            self._create_enhanced_monitoring_tables(conn) # Added call
             
             conn.commit()
             logger.info("Database initialization completed")
-    
+
+    def _create_enhanced_monitoring_tables(self, conn: sqlite3.Connection):
+        """Create tables for EnhancedUnifiedMonitoringSystem."""
+        logger.info("Creating enhanced monitoring tables...")
+
+        # Database Integration Metrics Table
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS database_integration_metrics (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT NOT NULL,
+                active_connections INTEGER,
+                total_queries INTEGER,
+                query_errors INTEGER,
+                avg_query_time REAL,
+                connection_pool_efficiency REAL,
+                memory_used_by_connections_mb REAL,
+                orphaned_connections_cleaned INTEGER,
+                database_file_size_mb REAL
+            )
+        """)
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_integration_metrics_timestamp ON database_integration_metrics(timestamp)")
+
+        # Enhanced Alerts Table
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS enhanced_alerts (
+                id TEXT PRIMARY KEY,
+                timestamp TEXT NOT NULL,
+                category TEXT NOT NULL,
+                severity TEXT NOT NULL,
+                source TEXT NOT NULL,
+                title TEXT NOT NULL,
+                message TEXT NOT NULL,
+                details TEXT,
+                metrics TEXT,
+                resolved BOOLEAN DEFAULT FALSE,
+                resolved_at TEXT,
+                resolved_by TEXT
+            )
+        """)
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_enhanced_alerts_timestamp ON enhanced_alerts(timestamp)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_enhanced_alerts_category ON enhanced_alerts(category)")
+
+        # System Events Table
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS system_events (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT NOT NULL,
+                event_type TEXT NOT NULL,
+                source TEXT NOT NULL,
+                description TEXT NOT NULL,
+                data TEXT,
+                severity TEXT DEFAULT 'info'
+            )
+        """)
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_system_events_timestamp ON system_events(timestamp)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_system_events_type ON system_events(event_type)")
+
+        # System Config Table
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS system_config (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL,
+                description TEXT,
+                updated_at TEXT NOT NULL,
+                updated_by TEXT DEFAULT 'system'
+            )
+        """)
+        logger.info("Enhanced monitoring tables created successfully.")
+
+    def _create_profiler_tables(self, conn: sqlite3.Connection):
+        """Create profiler-specific tables for AdvancedMemoryProfiler."""
+        logger.info("Creating profiler tables...")
+
+        # Profiler Snapshots Table
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS profiler_snapshots (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT NOT NULL,
+                process_memory_mb REAL,
+                system_memory_percent REAL,
+                system_memory_available_gb REAL,
+                gc_stats_json TEXT,
+                tracemalloc_top_json TEXT,
+                object_counts_json TEXT,
+                thread_count INTEGER,
+                file_descriptors INTEGER,
+                stack_size_kb REAL,
+                peak_memory_mb REAL
+            )
+        """)
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_profiler_snapshots_timestamp ON profiler_snapshots(timestamp)")
+
+        # Profiler Leaks Table
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS profiler_leaks (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                object_type TEXT NOT NULL,
+                count_increase INTEGER,
+                size_increase_mb REAL,
+                first_seen TEXT,
+                last_seen TEXT,
+                severity TEXT
+            )
+        """)
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_profiler_leaks_object_type ON profiler_leaks(object_type)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_profiler_leaks_severity ON profiler_leaks(severity)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_profiler_leaks_last_seen ON profiler_leaks(last_seen)")
+
+        # Profiler Hotspots Table
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS profiler_hotspots (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                filename TEXT,
+                line_number INTEGER,
+                function_name TEXT,
+                size_mb REAL,
+                count INTEGER,
+                traceback_json TEXT
+            )
+        """)
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_profiler_hotspots_filename ON profiler_hotspots(filename)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_profiler_hotspots_function_name ON profiler_hotspots(function_name)")
+        
+        logger.info("Profiler tables created successfully.")
+
     def _create_core_tables(self, conn: sqlite3.Connection):
         """Create core application tables"""
         
@@ -862,8 +985,9 @@ class UnifiedDatabaseManager:
     
     def __exit__(self, exc_type, exc_val, exc_tb):
         # Cleanup if needed
-        if self._executor:
-            self._executor.shutdown(wait=True)
+        # self._executor is removed, so no shutdown needed here.
+        # self.ts_connection_manager is a singleton, its lifecycle is managed by its own module.
+        pass
 
 
 # Global database manager instance
