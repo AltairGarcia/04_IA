@@ -10,6 +10,8 @@ import traceback # Added back traceback
 import os
 from datetime import datetime  # Added import for datetime
 import json  # Added for parsing Gemini JSON output
+import logging # Added for standard logging
+from system_initialization import initialize_all_systems, SystemInitializer # For logging setup
 
 # Import modules from our project
 from config import load_config, ConfigError, get_system_prompt, get_available_personas
@@ -90,7 +92,29 @@ def print_cli_dashboard():
 def main():
     """Main application entry point."""
     try:
-        # Load configuration
+        # Initialize logging and other systems
+        try:
+            init_results = initialize_all_systems(use_env_vars=True, force=False)
+            # Get a logger for this module AFTER logging is configured by initialize_all_systems
+            logger = logging.getLogger(__name__) # Get logger after init
+            if init_results.get('status') == 'error':
+                # Use logger if available, otherwise print
+                log_message = f"CRITICAL: System initialization failed: {init_results.get('error')}"
+                if logger:
+                    logger.critical(log_message)
+                else: # Fallback if logger itself failed during init
+                    print(log_message)
+                # Decide if CLI should exit or continue with potential issues
+            logger.info("LangGraph 101 CLI application started and logging initialized.")
+
+        except Exception as e_init:
+            # Fallback if initialize_all_systems itself fails catastrophically
+            logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(name)s - %(levelname)s - [MAIN_INIT_FALLBACK] %(message)s')
+            logger = logging.getLogger(__name__) # Ensure logger is defined for this block
+            logger.error("Critical error during system initialization call in CLI.", exc_info=True)
+            print(f"CRITICAL: Error during system initialization: {e_init}. CLI might not function correctly.")
+
+        # Load configuration (this line already exists, ensure it's after logging init if it also logs)
         config = load_config()
 
         # Define tool_list here so it's in scope for the dashboard and tool handling
@@ -155,9 +179,10 @@ def main():
         agent = create_agent(config, tools)        # Initialize ContentCreator
         gemini_api_key = config.get('api_key')
         if not gemini_api_key:
-            print("Error: Gemini API key not found in configuration. Content creation features will be limited.")
+            logger.error("Error: Gemini API key not found in configuration. Content creation features will be limited.")
             content_creator_instance = None  # Or handle as per your app's logic
         else:
+            logger.info("Gemini API key found. Initializing ContentCreator.")
             # Create API keys dictionary for ContentCreator
             api_keys_dict = {
                 "api_key": gemini_api_key,
@@ -209,8 +234,11 @@ def main():
                 print_colored("Descreva o conteúdo que você quer criar (ex: vídeo de 5 min sobre segurança de senhas):", Colors.YELLOW)
                 workflow_prompt = get_user_input()
                 if not workflow_prompt.strip():
+                    logger.warning("Workflow prompt was empty.")
                     print_error("Descrição do conteúdo não pode ser vazia.")
-                    continue                # Initialize API clients (check keys)
+                    continue
+                logger.info(f"Starting Full Content Creation Workflow for prompt: {workflow_prompt[:50]}...")
+                # Initialize API clients (check keys)
                 gemini_api_key = config.get('api_key')
                 elevenlabs_api_key = config.get('elevenlabs_api_key')
                 pexels_api_key = config.get('pexels_api_key')
@@ -222,8 +250,10 @@ def main():
                 youtube_api_key = config.get('youtube_data_api_key')
 
                 if not gemini_api_key:
+                    logger.error("Gemini API key não configurada for Full Workflow. O workflow não pode continuar sem ela.")
                     print_error("Gemini API key não configurada. O workflow não pode continuar sem ela.")
                     continue
+                logger.info("Gemini API key present for Full Workflow.")
 
                 gemini_tool = GeminiAPI(api_key=gemini_api_key)
                 assets = {} # To store generated content
@@ -242,6 +272,7 @@ Certifique-se de que o JSON é válido.
 """
                     print_colored("Gerando detalhes do conteúdo com Gemini...", Colors.BLUE)
                     show_thinking_animation(2.0, "Gemini - Gerando Estrutura do Conteúdo")
+                    logger.info("Invoking Gemini for structured content generation.")
                     raw_gemini_output = gemini_tool.generate_content(prompt=gemini_prompt_structured)
 
                     parsed_gemini_output = None
@@ -257,8 +288,10 @@ Certifique-se de que o JSON é válido.
                         assets['description'] = parsed_gemini_output.get('description', f'Descrição para {workflow_prompt}')
                         assets['script'] = parsed_gemini_output.get('script', f'Roteiro para {workflow_prompt}')
                         assets['thumbnail_prompt'] = parsed_gemini_output.get('thumbnail_prompt', f'Thumbnail para {workflow_prompt}')
+                        logger.info("Detalhes do conteúdo gerados e parseados por Gemini.")
                         print_success("Detalhes do conteúdo gerados e parseados por Gemini.")
                     except json.JSONDecodeError as e:
+                        logger.error(f"Erro ao decodificar JSON do Gemini: {e}. Usando saída bruta.", exc_info=True)
                         print_error(f"Erro ao decodificar JSON do Gemini: {e}. Usando saída bruta.")
                         print_colored("Saída bruta do Gemini:", Colors.YELLOW)
                         print_colored(raw_gemini_output, Colors.WHITE)
@@ -268,6 +301,7 @@ Certifique-se de que o JSON é válido.
                         assets['script'] = raw_gemini_output # Store the whole raw output as script
                         assets['thumbnail_prompt'] = f"Uma imagem atraente para um vídeo sobre {workflow_prompt}"
                 except Exception as e:
+                    logger.error(f"Erro crítico na etapa Gemini: {e}", exc_info=True)
                     print_error(f"Erro crítico na etapa Gemini: {e}")
                     assets['title'] = f"Título para {workflow_prompt} (Erro Gemini)"
                     assets['description'] = f"Descrição para {workflow_prompt} (Erro Gemini)"
@@ -283,9 +317,10 @@ Certifique-se de que o JSON é válido.
                         # Limit script length for TTS; 2500 chars is often a safe bet for many APIs
                         script_for_tts = assets['script']
                         if len(script_for_tts) > 2500:
+                            logger.warning("Roteiro longo para TTS, usando os primeiros 2500 caracteres.")
                             print_colored("Roteiro longo, usando os primeiros 2500 caracteres para áudio.", Colors.YELLOW)
                             script_for_tts = script_for_tts[:2500]
-
+                        logger.info("Invoking ElevenLabs for TTS.")
                         audio_bytes = tts_tool.text_to_speech(text=script_for_tts)
                         audio_output_dir = os.path.join(os.path.dirname(__file__), "audio_output")
                         os.makedirs(audio_output_dir, exist_ok=True)
@@ -294,13 +329,17 @@ Certifique-se de que o JSON é válido.
                         with open(audio_filename, 'wb') as f:
                             f.write(audio_bytes)
                         assets['audio_file'] = audio_filename
+                        logger.info(f"Áudio salvo em: {audio_filename}")
                         print_success(f"Áudio salvo em: {audio_filename}")
                     except Exception as e:
+                        logger.error(f"Erro na etapa ElevenLabs: {e}", exc_info=True)
                         print_error(f"Erro na etapa ElevenLabs: {e}")
                         assets['audio_file'] = "Erro ao gerar áudio"
                 elif not elevenlabs_api_key:
+                    logger.warning("ELEVENLABS_API_KEY não configurada. Pulando geração de áudio.")
                     print_colored("ELEVENLABS_API_KEY não configurada. Pulando geração de áudio.", Colors.YELLOW)
                 elif not assets.get('script') or "Erro Gemini" in assets.get('script', '') or assets.get('script') == assets.get('gemini_raw_output', ''):
+                    logger.warning("Roteiro não disponível ou inválido devido a erro anterior no Gemini. Pulando geração de áudio.")
                     print_colored("Roteiro não disponível ou inválido devido a erro anterior no Gemini. Pulando geração de áudio.", Colors.YELLOW)
 
                 # 3. Stability AI/DALL-E: Image Generation
@@ -318,28 +357,36 @@ Certifique-se de que o JSON é válido.
                             with open(image_filename, 'wb') as f:
                                 f.write(image_bytes)
                             assets['thumbnail_file_stability'] = image_filename
+                        logger.info(f"Thumbnail (Stability AI) salvo em: {image_filename}")
                             print_success(f"Thumbnail (Stability AI) salvo em: {image_filename}")
                         except Exception as e:
+                        logger.error(f"Erro na etapa Stability AI: {e}", exc_info=True)
                             print_error(f"Erro na etapa Stability AI: {e}")
                             assets['thumbnail_file_stability'] = "Erro ao gerar thumbnail com Stability AI"
                     elif dalle_api_key: # Fallback to DALL-E
                         try:
+                            logger.info("Stability AI não disponível/falhou. Tentando DALL-E...")
                             print_colored("Stability AI não disponível/falhou. Tentando DALL-E...", Colors.YELLOW if stability_api_key else Colors.BLUE)
                             show_thinking_animation(1.5, "DALL-E Processando")
                             dalle_tool = DalleAPI(api_key=dalle_api_key)
                             response_data = dalle_tool.generate_image(prompt=assets['thumbnail_prompt'])
                             if response_data and response_data.get('data') and response_data['data'][0].get('url'):
                                 assets['thumbnail_url_dalle'] = response_data['data'][0]['url']
+                                logger.info(f"Thumbnail (DALL-E) URL: {assets['thumbnail_url_dalle']}")
                                 print_success(f"Thumbnail (DALL-E) URL: {assets['thumbnail_url_dalle']}")
                             else:
                                 assets['thumbnail_url_dalle'] = "Erro ao gerar thumbnail com DALL-E (sem URL)"
+                                logger.error(f"DALL-E não retornou URL da imagem. Resposta: {response_data}")
                                 print_error(f"DALL-E não retornou URL da imagem. Resposta: {response_data}")
                         except Exception as e:
+                            logger.error(f"Erro na etapa DALL-E: {e}", exc_info=True)
                             print_error(f"Erro na etapa DALL-E: {e}")
                             assets['thumbnail_url_dalle'] = "Erro ao gerar thumbnail com DALL-E"
                     else:
+                        logger.warning("Nenhuma API Key para Stability AI ou DALL-E configurada. Pulando geração de thumbnail.")
                         print_colored("Nenhuma API Key para Stability AI ou DALL-E configurada. Pulando geração de thumbnail.", Colors.YELLOW)
                 elif not assets.get('thumbnail_prompt') or "Erro Gemini" in assets.get('thumbnail_prompt',''):
+                    logger.warning("Prompt para thumbnail não disponível ou inválido. Pulando geração de thumbnail.")
                     print_colored("Prompt para thumbnail não disponível ou inválido. Pulando geração de thumbnail.", Colors.YELLOW)
 
                 # 4. Pexels/Pixabay: Stock Media Search
@@ -349,22 +396,29 @@ Certifique-se de que o JSON é válido.
                         print_colored(f"Buscando mídia stock no Pexels para '{stock_media_query}'...", Colors.BLUE)
                         show_thinking_animation(1.0, "Pexels Buscando")
                         pexels_tool = PexelsAPI(api_key=pexels_api_key)
+                        logger.info(f"Buscando mídia stock no Pexels para '{stock_media_query}'...")
                         assets['pexels_images'] = pexels_tool.search_images(query=stock_media_query, per_page=3)
                         assets['pexels_videos'] = pexels_tool.search_videos(query=stock_media_query, per_page=2)
+                        logger.info("Busca no Pexels concluída.")
                         print_success("Busca no Pexels concluída.")
                     except Exception as e:
+                        logger.error(f"Erro na etapa Pexels: {e}", exc_info=True)
                         print_error(f"Erro na etapa Pexels: {e}")
                 elif pixabay_api_key: # Fallback
                     try:
+                        logger.info(f"Pexels não disponível/falhou. Buscando mídia stock no Pixabay para '{stock_media_query}'...")
                         print_colored(f"Pexels não disponível/falhou. Buscando mídia stock no Pixabay para '{stock_media_query}'...", Colors.YELLOW if pexels_api_key else Colors.BLUE)
                         show_thinking_animation(1.0, "Pixabay Buscando")
                         pixabay_tool = PixabayAPI(api_key=pixabay_api_key)
                         assets['pixabay_images'] = pixabay_tool.search_images(query=stock_media_query, per_page=3)
                         assets['pixabay_videos'] = pixabay_tool.search_videos(query=stock_media_query, per_page=2)
+                        logger.info("Busca no Pixabay concluída.")
                         print_success("Busca no Pixabay concluída.")
                     except Exception as e:
+                        logger.error(f"Erro na etapa Pixabay: {e}", exc_info=True)
                         print_error(f"Erro na etapa Pixabay: {e}")
                 else:
+                    logger.warning("Nenhuma API Key para Pexels ou Pixabay configurada. Pulando busca de mídia stock.")
                     print_colored("Nenhuma API Key para Pexels ou Pixabay configurada. Pulando busca de mídia stock.", Colors.YELLOW)
 
                 # 5. AssemblyAI/Deepgram: Audio Transcription
@@ -388,15 +442,19 @@ Certifique-se de que o JSON é válido.
                                     f.write(transcript_text)
                                 assets['transcript_file_assembly'] = transcript_filename
                                 assets['transcript_text_assembly'] = transcript_text
+                                logger.info(f"Transcrição (AssemblyAI) salva em: {transcript_filename}")
                                 print_success(f"Transcrição (AssemblyAI) salva em: {transcript_filename}")
                             else:
+                                logger.error("AssemblyAI não retornou texto da transcrição.")
                                 print_error("AssemblyAI não retornou texto da transcrição.")
                                 assets['transcript_text_assembly'] = "Transcrição vazia ou falhou (AssemblyAI)"
                         except Exception as e:
+                            logger.error(f"Erro na etapa AssemblyAI (transcrição): {e}", exc_info=True)
                             print_error(f"Erro na etapa AssemblyAI (transcrição): {e}")
                             assets['transcript_text_assembly'] = "Erro ao transcrever com AssemblyAI"
                     elif deepgram_api_key: # Fallback
                         try:
+                            logger.info("AssemblyAI não disponível/falhou. Tentando Deepgram...")
                             print_colored("AssemblyAI não disponível/falhou. Tentando Deepgram...", Colors.YELLOW if assemblyai_api_key else Colors.BLUE)
                             show_thinking_animation(1.5, "Deepgram Processando")
                             deepgram_tool = DeepgramAPI(api_key=deepgram_api_key)
@@ -416,16 +474,21 @@ Certifique-se de que o JSON é válido.
                                     f.write(transcript_text)
                                 assets['transcript_file_deepgram'] = transcript_filename
                                 assets['transcript_text_deepgram'] = transcript_text
+                                logger.info(f"Transcrição (Deepgram) salva em: {transcript_filename}")
                                 print_success(f"Transcrição (Deepgram) salva em: {transcript_filename}")
                             else:
+                                logger.error("Deepgram não retornou texto da transcrição.")
                                 print_error("Deepgram não retornou texto da transcrição.")
                                 assets['transcript_text_deepgram'] = "Transcrição vazia ou falhou (Deepgram)"
                         except Exception as e:
+                            logger.error(f"Erro na etapa Deepgram (transcrição): {e}", exc_info=True)
                             print_error(f"Erro na etapa Deepgram (transcrição): {e}")
                             assets['transcript_text_deepgram'] = "Erro ao transcrever com Deepgram"
                     else:
+                        logger.warning("Nenhuma API Key para AssemblyAI ou Deepgram configurada. Pulando transcrição.")
                         print_colored("Nenhuma API Key para AssemblyAI ou Deepgram configurada. Pulando transcrição.", Colors.YELLOW)
                 else:
+                    logger.info("Nenhuma URL fornecida para transcrição. Pulando etapa.")
                     print_colored("Nenhuma URL fornecida para transcrição. Pulando etapa.", Colors.YELLOW)
 
                 # 6. YouTube Data API: Trend Research
@@ -437,14 +500,18 @@ Certifique-se de que o JSON é válido.
                         youtube_results = youtube_tool.search_videos(query=assets.get('title', workflow_prompt), max_results=5)
                         if youtube_results:
                             assets['youtube_research'] = youtube_results
+                            logger.info(f"Pesquisa no YouTube concluída. {len(youtube_results)} vídeos encontrados.")
                             print_success(f"Pesquisa no YouTube concluída. {len(youtube_results)} vídeos encontrados.")
                         else:
                             assets['youtube_research'] = []
+                            logger.info("Nenhum vídeo encontrado no YouTube para esta pesquisa.")
                             print_colored("Nenhum vídeo encontrado no YouTube para esta pesquisa.", Colors.YELLOW)
                     except Exception as e:
+                        logger.error(f"Erro na etapa YouTube Data API: {e}", exc_info=True)
                         print_error(f"Erro na etapa YouTube Data API: {e}")
                         assets['youtube_research'] = "Erro ao pesquisar no YouTube"
                 else:
+                    logger.warning("YOUTUBE_DATA_API_KEY não configurada. Pulando pesquisa de tendências.")
                     print_colored("YOUTUBE_DATA_API_KEY não configurada. Pulando pesquisa de tendências.", Colors.YELLOW)
 
                 # 7. Display all generated assets
@@ -549,37 +616,45 @@ Certifique-se de que o JSON é válido.
                     if tool_choice == "1": # Gemini
                         gemini_api_key = config.get('GEMINI_API_KEY')
                         if not gemini_api_key:
+                            logger.error("GEMINI_API_KEY não configurada para uso individual.")
                             print_error("GEMINI_API_KEY não configurada.")
                             continue
                         gemini_tool = GeminiAPI(api_key=gemini_api_key)
                         prompt = get_user_input("Descreva o que você quer gerar com Gemini: ")
                         if not prompt.strip():
+                            logger.warning("Prompt para Gemini individual estava vazio.")
                             print_error("Prompt não pode ser vazio.")
                             continue
                         try:
+                            logger.info(f"Gerando com Gemini (individual): {prompt[:50]}...")
                             print_colored("Gerando com Gemini...", Colors.BLUE)
                             show_thinking_animation(1.5, "Gemini Processando")
                             response = gemini_tool.generate_content(prompt=prompt)
                             print_success("Resposta do Gemini:")
                             print_colored(response, Colors.WHITE)
                         except Exception as e:
+                            logger.error(f"Erro ao usar Gemini (individual): {e}", exc_info=True)
                             print_error(f"Erro ao usar Gemini: {e}")
 
                     elif tool_choice == "2": # ElevenLabs
                         elevenlabs_api_key = config.get('ELEVENLABS_API_KEY')
                         if not elevenlabs_api_key:
+                            logger.error("ELEVENLABS_API_KEY não configurada para uso individual.")
                             print_error("ELEVENLABS_API_KEY não configurada.")
                             continue
                         tts_tool = ElevenLabsTTS(api_key=elevenlabs_api_key)
                         text_to_speak = get_user_input("Texto para converter em áudio: ")
                         if not text_to_speak.strip():
+                            logger.warning("Texto para ElevenLabs (individual) estava vazio.")
                             print_error("Texto não pode ser vazio.")
                             continue
                         try:
+                            logger.info(f"Gerando áudio com ElevenLabs (individual): {text_to_speak[:50]}...")
                             print_colored("Gerando áudio com ElevenLabs...", Colors.BLUE)
                             show_thinking_animation(1.5, "ElevenLabs Processando")
                             script_for_tts = text_to_speak
                             if len(script_for_tts) > 2500:
+                                logger.warning("Texto para ElevenLabs (individual) truncado para 2500 caracteres.")
                                 print_colored("Texto muito longo, truncando para 2500 caracteres para ElevenLabs.", Colors.YELLOW)
                                 script_for_tts = script_for_tts[:2500]
 
@@ -590,19 +665,23 @@ Certifique-se de que o JSON é válido.
                             audio_filename = os.path.join(audio_output_dir, f"individual_audio_elevenlabs_{timestamp}.mp3")
                             with open(audio_filename, 'wb') as f:
                                 f.write(audio_bytes)
+                            logger.info(f"Áudio (ElevenLabs individual) salvo em: {audio_filename}")
                             print_success(f"Áudio salvo em: {audio_filename}")
                         except Exception as e:
+                            logger.error(f"Erro ao usar ElevenLabs (individual): {e}", exc_info=True)
                             print_error(f"Erro ao usar ElevenLabs: {e}")
 
                     elif tool_choice == "3": # Stability AI / DALL-E
                         stability_api_key = config.get('STABILITY_API_KEY')
                         dalle_api_key = config.get('DALLE_API_KEY')
                         if not stability_api_key and not dalle_api_key:
+                            logger.error("Nenhuma API Key para Stability AI ou DALL-E configurada para uso individual.")
                             print_error("Nenhuma API Key para Stability AI ou DALL-E configurada.")
                             continue
 
                         prompt = get_user_input("Prompt para gerar imagem: ")
                         if not prompt.strip():
+                            logger.warning("Prompt para geração de imagem (individual) estava vazio.")
                             print_error("Prompt não pode ser vazio.")
                             continue
 
@@ -612,6 +691,7 @@ Certifique-se de que o JSON é válido.
 
                         if stability_api_key:
                             try:
+                                logger.info(f"Gerando imagem com Stability AI (individual): {prompt[:50]}...")
                                 print_colored("Gerando imagem com Stability AI...", Colors.BLUE)
                                 show_thinking_animation(1.5, "Stability AI Processando")
                                 stability_tool = StabilityAIAPI(api_key=stability_api_key)
@@ -619,42 +699,53 @@ Certifique-se de que o JSON é válido.
                                 image_filename = os.path.join(image_output_dir, f"individual_stability_{timestamp}.png")
                                 with open(image_filename, 'wb') as f:
                                     f.write(image_bytes)
+                                logger.info(f"Imagem (Stability AI individual) salva em: {image_filename}")
                                 print_success(f"Imagem (Stability AI) salva em: {image_filename}")
                             except Exception as e:
+                                logger.error(f"Erro ao usar Stability AI (individual): {e}", exc_info=True)
                                 print_error(f"Erro ao usar Stability AI: {e}")
                                 if not dalle_api_key:
                                     continue # No fallback
 
                         if not stability_api_key or (stability_api_key and "Erro ao usar Stability AI" in locals().get('e', '') and dalle_api_key) : # Try DALL-E if Stability failed or not available
-                            if stability_api_key and dalle_api_key : print_colored("Tentando DALL-E como fallback...", Colors.YELLOW)
+                            if stability_api_key and dalle_api_key :
+                                logger.info("Tentando DALL-E como fallback para geração de imagem (individual).")
+                                print_colored("Tentando DALL-E como fallback...", Colors.YELLOW)
                             try:
+                                logger.info(f"Gerando imagem com DALL-E (individual): {prompt[:50]}...")
                                 print_colored("Gerando imagem com DALL-E...", Colors.BLUE)
                                 show_thinking_animation(1.5, "DALL-E Processando")
                                 dalle_tool = DalleAPI(api_key=dalle_api_key)
                                 response_data = dalle_tool.generate_image(prompt=prompt)
                                 if response_data and response_data.get('data') and response_data['data'][0].get('url'):
                                     image_url = response_data['data'][0]['url']
+                                    logger.info(f"Imagem (DALL-E individual) gerada. URL: {image_url}")
                                     print_success(f"Imagem (DALL-E) gerada. URL: {image_url}")
                                     # Consider adding download option here in future
                                 else:
+                                    logger.error(f"DALL-E (individual) não retornou URL da imagem. Resposta: {response_data}")
                                     print_error("DALL-E não retornou URL da imagem.")
                             except Exception as e:
+                                logger.error(f"Erro ao usar DALL-E (individual): {e}", exc_info=True)
                                 print_error(f"Erro ao usar DALL-E: {e}")
 
                     elif tool_choice == "4": # Pexels / Pixabay
                         pexels_api_key = config.get('PEXELS_API_KEY')
                         pixabay_api_key = config.get('PIXABAY_API_KEY')
                         if not pexels_api_key and not pixabay_api_key:
+                            logger.error("Nenhuma API Key para Pexels ou Pixabay configurada para uso individual.")
                             print_error("Nenhuma API Key para Pexels ou Pixabay configurada.")
                             continue
 
                         query = get_user_input("O que você quer buscar (Pexels/Pixabay)? ")
                         if not query.strip():
+                            logger.warning("Query para Pexels/Pixabay (individual) estava vazia.")
                             print_error("Query não pode ser vazia.")
                             continue
 
                         media_type = get_user_input("Buscar 'imagens' ou 'videos'? ").lower()
                         if media_type not in ['imagens', 'videos']:
+                            logger.warning(f"Tipo de mídia inválido para Pexels/Pixabay (individual): {media_type}")
                             print_error("Tipo de mídia inválido. Escolha 'imagens' ou 'videos'.")
                             continue
 
@@ -667,6 +758,7 @@ Certifique-se de que o JSON é válido.
                         pexels_succeeded = False
                         if pexels_api_key:
                             try:
+                                logger.info(f"Buscando {media_type} no Pexels (individual) para '{query}'...")
                                 print_colored(f"Buscando {media_type} no Pexels...", Colors.BLUE)
                                 show_thinking_animation(1.0, "Pexels Buscando")
                                 pexels_tool = PexelsAPI(api_key=pexels_api_key)
@@ -699,12 +791,17 @@ Certifique-se de que o JSON é válido.
                                         pexels_succeeded = True
                                     else: print_colored("Nenhum vídeo encontrado no Pexels.", Colors.YELLOW)
                             except Exception as e_pexels:
+                                logger.error(f"Erro ao usar Pexels (individual): {e_pexels}", exc_info=True)
                                 print_error(f"Erro ao usar Pexels: {e_pexels}")
                                 # Fallback to Pixabay will happen if pexels_succeeded is False and pixabay_api_key exists
 
                         if not pexels_succeeded and pixabay_api_key:
-                            if pexels_api_key : print_colored("Tentando Pixabay como fallback...", Colors.YELLOW)
-                            else: print_colored(f"Buscando {media_type} no Pixabay...", Colors.BLUE)
+                            if pexels_api_key :
+                                logger.info("Tentando Pixabay como fallback para busca de mídia (individual).")
+                                print_colored("Tentando Pixabay como fallback...", Colors.YELLOW)
+                            else:
+                                logger.info(f"Buscando {media_type} no Pixabay (individual) para '{query}'...")
+                                print_colored(f"Buscando {media_type} no Pixabay...", Colors.BLUE)
                             try:
                                 show_thinking_animation(1.0, "Pixabay Buscando")
                                 pixabay_tool = PixabayAPI(api_key=pixabay_api_key)
@@ -725,8 +822,10 @@ Certifique-se de que o JSON é válido.
                                             print_colored(f"  Usuário: {item.get('user', 'N/A')}, URL: {video_url_display}", Colors.WHITE)
                                     else: print_colored("Nenhum vídeo encontrado no Pixabay.", Colors.YELLOW)
                             except Exception as e_pixabay:
+                                logger.error(f"Erro ao usar Pixabay (individual): {e_pixabay}", exc_info=True)
                                 print_error(f"Erro ao usar Pixabay: {e_pixabay}")
-                        elif not pexels_api_key and not pixabay_api_key:
+                        elif not pexels_api_key and not pixabay_api_key: # This condition was inside the 'if not pexels_succeeded' block, moved out
+                            logger.error("Nenhuma API Key para Pexels ou Pixabay configurada para esta funcionalidade (individual).")
                             print_error("Nenhuma API Key para Pexels ou Pixabay configurada para esta funcionalidade.")
 
 
@@ -734,11 +833,13 @@ Certifique-se de que o JSON é válido.
                         assemblyai_api_key = config.get('ASSEMBLYAI_API_KEY')
                         deepgram_api_key = config.get('DEEPGRAM_API_KEY')
                         if not assemblyai_api_key and not deepgram_api_key:
+                            logger.error("Nenhuma API Key para AssemblyAI ou Deepgram configurada para uso individual.")
                             print_error("Nenhuma API Key para AssemblyAI ou Deepgram configurada.")
                             continue
 
                         audio_url = get_user_input("URL do áudio/vídeo para transcrever: ")
                         if not audio_url.strip():
+                            logger.warning("URL para transcrição (individual) estava vazia.")
                             print_error("URL não pode ser vazia.")
                             continue
 
@@ -750,6 +851,7 @@ Certifique-se de que o JSON é válido.
                         # Primary: AssemblyAI
                         if assemblyai_api_key:
                             try:
+                                logger.info(f"Transcrevendo com AssemblyAI (individual): {audio_url}")
                                 print_colored("Transcrevendo com AssemblyAI...", Colors.BLUE)
                                 show_thinking_animation(2.0, "AssemblyAI Processando")
                                 assembly_tool = AssemblyAIAPI(api_key=assemblyai_api_key)
@@ -759,20 +861,27 @@ Certifique-se de que o JSON é válido.
                                     transcript_filename = os.path.join(transcription_output_dir, f"individual_transcript_assembly_{timestamp}.txt")
                                     with open(transcript_filename, 'w', encoding='utf-8') as f:
                                         f.write(transcript_text)
+                                    logger.info(f"Transcrição (AssemblyAI individual) salva em: {transcript_filename}")
                                     print_success(f"Transcrição (AssemblyAI) salva em: {transcript_filename}")
                                     print_colored("Preview:", Colors.CYAN)
                                     print_colored(transcript_text[:300] + ("..." if len(transcript_text) > 300 else ""), Colors.WHITE)
                                     transcribed_successfully = True
                                 else:
+                                    logger.error("AssemblyAI (individual) não retornou texto da transcrição.")
                                     print_error("AssemblyAI não retornou texto da transcrição.")
                             except Exception as e_assembly:
+                                logger.error(f"Erro ao usar AssemblyAI (individual): {e_assembly}", exc_info=True)
                                 print_error(f"Erro ao usar AssemblyAI: {e_assembly}")
                                 # Fallback will be triggered if not transcribed_successfully and deepgram_api_key exists
 
                         # Fallback: Deepgram
                         if not transcribed_successfully and deepgram_api_key:
-                            if assemblyai_api_key : print_colored("Tentando Deepgram como fallback...", Colors.YELLOW)
-                            else: print_colored("Transcrevendo com Deepgram...", Colors.BLUE)
+                            if assemblyai_api_key :
+                                logger.info("Tentando Deepgram como fallback para transcrição (individual).")
+                                print_colored("Tentando Deepgram como fallback...", Colors.YELLOW)
+                            else:
+                                logger.info(f"Transcrevendo com Deepgram (individual): {audio_url}")
+                                print_colored("Transcrevendo com Deepgram...", Colors.BLUE)
                             try:
                                 show_thinking_animation(2.0, "Deepgram Processando")
                                 deepgram_tool = DeepgramAPI(api_key=deepgram_api_key)
@@ -795,30 +904,37 @@ Certifique-se de que o JSON é válido.
                                     transcript_filename = os.path.join(transcription_output_dir, f"individual_transcript_deepgram_{timestamp}.txt")
                                     with open(transcript_filename, 'w', encoding='utf-8') as f:
                                         f.write(transcript_text)
+                                    logger.info(f"Transcrição (Deepgram individual) salva em: {transcript_filename}")
                                     print_success(f"Transcrição (Deepgram) salva em: {transcript_filename}")
                                     print_colored("Preview:", Colors.CYAN)
                                     print_colored(transcript_text[:300] + ("..." if len(transcript_text) > 300 else ""), Colors.WHITE)
                                     transcribed_successfully = True
                                 else:
+                                    logger.error("Deepgram (individual) não retornou texto da transcrição.")
                                     print_error("Deepgram não retornou texto da transcrição.")
                             except Exception as e_deepgram:
+                                logger.error(f"Erro ao usar Deepgram (individual): {e_deepgram}", exc_info=True)
                                 print_error(f"Erro ao usar Deepgram: {e_deepgram}")
 
-                        if not transcribed_successfully and not assemblyai_api_key and not deepgram_api_key:
+                        if not transcribed_successfully and not assemblyai_api_key and not deepgram_api_key: # This condition was not quite right, should be if it still failed AND no keys
+                            logger.error("Nenhuma API de transcrição configurada ou ambas falharam (individual).")
                             print_error("Nenhuma API de transcrição configurada ou ambas falharam.")
 
 
                     elif tool_choice == "6": # YouTube Data API
                         youtube_api_key = config.get('YOUTUBE_DATA_API_KEY')
                         if not youtube_api_key:
+                            logger.error("YOUTUBE_DATA_API_KEY não configurada para uso individual.")
                             print_error("YOUTUBE_DATA_API_KEY não configurada.")
                             continue
 
                         query = get_user_input("O que você quer pesquisar no YouTube? ")
                         if not query.strip():
+                            logger.warning("Query para YouTube (individual) estava vazia.")
                             print_error("Query não pode ser vazia.")
                             continue
                         try:
+                            logger.info(f"Pesquisando no YouTube (individual) por: {query[:50]}...")
                             print_colored("Pesquisando no YouTube...", Colors.BLUE)
                             show_thinking_animation(1.5, "YouTube Data API Buscando")
                             youtube_tool = YouTubeDataAPI(api_key=youtube_api_key)
@@ -836,20 +952,25 @@ Certifique-se de que o JSON é válido.
                                     print_colored(f"  Título: {title}", Colors.GREEN)
                                     print_colored(f"    Canal: {channel}, Link: {link}", Colors.WHITE)
                             else:
+                                logger.info("Nenhum vídeo encontrado no YouTube (individual).")
                                 print_colored("Nenhum vídeo encontrado.", Colors.YELLOW)
                         except Exception as e:
+                            logger.error(f"Erro ao usar YouTube Data API (individual): {e}", exc_info=True)
                             print_error(f"Erro ao usar YouTube Data API: {e}")
 
                     elif tool_choice == "0":
+                        logger.info("Retornando ao menu principal do dashboard de ferramentas individuais.")
                         print_colored("Retornando ao menu principal...", Colors.YELLOW)
                         show_thinking_animation(0.5, "Retornando")
                         break # Exit individual tools sub-menu loop, goes back to main dashboard loop
                     else:
+                        logger.warning(f"Opção inválida no menu de ferramentas individuais: {tool_choice}")
                         print_error("Opção inválida. Tente novamente.")
 
                     print_colored("\n----------------------------------------", Colors.MAGENTA)
                     sub_menu_action = get_user_input("Pressione Enter para escolher outra ferramenta ou '0' para voltar ao menu principal: ")
                     if sub_menu_action == "0":
+                        logger.info("Usuário escolheu sair do menu de ferramentas individuais.")
                         print_colored("Retornando ao menu principal...", Colors.YELLOW)
                         show_thinking_animation(0.5, "Retornando")
                         break # Exit individual tools sub-menu loop
@@ -858,32 +979,42 @@ Certifique-se de que o JSON é válido.
                 continue
 
             elif dashboard_input.strip() == "0":
+                logger.info("Usuário escolheu sair do Content Creation Dashboard (opção 0).")
                 print_success("Saindo do Content Creation Dashboard.")
                 break # Exit the dashboard loop, proceed to chat or exit app
             elif not dashboard_input.strip(): # User pressed Enter, proceed to chat
+                logger.info("Usuário pressionou Enter no dashboard, prosseguindo para o chat.")
                 break # Exit the dashboard loop
             else:
+                logger.warning(f"Opção inválida no dashboard principal: {dashboard_input}")
                 print_error("Opção inválida. Por favor, escolha uma das opções do dashboard ou pressione Enter para o chat.")
                 show_thinking_animation(1.0, "Processando")
                 continue # Show dashboard again
 
         # Main chat loop (if user exits dashboard by pressing Enter or after option 0 if not exiting app)
         if dashboard_input.strip() == "0" and not config.get("allow_chat_after_dashboard_exit", True): # Example config
+            logger.info("Saindo da aplicação após dashboard (configurado para não permitir chat).")
             print_colored("Saindo da aplicação.", Colors.BLUE)
             sys.exit(0)
 
+        logger.info("Iniciando sessão de chat principal.")
         print_colored("\nIniciando sessão de chat. Digite 'ajuda' para comandos, 'sair' para terminar.", Colors.GREEN)
         # ... rest of the main chat loop ...
 
     except ConfigError as e:
+        # Ensure logger is defined even if init failed partially
+        if 'logger' not in locals(): logger = logging.getLogger(__name__) # Basic fallback
+        logger.error(f"Erro de configuração: {str(e)}", exc_info=True)
         print_error(f"Erro de configuração: {str(e)}")
         print("Verifique seu arquivo .env e tente novamente.")
         sys.exit(1)
 
     except Exception as e:
+        if 'logger' not in locals(): logger = logging.getLogger(__name__) # Basic fallback
+        logger.error(f"Erro inesperado na aplicação CLI: {str(e)}", exc_info=True)
         print_error(f"Erro inesperado: {str(e)}")
         print("Detalhes do erro:")
-        traceback.print_exc()
+        traceback.print_exc() # This already prints traceback to stderr, logger will capture it to file
         sys.exit(1)
 
 

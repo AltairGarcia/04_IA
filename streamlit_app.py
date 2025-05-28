@@ -58,7 +58,7 @@ def safe_import(module_name, fallback=None):
         MODULES_AVAILABLE[module_name] = True
         return module
     except ImportError as e:
-        logging.warning(f"Module {module_name} not available: {e}")
+        logging.warning(f"Module {module_name} not available: {e}", exc_info=True)
         MODULES_AVAILABLE[module_name] = False
         return fallback
 
@@ -187,8 +187,9 @@ except ImportError:
 
 # Initialize logger
 logger = logging.getLogger(__name__)
+# Logging is now configured by system_initialization.py using UnifiedConfig
 # Ensure logger is configured (basic example, can be more sophisticated)
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s') # This line is removed
 
 # Define fallback functions and classes for missing dependencies
 
@@ -433,7 +434,7 @@ if __name__ != "__main__":  # Only initialize here if imported as a module
             logger.info("Primary health server started unconditionally from module init on port 8502.")
         logger.info("System initialization complete (module level).")
     except Exception as e:
-        logger.error(f"Error during system initialization: {str(e)}")
+        logger.error(f"Error during system initialization: {str(e)}", exc_info=True)
         # Continue with the app even if initialization fails
 
 
@@ -472,7 +473,7 @@ def initialize_session_state():
                 # Log if the type is unexpected, but still try to load Default later
                 if current_persona_config_value is not None:
                     st.warning(f"Unexpected type for 'current_persona' in config: {type(current_persona_config_value)}. Attempting to load Default persona.")
-        except (RobustConfigError, Exception) as e:
+        except (RobustConfigError, Exception) as e: # This st.error is not a logger.error, so no change
             st.error(f"Configuration error: {e}")
             st.info("Please check your .env file and ensure all required API keys are set.")
             # Use graceful degradation instead of stopping
@@ -607,7 +608,8 @@ def change_persona(persona_name: str):
     try:
         st.toast(f"Persona switched to: {new_persona.name}", icon="🎭")
         st.session_state['last_persona_toast'] = f"Persona switched to: {new_persona.name}"
-    except Exception:
+    except Exception as e: # Capture exception for logging
+        logger.warning(f"Failed to show toast for persona switch: {e}", exc_info=True)
         # Fallback for test mode or headless
         st.session_state['last_persona_toast'] = f"Persona switched to: {new_persona.name}"
 
@@ -727,7 +729,8 @@ def create_new_autonomous_agent(agent_type: str):
         st.success(f"Agent '{agent_type}' criado com sucesso!")
         return agent_id
     except Exception as e:
-        st.error(f"Error creating agent: {str(e)}")
+        st.error(f"Error creating agent: {str(e)}") # This is an st.error, not logger.error
+        logger.error(f"Error creating agent: {str(e)}", exc_info=True) # Add a logger.error call
         return None
 
 
@@ -758,7 +761,8 @@ def delete_autonomous_agent(agent_id: str):
         else:
             st.warning("Agent not found.")
     except Exception as e:
-        st.error(f"Erro ao deletar agente: {str(e)}")
+        st.error(f"Erro ao deletar agente: {str(e)}") # This is an st.error, not logger.error
+        logger.error(f"Erro ao deletar agente: {str(e)}", exc_info=True) # Add a logger.error call
 
 
 def create_task(agent_id: str, task_type: str, parameters: Dict[str, Any]):
@@ -845,7 +849,8 @@ def execute_task(agent_id: str, task_id: str):
         agent_data["tasks"][task_id]["error"] = str(e)
         agent_data["tasks"][task_id]["completed_at"] = datetime.now().isoformat()
 
-        st.error(f"Error executing task: {str(e)}")
+        st.error(f"Error executing task: {str(e)}") # This is an st.error, not logger.error
+        logger.error(f"Error executing task: {str(e)}", exc_info=True) # Add a logger.error call
         return False
 
 
@@ -1033,12 +1038,14 @@ def display_analytics_dashboard():
         try:
             render_analytics_dashboard()
         except Exception as e:
-            st.error(f"Failed to load analytics dashboard: {e}")
+            st.error(f"Failed to load analytics dashboard: {e}") # This is an st.error, not logger.error
+            logger.error(f"Failed to load analytics dashboard: {e}", exc_info=True) # Add a logger.error call
 
         try:
             render_error_anomaly_detection()
         except Exception as e:
-            st.error(f"Failed to load error anomaly detection: {e}")
+            st.error(f"Failed to load error anomaly detection: {e}") # This is an st.error, not logger.error
+            logger.error(f"Failed to load error anomaly detection: {e}", exc_info=True) # Add a logger.error call
 
     # System status
     with system_tab:
@@ -1157,7 +1164,8 @@ def display_analytics_dashboard():
                         if success:
                             st.success("Backup created successfully!")
                         else:
-                            st.error("Failed to create backup")
+                            st.error("Failed to create backup") # This is an st.error, not logger.error
+                            logger.error("Failed to create backup during manual trigger", exc_info=True) # Add a logger.error call
 
             with col2:
                 # Option to send test notification
@@ -1171,10 +1179,12 @@ def display_analytics_dashboard():
                         if success:
                             st.success("Test notification sent successfully!")
                         else:
-                            st.error("Failed to send test notification. Check email configuration.")
+                            st.error("Failed to send test notification. Check email configuration.") # This is an st.error
+                            logger.warning("Failed to send test notification during manual trigger.") # Add a logger.warning
 
         except Exception as e:
-            st.error(f"Error retrieving system status: {str(e)}")
+            st.error(f"Error retrieving system status: {str(e)}") # This is an st.error, not logger.error
+            logger.error(f"Error retrieving system status: {str(e)}", exc_info=True) # Add a logger.error call
 
     # Error Tracking
     with error_tab:
@@ -1250,7 +1260,8 @@ def display_analytics_dashboard():
                     use_container_width=True
                 )
         except Exception as e:
-            st.error(f"Error loading error tracking data: {str(e)}")
+            st.error(f"Error loading error tracking data: {str(e)}") # This is an st.error, not logger.error
+            logger.error(f"Error loading error tracking data: {str(e)}", exc_info=True) # Add a logger.error call
 
     # Email Notifications
     with email_tab:
@@ -1330,7 +1341,8 @@ def display_analytics_dashboard():
                         st.success("Email configuration saved")
                         st.session_state.show_email_form = False
                     except Exception as e:
-                        st.error(f"Failed to save configuration: {str(e)}")
+                        st.error(f"Failed to save configuration: {str(e)}") # This is an st.error, not logger.error
+                        logger.error(f"Failed to save email configuration: {str(e)}", exc_info=True) # Add a logger.error call
 
         # Notification history
         st.subheader("Notification History")
@@ -1353,7 +1365,8 @@ def display_analytics_dashboard():
                     use_container_width=True
                 )
         except Exception as e:
-            st.error(f"Error loading notification history: {str(e)}")
+            st.error(f"Error loading notification history: {str(e)}") # This is an st.error, not logger.error
+            logger.error(f"Error loading notification history: {str(e)}", exc_info=True) # Add a logger.error call
 
 
 def display_agents_tab():
@@ -1499,7 +1512,8 @@ def display_health_dashboard():
                     st.success("Memory cleanup completed!")
                     st.rerun()
                 except Exception as e:
-                    st.error(f"Cleanup failed: {e}")
+                    st.error(f"Cleanup failed: {e}") # This is an st.error, not logger.error
+                    logger.error(f"Memory cleanup failed: {e}", exc_info=True) # Add logger.error call
     else:
         st.warning("Memory optimization system not available")
     
@@ -1720,9 +1734,10 @@ def display_enhanced_health_dashboard():
             st.warning("⚠️ Google API key not configured for provider health checks")
     
     except ImportError as e:
-        st.warning("⚠️ Provider health monitoring unavailable - missing dependencies")
+        st.warning("⚠️ Provider health monitoring unavailable - missing dependencies", exc_info=True)
     except Exception as e:
-        st.error(f"❌ Error in provider health monitoring: {e}")
+        st.error(f"❌ Error in provider health monitoring: {e}") # This is an st.error, not logger.error
+        logger.error(f"Error in provider health monitoring: {e}", exc_info=True) # Add logger.error call
     
     # Real-time Analytics Integration
     st.subheader("📊 Real-time System Metrics")
@@ -1747,10 +1762,11 @@ def display_enhanced_health_dashboard():
         with rt_col4:
             st.metric("Error Rate", f"{getattr(current_metrics, 'error_rate', 0):.1%}")
     
-    except ImportError:
+    except ImportError: # No specific exception object 'e' here for exc_info=e
         st.info("📊 Real-time analytics not available")
+        logger.warning("Real-time analytics module not found.", exc_info=True)
     except Exception as e:
-        st.warning(f"⚠️ Real-time metrics error: {e}")
+        st.warning(f"⚠️ Real-time metrics error: {e}", exc_info=True)
     
     # Continue with existing health dashboard content
     display_health_dashboard_content(health_summary)
@@ -1865,8 +1881,8 @@ def display_advanced_analytics_dashboard():
         # Fallback to basic analytics dashboard
         display_analytics_dashboard()
     except Exception as e:
-        st.error(f"❌ Error loading advanced analytics dashboard: {e}")
-        logger.error(f"Advanced analytics dashboard error: {e}")
+        st.error(f"❌ Error loading advanced analytics dashboard: {e}") # This is an st.error
+        logger.error(f"Advanced analytics dashboard error: {e}", exc_info=True)
         # Fallback to basic analytics dashboard
         display_analytics_dashboard()
 
@@ -1929,10 +1945,12 @@ def main():
             st.session_state.deployment_results = deployment_results
             
         except ImportError:
-            st.warning("⚠️ Deployment readiness check not available - continuing with basic startup")
+            st.warning("⚠️ Deployment readiness check not available - continuing with basic startup") # This is an st.warning
+            logger.warning("Deployment readiness check module not found.", exc_info=True) # Add logger.warning
             st.session_state.startup_check_completed = True
         except Exception as e:
-            st.error(f"❌ Startup check failed: {str(e)} - continuing anyway")
+            st.error(f"❌ Startup check failed: {str(e)} - continuing anyway") # This is an st.error
+            logger.error(f"Startup check failed: {str(e)}", exc_info=True) # Add logger.error
             st.session_state.startup_check_completed = True
 
     # Initialize system (error handling, analytics, etc.)
@@ -1958,17 +1976,17 @@ def main():
                 start_memory_optimization()
                 logger.info("Memory optimization started successfully.")
             except Exception as e:
-                logger.warning(f"Memory optimization failed to start: {str(e)}")
+                logger.warning(f"Memory optimization failed to start: {str(e)}", exc_info=True)
         
         # Start health monitoring after successful initialization
         try:
             start_health_monitoring()
             logger.info("Health monitoring started successfully.")
         except Exception as e:
-            logger.warning(f"Health monitoring failed to start: {str(e)}")
+            logger.warning(f"Health monitoring failed to start: {str(e)}", exc_info=True)
             
     elif st.session_state["system_initialized_main_app"] == "error":
-        st.error("System previously failed to initialize. Please check logs or contact support.")
+        st.error("System previously failed to initialize. Please check logs or contact support.") # This is an st.error
         return    # Initialize session state
     initialize_session_state()
 

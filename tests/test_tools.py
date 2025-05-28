@@ -121,32 +121,90 @@ class TestCalculatorTool:
         # Testar cosseno
         cos_result = calculator.invoke("cos(0)")
         assert cos_result == "1"
+        
+        # Testar tangente
+        tan_result = calculator.invoke("tan(0)")
+        assert tan_result == "0"
+
+        # Testar log
+        log_result = calculator.invoke("log(1)")
+        assert log_result == "0"
+
+        # Testar log10
+        log10_result = calculator.invoke("log10(100)")
+        assert log10_result == "2"
 
     def test_calculator_constants(self):
         """Testa constantes matemáticas."""
         # Testar pi
         pi_result = calculator.invoke("pi")
-        assert float(pi_result) == pytest.approx(3.14159, abs=0.0001)
+        assert float(pi_result) == pytest.approx(3.1415926535, abs=1e-9)
 
         # Testar e
         e_result = calculator.invoke("e")
-        assert float(e_result) == pytest.approx(2.71828, abs=0.0001)
+        assert float(e_result) == pytest.approx(2.7182818284, abs=1e-9)
 
-    def test_calculator_invalid_expression(self):
-        """Testa expressão inválida."""
-        # Expressão com caracteres não permitidos
-        result1 = calculator.invoke("2 + 2; rm -rf /")
-        assert result1 == "Expressão inválida ou não permitida."
+    def test_calculator_invalid_expression_dangerous_keywords(self):
+        """Testa expressão inválida com palavras-chave perigosas."""
+        # Expressão tentando usar __import__
+        result = calculator.invoke("__import__('os').system('echo hack')")
+        assert result == "Expressão inválida ou não permitida (palavras-chave perigosas)."
 
-        # Expressão tentando usar eval
-        result2 = calculator.invoke("__import__('os').system('echo hack')")
-        assert result2 == "Expressão inválida ou não permitida."
+        result_eval = calculator.invoke("eval('1+1')")
+        assert result_eval == "Expressão inválida ou não permitida (palavras-chave perigosas)."
 
-    def test_calculator_error_handling(self):
-        """Testa tratamento de erros."""
-        # Divisão por zero
+    def test_calculator_invalid_syntax(self):
+        """Testa expressão com sintaxe inválida para simpleeval."""
+        result = calculator.invoke("2 + + 2") # Sintaxe inválida
+        assert "Erro: Expressão inválida" in result
+
+    def test_calculator_name_not_defined(self):
+        """Testa o uso de nomes não definidos."""
+        result = calculator.invoke("x + 2")
+        assert "Erro: Nome não definido ou função não permitida: x" in result
+
+        result_func = calculator.invoke("invented_function(10)")
+        assert "Erro: Nome não definido ou função não permitida: invented_function" in result
+        
+        # Test with an undefined math function that was not explicitly added
+        result_gamma = calculator.invoke("gamma(5)") # math.gamma exists but not added
+        assert "Erro: Nome não definido ou função não permitida: gamma" in result
+
+
+    def test_calculator_error_handling_division_by_zero(self):
+        """Testa tratamento de erros (divisão por zero)."""
         result = calculator.invoke("1/0")
-        assert "Erro ao calcular" in result
+        assert "Erro ao calcular: division by zero" in result # simpleeval raises ZeroDivisionError
+
+    def test_calculator_long_float_formatting(self):
+        """Testa a formatação de números de ponto flutuante longos."""
+        result = calculator.invoke("1/3")
+        assert result == "0.3333333333" # Should be 10 decimal places and stripped
+        result_trailing_zeros = calculator.invoke("10.000000000000001 / 2")
+        assert result_trailing_zeros == "5" # Should strip to integer
+        result_precise = calculator.invoke("0.1 + 0.2")
+        # Due to floating point inaccuracies, 0.1 + 0.2 is not exactly 0.3
+        # simpleeval will calculate it, and our formatting should handle it.
+        # Python's 0.1 + 0.2 is 0.30000000000000004
+        # simpleeval should produce a similar float, and then we format it.
+        assert result_precise == "0.3"
+
+    def test_calculator_power_operator(self):
+        """Testa o operador de potência."""
+        result = calculator.invoke("2 ** 3")
+        assert result == "8"
+        result_pow = calculator.invoke("pow(2, 3)")
+        assert result_pow == "8"
+
+    def test_calculator_disallowed_chars_indirectly(self):
+        """Testa caracteres não permitidos que resultam em NameNotDefined ou InvalidExpression."""
+        # Semicolon might be treated as part of an invalid name or expression
+        result_semicolon = calculator.invoke("2+2;3+3")
+        assert "Erro: Expressão inválida" in result_semicolon or "Erro: Nome não definido" in result_semicolon
+
+        # Other special characters
+        result_at = calculator.invoke("2 @ 3") # '@' is not a defined operator
+        assert "Erro: Expressão inválida" in result_at or "Erro: Nome não definido" in result_at
 
 
 class TestWeatherTool:

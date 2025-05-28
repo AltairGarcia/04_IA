@@ -12,15 +12,40 @@ import time
 from datetime import datetime
 
 # Import from centralized logging configuration
-from logging_config import configure_logging, get_contextual_logger
+from logging_config import configure_logging, get_contextual_logger # Keep this
+from core.config import get_config # Import UnifiedConfig getter
 
-# Configure structured logging
-configure_logging(
-    log_file=os.path.join(os.path.dirname(__file__), "langgraph_system.log"),
-    use_json=True
-)
+# Get logging settings from UnifiedConfig
+try:
+    unified_config_instance = get_config()
+    logging_settings = unified_config_instance.logging
+    
+    # Determine log level for console and file from UnifiedConfig's single 'level'
+    # You might need to map string level names (e.g., "INFO", "DEBUG") to logging module constants
+    log_level_str = logging_settings.level.upper()
+    numeric_log_level = getattr(logging, log_level_str, logging.INFO) # Default to INFO if mapping fails
 
-# Get a contextual logger with system information
+    # For file_level, let's assume it can be more verbose, e.g., DEBUG, 
+    # while console_level might be same as overall level or a step higher.
+    # This logic can be refined if UnifiedConfig provides separate levels.
+    console_log_level_to_use = numeric_log_level
+    file_log_level_to_use = logging.DEBUG # Or derive as needed
+
+    configure_logging(
+        log_file=logging_settings.file_path,
+        console_level=console_log_level_to_use,
+        file_level=file_log_level_to_use,
+        use_json=(logging_settings.format.lower() == 'json') # Assuming format string indicates json
+    )
+    print(f"Logging configured from UnifiedConfig: file='{logging_settings.file_path}', level='{log_level_str}', use_json='{logging_settings.format.lower() == 'json'}'")
+
+except Exception as e:
+    # Fallback to a basic configuration if UnifiedConfig fails, to ensure logging always works
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - [FALLBACK_CONFIG] %(message)s')
+    logging.error(f"Failed to configure logging from UnifiedConfig: {e}. Using basic fallback.", exc_info=True)
+
+
+# Get a contextual logger with system information (this part can remain as is)
 logger = get_contextual_logger(
     __name__,
     module="system_initialization",
@@ -179,7 +204,7 @@ def initialize_analytics() -> None:
         logger.info("Analytics system initialized with enhanced error handling")
     except Exception as e:
         logger.error(f"Failed to initialize analytics system: {str(e)}",
-                    extra={"error_type": type(e).__name__})
+                    extra={"error_type": type(e).__name__}, exc_info=True)
 
 
 def initialize_email_notifications(use_env_vars: bool = True, config: Optional[Dict[str, Any]] = None) -> None:
@@ -302,7 +327,7 @@ def initialize_all_systems(
 
                 logger.info("Error notification system initialized")
             except Exception as e:
-                logger.error(f"Failed to initialize email notifications: {str(e)}")
+                logger.error(f"Failed to initialize email notifications: {str(e)}", exc_info=True)
 
             # Run system check
             system_status = check_system_status()
@@ -314,7 +339,7 @@ def initialize_all_systems(
             _system_initialized = True
 
         except Exception as e:
-            logger.error(f"System initialization failed: {str(e)}")
+            logger.error(f"System initialization failed: {str(e)}", exc_info=True)
             result['status'] = 'error'
             result['error'] = str(e)
             # Reset the initialization flag on error
@@ -338,7 +363,7 @@ def start_maintenance_thread() -> None:
                 cleanup_old_error_logs(max_age_days=30)
 
             except Exception as e:
-                logger.error(f"Error during maintenance: {str(e)}")
+                logger.error(f"Error during maintenance: {str(e)}", exc_info=True)
 
             # Sleep for 24 hours
             time.sleep(24 * 60 * 60)
@@ -381,7 +406,7 @@ def cleanup_old_error_logs(max_age_days: int = 30) -> int:
                 os.remove(log_file)
                 removed_count += 1
         except Exception as e:
-            logger.warning(f"Failed to process {log_file}: {str(e)}")
+            logger.warning(f"Failed to process {log_file}: {str(e)}", exc_info=True)
 
     logger.info(f"Removed {removed_count} error logs older than {max_age_days} days")
     return removed_count
@@ -531,7 +556,7 @@ def check_system_status() -> Dict[str, Any]:
             "health_checks": health_checks
         }
     except Exception as e:
-        logger.error(f"Error checking system status: {str(e)}")
+        logger.error(f"Error checking system status: {str(e)}", exc_info=True)
         return {
             "timestamp": time.time(),
             "overall_health": "unknown",
