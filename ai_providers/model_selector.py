@@ -14,6 +14,16 @@ from dataclasses import dataclass, asdict
 from datetime import datetime, timedelta
 from pathlib import Path
 import statistics
+import sys
+from pathlib import Path
+
+# Ensure the root directory is in sys.path for model_manager import
+# This is a common way to handle imports from a parent directory when running a script from a subdirectory.
+# For a library structure, __init__.py and package setup would handle this more elegantly.
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+from model_manager import ModelManager
+
 
 logger = logging.getLogger(__name__)
 
@@ -226,34 +236,72 @@ class ModelSelector:
     
     def __init__(self, performance_tracker: ModelPerformanceTracker):
         self.performance_tracker = performance_tracker
+        self.model_manager = ModelManager()
         self.model_capabilities = self._load_model_capabilities()
     
     def _load_model_capabilities(self) -> Dict[str, Dict[str, Any]]:
-        """Load model capabilities from providers."""
-        # This would be populated from the actual provider implementations
-        return {
-            "openai:gpt-4o": {
-                "context_length": 128000,
-                "supports_functions": True,
-                "supports_vision": False,
-                "task_suitability": ["code", "analysis", "creative", "text_generation"],
-                "complexity_levels": ["simple", "medium", "complex"]
-            },
-            "anthropic:claude-3-5-sonnet-20241022": {
-                "context_length": 200000,
-                "supports_tools": True,
-                "supports_vision": True,
-                "task_suitability": ["analysis", "creative", "text_generation", "code"],
-                "complexity_levels": ["medium", "complex"]
-            },
-            "google:gemini-2.0-flash": {
-                "context_length": 1000000,
-                "supports_function_calling": True,
-                "supports_vision": True,
-                "task_suitability": ["text_generation", "creative", "analysis"],
-                "complexity_levels": ["simple", "medium", "complex"]
+        """Dynamically load model capabilities from ModelManager and provider instances."""
+        capabilities: Dict[str, Dict[str, Any]] = {}
+        available_models_config = self.model_manager.list_available_models()
+
+        for model_conf in available_models_config:
+            model_id = model_conf['model_id']
+            provider = model_conf['provider']
+            model_instance = self.model_manager.get_model(model_id)
+
+            if not model_instance:
+                logger.warning(f"Could not get instance for model_id: {model_id}. Skipping capabilities loading.")
+                continue
+
+            try:
+                # Assuming get_model_info() is implemented in provider classes
+                # (OpenAIProvider, AnthropicProvider, GoogleProvider)
+                if not hasattr(model_instance, 'get_model_info'):
+                    logger.warning(f"Model {model_id} (provider: {provider}) does not have get_model_info method. Using placeholder info.")
+                    # Fallback to placeholder info if get_model_info is missing
+                    info = {
+                        'context_length': model_conf.get('parameters', {}).get('max_output_tokens', 8192), # example fallback
+                        'supports_vision': False,
+                        'supports_functions': False,
+                        'supports_tools': False,
+                        'supports_function_calling': False,
+                    }
+                else:
+                    info = model_instance.get_model_info()
+
+            except Exception as e:
+                logger.error(f"Error fetching model info for {model_id} from {provider}: {e}")
+                # Provide some default/fallback info if get_model_info fails
+                info = {
+                    'context_length': 8192, # Default fallback context length
+                    'supports_vision': False,
+                    'supports_functions': False,
+                    'supports_tools': False,
+                    'supports_function_calling': False,
+                }
+
+            # Map to expected structure
+            mapped_capabilities = {
+                "context_length": info.get('context_length', 8192), # Default if not present
+                "supports_functions": info.get('supports_functions', False) or info.get('supports_tools', False) or info.get('supports_function_calling', False),
+                "supports_tools": info.get('supports_tools', False) or info.get('supports_functions', False) or info.get('supports_function_calling', False), # Standardize
+                "supports_function_calling": info.get('supports_function_calling', False) or info.get('supports_functions', False) or info.get('supports_tools', False), # Standardize
+                "supports_vision": info.get('supports_vision', False),
+                "task_suitability": ["text_generation", "creative", "analysis", "code"], # Generic default
+                "complexity_levels": ["simple", "medium", "complex"] # Generic default
             }
-        }
+            
+            # Standardize feature flags - prefer more generic 'supports_tools' if multiple function/tool flags are true
+            if mapped_capabilities["supports_tools"] or mapped_capabilities["supports_function_calling"]:
+                 mapped_capabilities["supports_functions"] = True # Ensure supports_functions is true if tools/func_calling is true
+            
+            capabilities_key = f"{provider}:{model_id}"
+            capabilities[capabilities_key] = mapped_capabilities
+            logger.debug(f"Loaded capabilities for {capabilities_key}: {mapped_capabilities}")
+
+        if not capabilities:
+            logger.warning("No model capabilities were loaded. ModelSelector might not function correctly.")
+        return capabilities
     
     def select_model(self, task_requirements: TaskRequirements) -> Optional[Tuple[str, str]]:
         """Select the best model for given requirements.

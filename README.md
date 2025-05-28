@@ -214,9 +214,26 @@ NEWS_API_KEY="SUA_CHAVE_API_NEWSAPI"
 # OpenWeatherMap API Key (for the get_weather_info tool)
 OPENWEATHER_API_KEY="SUA_CHAVE_API_OPENWEATHERMAP"
 
+# --- Optional API Keys for Content Creation & Other Tools ---
+# ElevenLabs API Key (for Text-to-Speech)
+ELEVENLABS_API_KEY="SUA_CHAVE_API_ELEVENLABS"
+
+# OpenAI API Key (for GPT models)
+OPENAI_API_KEY="SUA_CHAVE_API_OPENAI"
+
+# Anthropic API Key (for Claude models)
+ANTHROPIC_API_KEY="SUA_CHAVE_API_ANTHROPIC"
+
+# OpenAI DALL-E API Key (for DALL-E image generation)
+DALLE_API_KEY="SUA_CHAVE_API_OPENAI_PARA_DALLE"
+# ... (rest of optional keys remain the same)
+
 # --- Model Configuration (Optional - Defaults provided) ---
-# MODEL_NAME="gemini-2.0-flash"
+# MODEL_NAME="gemini-2.0-flash" (Legacy - see new section on Multi-LLM Support)
 # TEMPERATURE="0.7"
+#
+# Para configuração avançada de múltiplos modelos (Google, OpenAI, Anthropic),
+# veja a variável de ambiente MODELS_CONFIG_JSON na seção "Suporte a Múltiplos Modelos de Linguagem (LLM)".
 
 # --- Persona Configuration (Optional - Defaults to Don Corleone) ---
 # PERSONA="Don Corleone"
@@ -230,6 +247,42 @@ OPENWEATHER_API_KEY="SUA_CHAVE_API_OPENWEATHERMAP"
    **Importante:** Substitua `"SUA_CHAVE_API_..."` pelos seus valores reais.
 
 ## 🖥️ Uso
+
+## 🤖 Suporte a Múltiplos Modelos de Linguagem (LLM)
+
+O agente conversacional principal agora pode utilizar modelos de linguagem de diferentes provedores, incluindo:
+- Google (modelos Gemini)
+- OpenAI (modelos GPT, como GPT-4o, GPT-3.5-turbo)
+- Anthropic (modelos Claude, como Claude 3 Haiku, Sonnet, Opus)
+
+Esta flexibilidade é gerenciada pelo `ModelManager` e `ModelSelector` internos, que escolhem um modelo apropriado com base na configuração e, futuramente, nos requisitos da tarefa.
+
+### Configurando Modelos LLM
+
+1.  **API Keys**: Certifique-se de que as chaves de API para os provedores desejados estão configuradas no seu arquivo `.env`:
+    *   `API_KEY` ou `GEMINI_API_KEY` para Google Gemini.
+    *   `OPENAI_API_KEY` para modelos OpenAI.
+    *   `ANTHROPIC_API_KEY` para modelos Anthropic.
+
+2.  **Seleção de Modelos (`MODELS_CONFIG_JSON`)**:
+    Você pode controlar quais modelos estão disponíveis para o agente e qual é o modelo padrão definindo a variável de ambiente `MODELS_CONFIG_JSON`. Esta variável aceita uma string JSON com a seguinte estrutura:
+
+    ```json
+    {
+      "available_models": [
+        {"model_id": "gemini-1.5-pro-latest", "provider": "google", "api_key_env_var": "GEMINI_API_KEY"},
+        {"model_id": "gpt-4o", "provider": "openai", "api_key_env_var": "OPENAI_API_KEY"},
+        {"model_id": "claude-3-haiku-20240307", "provider": "anthropic", "api_key_env_var": "ANTHROPIC_API_KEY"}
+      ],
+      "default_model_id": "gemini-1.5-pro-latest"
+    }
+    ```
+    - `available_models`: Uma lista dos modelos que o sistema pode usar. Especifique o `model_id` (conforme nomeado pelo provedor), `provider` ("google", "openai", ou "anthropic"), e `api_key_env_var` (o nome da variável no `.env` que contém a chave para este modelo).
+    - `default_model_id`: O `model_id` do modelo que será usado por padrão se nenhum outro critério específico for aplicado.
+
+    Se `MODELS_CONFIG_JSON` não for definido, o sistema utilizará uma lista padrão de modelos pré-configurados (atualmente incluindo Gemini, GPT-4o, e Claude 3 Haiku).
+
+O sistema seleciona automaticamente um modelo da lista de disponíveis. O antigo método de usar apenas `MODEL_NAME` no `.env` para definir o modelo do agente foi substituído por este sistema mais robusto. `MODEL_NAME` pode ainda influenciar um fallback se `MODELS_CONFIG_JSON` não estiver definido.
 
 ### Método 1: Usando o CLI do LangGraph
 
@@ -390,11 +443,10 @@ Quais são suas funcionalidades?
 
 ### Alterando o Modelo
 
-Você pode alterar o modelo usado adicionando a seguinte linha ao seu arquivo `.env`:
+A seleção do modelo de linguagem principal para o agente agora é mais flexível e configurável através da variável de ambiente `MODELS_CONFIG_JSON`.
+Consulte a seção "🤖 Suporte a Múltiplos Modelos de Linguagem (LLM)" para detalhes completos sobre como definir os modelos disponíveis (Google Gemini, OpenAI GPT, Anthropic Claude) e o modelo padrão.
 
-```dotenv
-MODEL_NAME=gemini-2.0-pro
-```
+A antiga configuração `MODEL_NAME` no arquivo `.env` pode servir como um fallback caso `MODELS_CONFIG_JSON` não esteja definido ou não especifique um padrão.
 
 ### Alterando a Personalidade do Agente
 
