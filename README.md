@@ -256,6 +256,7 @@ O agente conversacional principal agora pode utilizar modelos de linguagem de di
 - Anthropic (modelos Claude, como Claude 3 Haiku, Sonnet, Opus)
 
 Esta flexibilidade é gerenciada pelo `ModelManager` e `ModelSelector` internos, que escolhem um modelo apropriado com base na configuração e, futuramente, nos requisitos da tarefa.
+As funcionalidades de criação de conteúdo (como geração de roteiros, posts de blog e threads do Twitter) também utilizam este sistema de seleção de modelos, permitindo maior flexibilidade na escolha do LLM para tarefas específicas de criação.
 
 ### Configurando Modelos LLM
 
